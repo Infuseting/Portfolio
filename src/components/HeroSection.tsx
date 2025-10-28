@@ -1,5 +1,5 @@
 import { motion } from 'motion/react';
-import { Linkedin } from 'lucide-react';
+import { FileArchive, Linkedin } from 'lucide-react';
 import { Button } from './ui/button';
 import { useLanguage } from '../contexts/LanguageContext';
 import { TypeWriter } from './TypeWriter';
@@ -33,14 +33,26 @@ export function HeroSection() {
             <p className="text-gray-600 mb-8 leading-relaxed">
               {description2}
             </p>
+            <div className='flex gap-4'>
 
-            <Button
-              className="bg-gray-900 hover:bg-gray-700 text-white transition-all duration-300 px-6"
-              onClick={() => window.open(t('footer.social.linkedin') || 'https://linkedin.com/in/serretarthur', '_blank')}
-            >
-              <Linkedin className="w-4 h-4 mr-2" />
-              {t('hero.cta')}
-            </Button>
+              <Button
+                className="bg-gray-900 hover:bg-gray-700 text-white transition-all duration-300 px-6"
+                onClick={() => window.open(t('footer.social.linkedin') || 'https://linkedin.com/in/serretarthur', '_blank')}
+              >
+                <Linkedin className="w-4 h-4 mr-2" />
+                {t('hero.cta')}
+              </Button>
+              <Button
+                variant="outline"
+                className="ml-4 px-6"
+                onClick={() => {
+                  window.open('/CV.pdf', '_blank');
+                }}
+              >
+                <FileArchive className="w-4 h-4 mr-2" />
+                CV
+              </Button>
+            </div>
           </motion.div>
 
           <motion.div

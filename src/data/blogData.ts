@@ -23,6 +23,29 @@ export interface BlogPost {
 }
 
 export const blogPosts: BlogPost[] = [
+  {
+    id: "how-create-mcp-server",
+    title: {
+      fr: "Comment j'ai crée mon premier serveur MCP",
+      en: "How I Created My First MCP Server",
+    },
+    description: {
+      fr: "Découvrez les étapes que j'ai suivies pour créer et déployer mon propre serveur MCP, de la configuration initiale à la mise en ligne.",
+      en: "Discover the steps I took to create and deploy my own MCP server, from initial setup to going live.",
+    },
+    date: "2025-10-28",
+    author: "Serret Arthur",
+    category: {
+      fr: "MCP",
+      en: "MCP",
+    },
+    readTime: "10",
+    image: "/assets/posts/images/how-create-mcp-server.png",
+    mdFile: {
+      fr: "/assets/posts/fr/how-create-mcp-server.md",
+      en: "/assets/posts/en/how-create-mcp-server.md",
+    },
+  }
   /*{
     id: "intro-react-hooks",
     title: {

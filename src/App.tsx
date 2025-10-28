@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Routes, Route, useNavigate, useParams } from 'react-router-dom';
 import { LanguageProvider } from './contexts/LanguageContext';
 import { Header } from './components/Header';
 import { HeroSection } from './components/HeroSection';
@@ -14,71 +15,70 @@ import { FooterSimple } from './components/FooterSimple';
 type Page = 'home' | 'blog' | 'blog-post';
 
 export default function App() {
-  const [currentPage, setCurrentPage] = useState<Page>('home');
-  const [selectedPostId, setSelectedPostId] = useState<string>('');
+  // Home component renders the landing page sections
+  function Home() {
+    const navigate = useNavigate();
 
-  const handleViewAllBlogs = () => {
-    setCurrentPage('blog');
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
+    const handleViewAllBlogs = () => {
+      navigate('/blog');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    };
 
-  const handleSelectPost = (postId: string) => {
-    setSelectedPostId(postId);
-    setCurrentPage('blog-post');
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
+    const handleSelectPost = (postId: string) => {
+      navigate(`/blog/${postId}`);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    };
 
-  const handleBackToHome = () => {
-    setCurrentPage('home');
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
-
-  const handleBackToBlog = () => {
-    setCurrentPage('blog');
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
-
-  if (currentPage === 'blog') {
     return (
-      <LanguageProvider>
-        <div className="min-h-screen bg-white">
-          <Header />
-          <BlogPage onBack={handleBackToHome} onSelectPost={handleSelectPost} />
-          <FooterSimple />
-        </div>
-      </LanguageProvider>
+      <>
+        <main>
+          <HeroSection />
+          <ProjectsSection />
+          <BlogSection onViewAll={handleViewAllBlogs} onSelectPost={handleSelectPost} />
+          <TechStack />
+          <Journey />
+          <FinalCTA />
+        </main>
+      </>
     );
   }
 
-  if (currentPage === 'blog-post') {
-    return (
-      <LanguageProvider>
-        <div className="min-h-screen bg-white">
-          <Header />
-          <BlogPostPage postId={selectedPostId} onBack={handleBackToBlog} />
-          <FooterSimple />
-        </div>
-      </LanguageProvider>
-    );
+  function BlogPageRoute() {
+    const navigate = useNavigate();
+    const handleBackToHome = () => {
+      navigate('/');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    };
+    const handleSelectPost = (postId: string) => {
+      navigate(`/blog/${postId}`);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    };
+
+    return <BlogPage onBack={handleBackToHome} onSelectPost={handleSelectPost} />;
+  }
+
+  function BlogPostRoute() {
+    const { id } = useParams();
+    const navigate = useNavigate();
+    const handleBackToBlog = () => {
+      navigate('/blog');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    };
+
+    return <BlogPostPage postId={id ?? ''} onBack={handleBackToBlog} />;
   }
 
   return (
     <LanguageProvider>
       <div className="min-h-screen bg-white">
         <Header />
-        
-        <main>
-          <HeroSection />
-          <ProjectsSection />
-          <BlogSection 
-            onViewAll={handleViewAllBlogs}
-            onSelectPost={handleSelectPost}
-          />
-          <TechStack />
-          <Journey />
-          <FinalCTA />
-        </main>
-        
+
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/blog" element={<BlogPageRoute />} />
+          <Route path="/blog/:id" element={<BlogPostRoute />} />
+        </Routes>
+
         <FooterSimple />
       </div>
     </LanguageProvider>
