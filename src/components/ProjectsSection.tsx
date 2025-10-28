@@ -110,7 +110,7 @@ function ProjectItem({ project, index }: { project: Project; index: number }) {
       className="grid lg:grid-cols-2 gap-12 items-center mb-32"
     >
       <div className={isEven ? 'lg:order-1' : 'lg:order-2'}>
-        <div className="bg-gray-50 rounded-lg p-8 border border-gray-200">
+        <div className="bg-gray-50 rounded-lg p-1 border border-gray-200">
           <ImageWithFallback
             src={project.image}
             alt={project.name[language] || project.name.en}
