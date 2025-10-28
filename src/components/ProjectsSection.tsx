@@ -88,7 +88,7 @@ const projects: Project[] = [
     },
     stack: 'React',
     image: '/assets/projets/sarah.png',
-    link: 'https://sarah-portfolio-2qqimbp9i-infusetings-projects.vercel.app/'
+    link: 'https://sarah-portfolio-beta.vercel.app/'
   },
 
 
