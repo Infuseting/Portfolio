@@ -1,0 +1,71 @@
+{
+  "nav": {
+    "home": "Home",
+    "projects": "Projects",
+    "blog": "Blog",
+    "stack": "Stack",
+    "journey": "Journey",
+    "contact": "Contact"
+  },
+  "hero": {
+    "greeting": "Hi, I'm",
+    "name": "Serret Arthur",
+    "title": "Full Stack Developer",
+    "description1": "Hi, I'm Arthur! 👋 I'm passionate about creating digital solutions that make sense and simplify users' lives. Whether it's designing an elegant interface, building a solid system, or rethinking an existing workflow, I love transforming ideas into concrete products.",
+    "description2": "If you're curious to discover my journey, my projects, or simply want to chat about tech, feel free to contact me. I'm always open to new opportunities and collaborations.",
+    "phrases": [
+      "Full Stack Developer",
+      "Java Developer",
+      "IT Student"
+    ],
+    "cta": "View my LinkedIn"
+  },
+  "projects": {
+    "title": "What I've Built",
+    "subtitle": "A selection of projects I'm proud of",
+    "viewProject": "View Project",
+    "viewCode": "View Code"
+  },
+  "blog": {
+    "title": "Blog",
+    "subtitle": "Thoughts, tutorials and discoveries",
+    "latestSubtitle": "Latest thoughts, tutorials and discoveries",
+    "viewAll": "View all articles",
+    "backToHome": "Back to home",
+    "backToBlog": "Back",
+    "allArticles": "All articles",
+    "articleCount": "article published",
+    "articleCountPlural": "articles published",
+    "readTime": "min",
+    "by": "By",
+    "errorLoading": "Error",
+    "errorMessage": "Unable to load article content.",
+    "notFound": "Article not found.",
+    "loading": "Loading..."
+  },
+  "techStack": {
+    "title": "Tech Stack, yes!",
+    "subtitle": "Technologies and tools I use daily"
+  },
+  "journey": {
+    "title": "My Journey",
+    "subtitle": "A brief story of my professional evolution",
+    "present": "Present"
+  },
+  "finalCTA": {
+    "title": "Let's Work Together",
+    "description": "Have a project in mind? I'd love to discuss it with you.",
+    "cta": "Contact Me"
+  },
+  "footer": {
+    "rights": "All rights reserved.",
+    "madeWith": "Made with",
+    "by": "by",
+    "copyright": "© 2025 Serret Arthur — Designed with care and simplicity.",
+    "social": {
+      "github": "https://github.com/Infuseting",
+      "linkedin": "https://linkedin.com/in/arthur-serret",
+      "email": "serretarthur@gmail.com"
+    }
+  }
+}

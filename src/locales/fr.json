@@ -1,0 +1,71 @@
+{
+  "nav": {
+    "home": "Accueil",
+    "projects": "Projets",
+    "blog": "Blog",
+    "stack": "Stack",
+    "journey": "Parcours",
+    "contact": "Contact"
+  },
+  "hero": {
+    "greeting": "Salut, je suis",
+    "name": "Serret Arthur",
+    "title": "Développeur Full Stack",
+    "description1": "Salut, moi c'est Arthur ! 👋 Je suis passionné par la création de solutions digitales qui ont du sens et qui simplifient la vie des utilisateurs. Que ce soit pour concevoir une interface élégante, bâtir un système solide ou repenser un workflow existant, j'adore transformer des idées en produits concrets.",
+    "description2": "Si vous êtes curieux de découvrir mon parcours, mes projets ou simplement échanger autour de la tech, n'hésitez pas à me contacter. Je suis toujours ouvert aux nouvelles opportunités et aux collaborations.",
+    "phrases": [
+      "Développeur Full-Stack",
+      "Développeur Java",
+      "Étudiant IT"
+    ],
+    "cta": "Voir mon LinkedIn"
+  },
+  "projects": {
+    "title": "Ce que j'ai créé",
+    "subtitle": "Une sélection de projets qui me tiennent à cœur",
+    "viewProject": "Voir le projet",
+    "viewCode": "Voir le code"
+  },
+  "blog": {
+    "title": "Blog",
+    "subtitle": "Pensées, tutoriels et découvertes",
+    "latestSubtitle": "Dernières pensées, tutoriels et découvertes",
+    "viewAll": "Voir tous les articles",
+    "backToHome": "Retour à l'accueil",
+    "backToBlog": "Retour",
+    "allArticles": "Tous les articles",
+    "articleCount": "article publié",
+    "articleCountPlural": "articles publiés",
+    "readTime": "min",
+    "by": "Par",
+    "errorLoading": "Erreur",
+    "errorMessage": "Impossible de charger le contenu de l'article.",
+    "notFound": "Article non trouvé.",
+    "loading": "Chargement..."
+  },
+  "techStack": {
+    "title": "De la stack, oui!",
+    "subtitle": "Technologies et outils que j'utilise au quotidien"
+  },
+  "journey": {
+    "title": "Mon parcours",
+    "subtitle": "Une brève histoire de mon évolution professionnelle",
+    "present": "Présent"
+  },
+  "finalCTA": {
+    "title": "Travaillons ensemble",
+    "description": "Vous avez un projet en tête ? Je serais ravi d'en discuter avec vous.",
+    "cta": "Me contacter"
+  },
+  "footer": {
+    "rights": "Tous droits réservés.",
+    "madeWith": "Fait avec",
+    "by": "par",
+    "copyright": "© 2025 Serret Arthur — Conçu avec soin et simplicité.",
+    "social": {
+      "github": "https://github.com/Infuseting",
+      "linkedin": "https://linkedin.com/in/arthur-serret",
+      "email": "serretarthur@gmail.com"
+    }
+  }
+}
