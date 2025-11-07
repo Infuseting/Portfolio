@@ -46,7 +46,7 @@ export function HeroSection() {
                 variant="outline"
                 className="ml-4 px-6"
                 onClick={() => {
-                  window.open('/CV.pdf', '_blank');
+                  window.open('/CV_SERRET_Arthur.pdf', '_blank');
                 }}
               >
                 <FileArchive className="w-4 h-4 mr-2" />
