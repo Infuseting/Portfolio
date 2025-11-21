@@ -90,7 +90,20 @@ const projects: Project[] = [
     image: '/assets/projets/sarah.png',
     link: 'https://sarah-portfolio-beta.vercel.app/'
   },
-
+  {
+    id: 5,
+    name: {
+      fr: 'Geoshare - Projet Étudiant',
+      en: 'Geoshare - Student Project'
+    },
+    description: {
+      fr: 'Geoshare est une application qui à pour but de placer sur une carte des infrastructures publiques. L\'application a été développée dans le cadre d\'un projet universitaire qui avait pour objectif de construire une application dans un temps limité. Il y a aussi une page d\'administration pour gérer les infrastructures mais qui n\'a pas été fait par moi. (Je me suis occupé de toutes les fonctionnalités sur le /map) ',
+      en: 'Geoshare is an application that aims to place public infrastructures on a map. The application was developed as part of a university project that aimed to build an application in a limited time. There is also an administration page to manage the infrastructures but it was not made by me. (I took care of all the features on the /map)'
+    },
+    stack: 'React • SQL',
+    image: '/assets/projets/geoshare.png',
+    link: 'https://infraster-r310.vercel.app/'
+  },
 
   
 ];
