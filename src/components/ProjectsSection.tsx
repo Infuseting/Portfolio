@@ -1,7 +1,7 @@
 import { motion, useInView } from 'motion/react';
 import { useRef } from 'react';
 import { ImageWithFallback } from './figma/ImageWithFallback';
-import { ExternalLink } from 'lucide-react';
+import { ExternalLink, Github } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
 
 interface Project {
@@ -17,6 +17,7 @@ interface Project {
   stack: string;
   image: string;
   link?: string;
+  githubLink?: string;
 }
 
 const projects: Project[] = [
@@ -32,7 +33,8 @@ const projects: Project[] = [
     },
     stack: 'Dart • PHP (Back-end)',
     image: '/assets/projets/unicaen.png',
-    link: 'https://edt.infuseting.fr/'
+    link: 'https://edt.infuseting.fr/',
+    githubLink: 'https://github.com/Infuseting/EDTApp-Dart'
   },
   {
     id: 2,
@@ -46,7 +48,8 @@ const projects: Project[] = [
     },
     stack: 'React • Rust (Tauri)',
     image: '/assets/projets/jan.png',
-    link: 'https://github.com/Infuseting/jan'
+    githubLink: 'https://github.com/Infuseting/jan',
+    link: 'https://jan.ai/'
   },
   {
     id: 3,
@@ -60,7 +63,8 @@ const projects: Project[] = [
     },
     stack: 'Python • FastMCP (PY)',
     image: '/assets/projets/mcp.png',
-    link: 'https://github.com/Infuseting/MCPEdtUnicaen'
+    githubLink: 'https://github.com/Infuseting/MCPEdtUnicaen',
+    link: 'https://unicaenedt.mcp.infuseting.fr/sse'
   },
   {
     id: 4,
@@ -74,7 +78,8 @@ const projects: Project[] = [
     },
     stack: 'Java (Spigot) • SQL',
     image: '/assets/projets/invasionz.png',
-    link: 'https://invasionz.net/'
+    link: 'https://invasionz.net/',
+    githubLink: 'https://github.com/invasionz-net'
   },
   {
     id: 5,
@@ -88,10 +93,11 @@ const projects: Project[] = [
     },
     stack: 'React',
     image: '/assets/projets/sarah.png',
-    link: 'https://sarah-portfolio-beta.vercel.app/'
+    link: 'https://sarah-portfolio-beta.vercel.app/',
+    githubLink: 'https://github.com/Infuseting/SarahPortfolio'
   },
   {
-    id: 5,
+    id: 6,
     name: {
       fr: 'Geoshare - Projet Étudiant',
       en: 'Geoshare - Student Project'
@@ -102,10 +108,9 @@ const projects: Project[] = [
     },
     stack: 'React • SQL',
     image: '/assets/projets/geoshare.png',
-    link: 'https://infraster-r310.vercel.app/'
-  },
-
-  
+    githubLink: 'https://github.com/Infuseting/Geoshare-R310',
+    link: 'https://geoshare.vercel.app/'
+  }
 ];
 
 function ProjectItem({ project, index }: { project: Project; index: number }) {
@@ -136,16 +141,28 @@ function ProjectItem({ project, index }: { project: Project; index: number }) {
         <h3 className="mb-4 text-gray-900">{project.name[language] || project.name.en}</h3>
         <p className="text-gray-600 mb-4 leading-relaxed">{project.description[language] || project.description.en}</p>
         <p className="text-gray-400 mb-6">{project.stack}</p>
-        {project.link && (
-          <a 
-            href={project.link}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center text-gray-900 hover:text-gray-600 transition-colors"
-          >
-            {t('projects.viewProject')} <ExternalLink className="w-4 h-4 ml-2" />
-          </a>
-        )}
+        <div className="flex flex-wrap gap-4">
+          {project.link && (
+            <a 
+              href={project.link}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center text-gray-900 hover:text-gray-600 transition-colors"
+            >
+              {t('projects.viewProject')} <ExternalLink className="w-4 h-4 ml-2" />
+            </a>
+          )}
+          {project.githubLink && (
+            <a 
+              href={project.githubLink}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center text-gray-900 hover:text-gray-600 transition-colors"
+            >
+              {t('projects.viewCode')} <Github className="w-4 h-4 ml-2" />
+            </a>
+          )}
+        </div>
       </div>
     </motion.div>
   );
