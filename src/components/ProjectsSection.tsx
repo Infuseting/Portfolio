@@ -110,6 +110,36 @@ const projects: Project[] = [
     image: '/assets/projets/geoshare.png',
     githubLink: 'https://github.com/Infuseting/Geoshare-R310',
     link: 'https://geoshare.vercel.app/'
+  },
+  {
+    id: 7,
+    name: {
+      fr: 'Dungeonxplorer - Projet Étudiant',
+      en: 'Dungeonxplorer - Student Project'
+    },
+    description: {
+      fr: 'Dungeonxplorer est un projet qui a pour but de créer un jeu de role dans lequel on peut jouer son propre personnage (Projet fait en 3 jours)',
+      en: 'Dungeonxplorer is a project that aims to create a role-playing game where you can play your own character (Project done in 3 days)'
+    },
+    stack: 'SQL • PHP',
+    image: '/assets/projets/dungeonxplorer.png',
+    githubLink: 'https://github.com/Infuseting/dungeonxplorer',
+    link: 'https://dungeonxplorer.infuseting.fr/'
+  },
+  {
+    id: 8,
+    name: {
+      fr: 'Readymapeo - Projet Étudiant',
+      en: 'Readymapeo - Student Project'
+    },
+    description: {
+      fr: 'Readymapeo est une application qui a pour but de faciliter la gestion de course d\'orientation mais aussi de faciliter l\'inscriptions a c\'est course',
+      en: 'Readymapeo is an application that aims to facilitate the management of orientation courses but also to facilitate the registration for these courses'
+    },
+    stack: 'SQL • Laravel • React • Agile • Scrum',
+    image: '/assets/projets/readymapeo.png',
+    githubLink: 'https://github.com/Infuseting/sae301',
+    link: 'https://sae301.infuseting.fr/'
   }
 ];
 
@@ -143,7 +173,7 @@ function ProjectItem({ project, index }: { project: Project; index: number }) {
         <p className="text-gray-400 mb-6">{project.stack}</p>
         <div className="flex flex-wrap gap-4">
           {project.link && (
-            <a 
+            <a
               href={project.link}
               target="_blank"
               rel="noopener noreferrer"
@@ -153,7 +183,7 @@ function ProjectItem({ project, index }: { project: Project; index: number }) {
             </a>
           )}
           {project.githubLink && (
-            <a 
+            <a
               href={project.githubLink}
               target="_blank"
               rel="noopener noreferrer"
