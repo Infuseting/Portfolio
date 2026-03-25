@@ -15,7 +15,7 @@ const technologies = [
   { name: 'Python', icon: <FaPython /> },
   { name: 'Rust', icon: <FaRust /> },
   { name: 'C', icon: <BiLogoCPlusPlus /> },
-  { name: 'PHP' , icon: <FaPhp /> },
+  { name: 'PHP', icon: <FaPhp /> },
 ];
 
 export function TechStack() {

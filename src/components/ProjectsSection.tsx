@@ -140,6 +140,21 @@ const projects: Project[] = [
     image: '/assets/projets/readymapeo.png',
     githubLink: 'https://github.com/Infuseting/sae301',
     link: 'https://sae301.infuseting.fr/'
+  },
+  {
+    id: 8,
+    name: {
+      fr: 'ThreeJS Portfolio',
+      en: 'ThreeJS Portfolio'
+    },
+    description: {
+      fr: 'Portfolio réalisé avec Three.js pour montrer mes compétences en développement 3D.',
+      en: 'Portfolio created with Three.js to showcase my skills in 3D development.'
+    },
+    stack: 'Three.js • React • Blender • WebGL',
+    image: '/assets/projets/three.png',
+    githubLink: 'https://github.com/Infuseting/ThreeJS-Portfolio',
+    link: 'https://three.infuseting.fr/'
   }
 ];
 
