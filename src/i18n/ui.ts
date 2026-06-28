@@ -20,14 +20,14 @@ export const ui = {
     
     // Footer
     'footer.role': 'Développeur Fullstack',
-    'footer.cv': 'Télécharger CV ↓',
+    'footer.cv': 'CV ↓',
     'footer.rights': 'Tous droits réservés.',
     'footer.built': 'Construit avec',
-    'hero.badge': 'Disponible · Freelance & CDI',
+    'hero.badge': 'Disponible · Freelance',
     'hero.title.1': 'Développeur',
     'hero.title.2': 'Full-Stack & Passionné',
-    'hero.description': "Actuellement en alternance chez Sopra Steria, je rejoins l'ENSICAEN en Cybersécurité & Monétique. Je crée des solutions allant du backend Java/Spring à des interfaces web modernes.",
-    'hero.cv': 'Télécharger CV ↓',
+    'hero.description': "Actuellement en alternance chez Sopra Steria, je rejoins l'ENSICAEN en Cybersécurité & Monétique. Je crée des solutions diverses et variées, que ce soit pour des projets fun et perso, ou pour des projets plus professionnels.",
+    'hero.cv': 'CV ↓',
     'hero.contact': 'Me contacter →',
     
     // Projects
@@ -70,9 +70,9 @@ export const ui = {
     'site.tagline': 'Développeur Fullstack',
     // Blog page
     'blog.title': 'Blog',
-    'blog.description': "Articles techniques d'Arthur SERRET — TypeScript, architecture web, performance, et développement fullstack.",
+    'blog.description': "Articles techniques d'Arthur SERRET",
     'blog.section_label': 'Écritures',
-    'blog.subtitle': 'Réflexions techniques, retours d\'expérience et guides pratiques.',
+    'blog.subtitle': 'Réflexions techniques et retours d\'expérience',
     'blog.empty': 'Les articles arrivent bientôt.',
     // Tags page
     'tag.title': 'Tag',
@@ -102,14 +102,14 @@ export const ui = {
     
     // Footer
     'footer.role': 'Full-Stack Developer',
-    'footer.cv': 'Download Resume ↓',
+    'footer.cv': 'Resume ↓',
     'footer.rights': 'All rights reserved.',
     'footer.built': 'Built with',
-    'hero.badge': 'Available · Freelance & Full-time',
+    'hero.badge': 'Available · Freelance',
     'hero.title.1': 'Passionate',
     'hero.title.2': 'Full-Stack Developer',
-    'hero.description': "Currently an apprentice at Sopra Steria, joining ENSICAEN for Cybersecurity & E-payment. I build solutions ranging from Java/Spring backends to modern web interfaces.",
-    'hero.cv': 'Download Resume ↓',
+    'hero.description': "Currently an apprentice at Sopra Steria, joining ENSICAEN for Cybersecurity & E-payment. I create diverse solutions, whether for fun and personal projects or more professional endeavors.",
+    'hero.cv': 'Resume ↓',
     'hero.contact': 'Contact me →',
     
     // Projects
@@ -152,9 +152,9 @@ export const ui = {
     'site.tagline': 'Full-Stack Developer',
     // Blog page
     'blog.title': 'Blog',
-    'blog.description': "Arthur SERRET's technical articles — TypeScript, web architecture, performance, and fullstack development.",
+    'blog.description': "Arthur SERRET's technical articles",
     'blog.section_label': 'Writings',
-    'blog.subtitle': 'Technical reflections, experience reports, and practical guides.',
+    'blog.subtitle': 'Technical reflections, and experience reports.',
     'blog.empty': 'Articles coming soon.',
     // Tags page
     'tag.title': 'Tag',
