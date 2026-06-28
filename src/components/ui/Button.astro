@@ -9,6 +9,7 @@ interface Props {
   disabled?:  boolean;
   class?:     string;
   id?:        string;
+  'aria-label'?: string;
 }
 
 const {
@@ -21,6 +22,7 @@ const {
   disabled = false,
   class: className = '',
   id,
+  'aria-label': ariaLabel,
 } = Astro.props;
 
 const tag = href ? 'a' : 'button';
@@ -34,6 +36,7 @@ const rel = target === '_blank' ? 'noopener noreferrer' : undefined;
     target={target}
     rel={rel}
     id={id}
+    aria-label={ariaLabel}
     class:list={['btn', `btn--${variant}`, `btn--${size}`, className]}
   >
     <slot />
@@ -43,6 +46,7 @@ const rel = target === '_blank' ? 'noopener noreferrer' : undefined;
     type={type}
     disabled={disabled}
     id={id}
+    aria-label={ariaLabel}
     class:list={['btn', `btn--${variant}`, `btn--${size}`, className]}
   >
     <slot />
