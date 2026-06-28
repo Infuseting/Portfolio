@@ -1,51 +1,24 @@
 ---
 import SectionLabel from '../ui/SectionLabel.astro';
 import { Icon } from 'astro-icon/components';
+import TagTooltip from '../ui/TagTooltip.astro';
 
-interface TechItem {
-  name: string;
-  icon: string; // astro-icon name
-  color?: string;
+import { getCollection } from 'astro:content';
+
+const allTags = await getCollection('tags');
+
+const categoriesMap = new Map();
+for (const tag of allTags) {
+  const cat = tag.data.category;
+  if (!categoriesMap.has(cat)) categoriesMap.set(cat, []);
+  categoriesMap.get(cat).push(tag);
 }
 
-interface Category {
-  label: string;
-  items: TechItem[];
-}
-
-const stack: Category[] = [
-  {
-    label: 'Langages',
-    items: [
-      { name: 'Java',       icon: 'mdi:language-java',  color: '#007396' },
-      { name: 'Python',     icon: 'simple-icons:python', color: '#3776AB' },
-      { name: 'Rust',       icon: 'simple-icons:rust',  color: '#DEA584' },
-      { name: 'C',          icon: 'simple-icons:c',  color: '#A8B9CC' },
-      { name: 'Kotlin',     icon: 'simple-icons:kotlin',  color: '#7F52FF' },
-      { name: 'PHP',        icon: 'simple-icons:php',  color: '#777bb4' },
-    ],
-  },
-  {
-    label: 'Web & App',
-    items: [
-      { name: 'TypeScript', icon: 'simple-icons:typescript', color: '#3178c6' },
-      { name: 'JavaScript', icon: 'simple-icons:javascript', color: '#f7df1e' },
-      { name: 'React',      icon: 'simple-icons:react', color: '#61DAFB' },
-      { name: 'Node.js',    icon: 'simple-icons:nodedotjs',  color: '#339933' },
-      { name: 'Electron',   icon: 'simple-icons:electron', color: '#47848F' },
-      { name: 'Dart',       icon: 'simple-icons:dart',  color: '#0175C2' },
-    ],
-  },
-  {
-    label: 'Data & DevOps',
-    items: [
-      { name: 'SQL / DB',   icon: 'simple-icons:postgresql', color: '#336791' },
-      { name: 'Docker',     icon: 'simple-icons:docker', color: '#2496ed' },
-      { name: 'GitHub CI',  icon: 'simple-icons:githubactions',  color: '#8b949e' },
-      { name: 'GitLab CI',  icon: 'simple-icons:gitlab', color: '#FC6D26' },
-    ],
-  },
-];
+const categoryOrder = ['Langages', 'Web & App', 'Data & DevOps'];
+const stack = categoryOrder.map(label => ({
+  label,
+  items: categoriesMap.get(label) || []
+}));
 ---
 
 <section class="stack section" id="stack" aria-label="Stack technique">
@@ -60,10 +33,15 @@ const stack: Category[] = [
         <div class="stack__category">
           <h3 class="stack__category-label">{category.label}</h3>
           <ul class="stack__items" role="list">
-            {category.items.map((tech) => (
-              <li class="stack__item" style={`--tech-color: ${tech.color ?? 'var(--color-accent)'}`}>
-                <span class="stack__item-icon" aria-hidden="true"><Icon name={tech.icon} width={20} height={20} /></span>
-                <span class="stack__item-name">{tech.name}</span>
+            {category.items.map((tech: any) => (
+              <li>
+                <interactive-tag class="stack-interactive-wrapper">
+                  <a href={`/tags/${tech.id}`} class="stack__item" style={`--tech-color: ${tech.data.color ?? 'var(--color-accent)'}`}>
+                    <span class="stack__item-icon" aria-hidden="true"><Icon name={tech.data.icon} width={20} height={20} /></span>
+                    <span class="stack__item-name">{tech.data.name}</span>
+                  </a>
+                  <TagTooltip id={tech.id} />
+                </interactive-tag>
               </li>
             ))}
           </ul>
@@ -189,5 +167,27 @@ const stack: Category[] = [
     .stack__items {
       grid-template-columns: 1fr;
     }
+  }
+
+  .stack-interactive-wrapper {
+    position: relative;
+    display: block;
+    width: 100%;
+  }
+
+  @media (hover: hover) {
+    .stack-interactive-wrapper:hover :global(.tag-tooltip) {
+      opacity: 1;
+      visibility: visible;
+      transform: translateX(-50%) translateY(0);
+      pointer-events: auto;
+    }
+  }
+
+  .stack-interactive-wrapper.is-open :global(.tag-tooltip) {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(-50%) translateY(0);
+    pointer-events: auto;
   }
 </style>

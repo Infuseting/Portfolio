@@ -39,7 +39,7 @@ const posts = allPosts
               return (
                 <li class="post-row">
                   <article>
-                    <a href={`/blog/${post.id}`} class="post-row__link">
+                    <div class="post-row__content">
                       <div class="post-row__left">
                         <time datetime={post.data.publishDate.toISOString()} class="post-row__date">
                           {formatDate(post.data.publishDate)}
@@ -48,7 +48,11 @@ const posts = allPosts
                       </div>
 
                       <div class="post-row__center">
-                        <h2 class="post-row__title">{post.data.title}</h2>
+                        <h2 class="post-row__title">
+                          <a href={`/blog/${post.id}`} class="post-row__title-link">
+                            {post.data.title}
+                          </a>
+                        </h2>
                         <p class="post-row__desc">{post.data.description}</p>
                         {post.data.tags.length > 0 && (
                           <ul class="post-row__tags" aria-label="Tags">
@@ -60,7 +64,7 @@ const posts = allPosts
                       </div>
 
                       <span class="post-row__arrow" aria-hidden="true">→</span>
-                    </a>
+                    </div>
                   </article>
                 </li>
               );
@@ -113,15 +117,14 @@ const posts = allPosts
     border-top: var(--border-width) solid var(--color-border-soft);
   }
 
-  .post-row__link {
+  .post-row__content {
     display: grid;
     grid-template-columns: 10rem 1fr auto;
     gap: var(--space-8);
     padding: var(--space-6) 0;
-    text-decoration: none;
-    color: inherit;
     align-items: start;
     transition: background-color var(--transition-fast);
+    position: relative;
   }
 
   .post-row:hover {
@@ -158,13 +161,29 @@ const posts = allPosts
   .post-row__title {
     font-size: var(--text-xl);
     font-weight: var(--weight-black);
-    color: var(--color-fg);
     line-height: var(--leading-snug);
+  }
+
+  .post-row__title-link {
+    color: var(--color-fg);
+    text-decoration: none;
     transition: color var(--transition-fast);
   }
 
-  .post-row:hover .post-row__title {
+  .post-row__title-link::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+  }
+
+  .post-row:hover .post-row__title-link {
     color: var(--color-accent);
+  }
+
+  .post-row__tags {
+    position: relative;
+    z-index: 2;
   }
 
   .post-row__desc {
@@ -197,7 +216,7 @@ const posts = allPosts
   }
 
   @media (max-width: 768px) {
-    .post-row__link {
+    .post-row__content {
       grid-template-columns: 1fr;
       gap: var(--space-3);
     }

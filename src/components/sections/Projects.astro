@@ -116,31 +116,32 @@ const projects = allProjects
       transform var(--transition-brutal),
       box-shadow var(--transition-brutal);
     position: relative;
-    overflow: hidden;
   }
 
   .project-card::before {
     content: '';
     position: absolute;
-    inset: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 0;
     background: var(--color-accent);
     opacity: 0;
-    transform: translateY(100%);
     transition:
-      transform var(--transition-brutal),
+      height var(--transition-brutal),
       opacity var(--transition-brutal);
     z-index: 0;
   }
 
   .project-card:hover::before {
     opacity: 0.04;
-    transform: translateY(0);
+    height: 100%;
   }
 
   .project-card:hover {
     transform: translate(-3px, -3px);
     box-shadow: var(--shadow-brutal-hover);
-    z-index: 1;
+    z-index: 2;
   }
 
   .project-card article {

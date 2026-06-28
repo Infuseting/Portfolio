@@ -1,13 +1,96 @@
 ---
+import { getCollection } from 'astro:content';
+
 interface Props {
+  id?: string;
   label: string;
   color?: string; // optional custom accent
 }
 const { label, color } = Astro.props;
+
+// Attempt to resolve ID from the label if not provided
+const allTags = await getCollection('tags');
+let resolvedId = Astro.props.id;
+let resolvedColor = color;
+
+if (!resolvedId) {
+  const foundTag = allTags.find(t => t.data.name.toLowerCase() === label.toLowerCase() || t.id.toLowerCase() === label.toLowerCase());
+  if (foundTag) {
+    resolvedId = foundTag.id;
+    if (!resolvedColor && foundTag.data.color) resolvedColor = foundTag.data.color;
+  } else {
+    resolvedId = label.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+  }
+}
+
+let relatedItems: any[] = [];
+if (resolvedId) {
+  const [allProjects, allBlog] = await Promise.all([
+    getCollection('projects'),
+    getCollection('blog'),
+  ]);
+
+  const matchTag = (tagArr: string[]) => tagArr.some((t: string) => 
+    t.toLowerCase() === resolvedId!.toLowerCase() || 
+    t.toLowerCase() === label.toLowerCase()
+  );
+  
+  const pMatches = allProjects.filter((p: any) => matchTag(p.data.tags || [])).map((p: any) => ({ ...p, type: 'project' }));
+  const bMatches = allBlog.filter((b: any) => matchTag(b.data.tags || [])).map((b: any) => ({ ...b, type: 'blog' }));
+
+  relatedItems = [...pMatches, ...bMatches]
+    .sort((a, b) => {
+      const dateA = a.type === 'project' ? new Date(a.data.year, 0) : a.data.publishDate;
+      const dateB = b.type === 'project' ? new Date(b.data.year, 0) : b.data.publishDate;
+      return dateB.getTime() - dateA.getTime();
+    })
+    .slice(0, 3);
+}
+
+const hasRelated = relatedItems.length > 0;
+const tagHref = resolvedId ? `/tags/${resolvedId}` : '#';
 ---
-<span class="tag" style={color ? `--tag-color: ${color}` : undefined}>{label}</span>
+
+<interactive-tag class="tag-wrapper">
+  {resolvedId ? (
+    <a href={tagHref} class="tag" style={resolvedColor ? `--tag-color: ${resolvedColor}` : undefined}>
+      {label}
+    </a>
+  ) : (
+    <span class="tag" style={resolvedColor ? `--tag-color: ${resolvedColor}` : undefined}>
+      {label}
+    </span>
+  )}
+
+  {resolvedId && (
+    <div class="tag-tooltip">
+      <div class="tooltip-content">
+        {hasRelated ? (
+          <ul class="related-list">
+            {relatedItems.map(item => (
+              <li>
+                <a href={item.type === 'project' ? `/projects` : `/blog/${item.slug}`}>
+                  <span class="item-type">{item.type === 'project' ? 'Projet' : 'Article'}</span>
+                  <span class="item-title">{item.data.title}</span>
+                </a>
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p class="empty-msg">Pas de référence pour le moment.</p>
+        )}
+        <a href={tagHref} class="see-more">Voir +</a>
+      </div>
+    </div>
+  )}
+</interactive-tag>
 
 <style>
+  .tag-wrapper {
+    position: relative;
+    display: inline-block;
+  }
+
   .tag {
     display: inline-block;
     font-family: var(--font-mono);
@@ -23,10 +106,177 @@ const { label, color } = Astro.props;
     transition:
       background-color var(--transition-fast),
       color var(--transition-fast);
+    text-decoration: none;
   }
 
-  .tag:hover {
+  a.tag {
+    cursor: pointer;
+  }
+
+  .tag:hover,
+  .tag-wrapper.is-open .tag {
     background: var(--tag-color, var(--color-border-soft));
     color: var(--color-bg);
   }
+
+  .tag-tooltip {
+    position: absolute;
+    bottom: calc(100% + 8px);
+    left: 50%;
+    transform: translateX(-50%) translateY(10px);
+    width: max-content;
+    max-width: 280px;
+    background: var(--color-bg);
+    border: var(--border-width) solid var(--color-border);
+    box-shadow: 4px 4px 0px var(--color-fg);
+    padding: var(--space-4);
+    opacity: 0;
+    visibility: hidden;
+    transition: all var(--transition-fast);
+    z-index: 50;
+    pointer-events: none;
+    text-align: left;
+  }
+
+  /* Gap bridge for hover */
+  .tag-tooltip::before {
+    content: '';
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    height: 15px;
+    background: transparent;
+  }
+
+  /* Triangle pointer */
+  .tag-tooltip::after {
+    content: '';
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    border-width: 8px;
+    border-style: solid;
+    border-color: var(--color-border) transparent transparent transparent;
+  }
+
+  @media (hover: hover) {
+    .tag-wrapper:hover .tag-tooltip {
+      opacity: 1;
+      visibility: visible;
+      transform: translateX(-50%) translateY(0);
+      pointer-events: auto;
+    }
+  }
+
+  .tag-wrapper.is-open .tag-tooltip {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(-50%) translateY(0);
+    pointer-events: auto;
+  }
+
+  .related-list {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 var(--space-3) 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+
+  .related-list a {
+    display: flex;
+    flex-direction: column;
+    text-decoration: none;
+    color: var(--color-fg);
+    padding: var(--space-2);
+    border: 1px solid transparent;
+    transition: border-color var(--transition-fast);
+  }
+
+  .related-list a:hover {
+    border-color: var(--color-border-soft);
+  }
+
+  .item-type {
+    font-size: 0.65rem;
+    font-family: var(--font-mono);
+    color: var(--tag-color, var(--color-accent));
+    text-transform: uppercase;
+  }
+
+  .item-title {
+    font-size: var(--text-sm);
+    font-weight: var(--weight-bold);
+    white-space: normal;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .empty-msg {
+    font-size: var(--text-sm);
+    color: var(--color-fg-muted);
+    margin: 0 0 var(--space-3) 0;
+    white-space: normal;
+  }
+
+  .see-more {
+    display: block;
+    text-align: center;
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    font-weight: var(--weight-bold);
+    color: var(--color-bg);
+    background: var(--color-fg);
+    padding: var(--space-2);
+    text-decoration: none;
+    text-transform: uppercase;
+    transition: transform var(--transition-fast);
+  }
+
+  .see-more:hover {
+    transform: translateY(-2px);
+  }
 </style>
+
+<script>
+  class InteractiveTag extends HTMLElement {
+    constructor() {
+      super();
+      const trigger = this.children[0];
+      
+      if (trigger) {
+        trigger.addEventListener('click', (e) => {
+          // On mobile/touch devices without hover
+          if (window.matchMedia('(hover: none)').matches) {
+            if (!this.classList.contains('is-open')) {
+              e.preventDefault(); // prevent navigation on first tap
+              
+              // Close all other open tooltips
+              document.querySelectorAll('interactive-tag.is-open').forEach(el => {
+                if (el !== this) el.classList.remove('is-open');
+              });
+              
+              this.classList.add('is-open');
+            }
+          }
+        });
+
+        // Close when clicking outside
+        document.addEventListener('click', (e) => {
+          if (!this.contains(e.target as Node)) {
+            this.classList.remove('is-open');
+          }
+        });
+      }
+    }
+  }
+  // Avoid re-defining if it's imported multiple times or across files
+  if (!customElements.get('interactive-tag')) {
+    customElements.define('interactive-tag', InteractiveTag);
+  }
+</script>
