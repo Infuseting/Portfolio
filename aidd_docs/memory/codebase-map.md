@@ -12,14 +12,18 @@ flowchart TD
     Src --> Components[components/]
     Src --> Layouts[layouts/]
     Src --> Content[content/]
+    Src --> I18n[i18n/]
+    Src --> Utils[utils/]
 ```
 
 ## Areas
 
-- `src/pages/`: File-based routes for the website.
+- `src/pages/[lang]/`: File-based dynamic bilingual routes.
 - `src/components/`: Reusable Astro components.
 - `src/layouts/`: Shared layout components.
-- `src/content/`: Content collections defined in `content.config.ts`.
+- `src/content/{blog,projects}/{lang}/`: Content collections defined in `content.config.ts`.
+- `src/i18n/`: Translation keys (`ui.ts`) and lang-resolution utilities.
+- `src/utils/`: Shared utilities (`formatDate`, `getRelatedItems`, `urls.ts`).
 - `src/assets/`, `src/styles/`: Static assets and global styles.
 
 ## Entry points

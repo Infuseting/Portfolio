@@ -10,10 +10,11 @@ The macro technical shape: the stack, how the pieces fit, and the decisions behi
 
 ## Structure
 
-- `src/pages/`: Astro file-based routing entry points.
+- `src/pages/[lang]/`: Astro file-based routing entry points with dynamic i18n support.
 - `src/components/`: Reusable UI components.
 - `src/layouts/`: Page layout wrappers.
-- `src/content/`: Markdown and MDX content collections.
+- `src/content/`: Markdown and MDX content collections, organized by language (`{blog,projects}/{lang}/`).
+- `src/i18n/`: Translation dictionary (`ui.ts`) and utility functions.
 
 ## How it fits together
 
@@ -30,8 +31,10 @@ flowchart LR
 ## Key decisions
 
 - Using Astro to ship zero-JS by default, opting into GSAP only for necessary animations.
-- Containerized deployment using Docker and Nginx (`Dockerfile`, `nginx.conf`).
+- Containerized deployment using Docker and Nginx (`Dockerfile`, `nginx.conf`) with strong Content-Security-Policy headers.
+- Unified bilingual system (fr/en) through `[lang]` dynamic paths and isolated translation dictionaries (`ui.ts`).
 
 ## Gotchas
 
 - Astro components run on the server by default. Client-side scripts must be explicitly defined using `<script>` tags inside Astro components.
+- Avoid redundant `getCollection()` calls in nested components; fetch once at the section/page level and pass as props to optimize static build time.
