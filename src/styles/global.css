@@ -69,6 +69,12 @@ body {
     background-color var(--transition-base),
     color var(--transition-base);
   min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+}
+
+main {
+  flex: 1;
 }
 
 /* ── TYPOGRAPHY BASE ─────────────────────────────────────── */
