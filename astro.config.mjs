@@ -9,6 +9,14 @@ import icon from 'astro-icon';
 export default defineConfig({
   site: 'https://infuseting.fr',
   output: 'static',
+  i18n: {
+    defaultLocale: 'fr',
+    locales: ['fr', 'en'],
+    routing: {
+      prefixDefaultLocale: true,
+      redirectToDefaultLocale: false,
+    }
+  },
   integrations: [sitemap(), mdx(), icon()],
   image: {
     // Use sharp for image optimization
