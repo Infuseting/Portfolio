@@ -1,0 +1,194 @@
+---
+import SectionLabel from '../ui/SectionLabel.astro';
+
+interface TechItem {
+  name: string;
+  icon: string; // emoji or SVG text
+  color?: string;
+}
+
+interface Category {
+  label: string;
+  items: TechItem[];
+}
+
+const stack: Category[] = [
+  {
+    label: 'Frontend',
+    items: [
+      { name: 'TypeScript', icon: 'TS', color: '#3178c6' },
+      { name: 'React',      icon: 'Re', color: '#61dafb' },
+      { name: 'Next.js',    icon: 'N',  color: '#000000' },
+      { name: 'Astro',      icon: '🚀', color: '#ff5d01' },
+      { name: 'Angular',    icon: 'Ng', color: '#dd0031' },
+      { name: 'CSS',        icon: '#',  color: '#1572b6' },
+    ],
+  },
+  {
+    label: 'Backend',
+    items: [
+      { name: 'Node.js',    icon: 'N',  color: '#339933' },
+      { name: 'Laravel',    icon: 'L',  color: '#ff2d20' },
+      { name: 'Symfony',    icon: 'S',  color: '#000000' },
+      { name: 'PHP',        icon: 'P',  color: '#777bb4' },
+      { name: 'PostgreSQL', icon: 'Pg', color: '#336791' },
+      { name: 'REST / tRPC',icon: '∼',  color: '#398ccb' },
+    ],
+  },
+  {
+    label: 'DevOps & Outils',
+    items: [
+      { name: 'Docker',   icon: '🐳', color: '#2496ed' },
+      { name: 'Git',      icon: 'G',  color: '#f05032' },
+      { name: 'Linux',    icon: '🐧', color: '#fcc624' },
+      { name: 'Nginx',    icon: 'N',  color: '#009639' },
+      { name: 'GitHub',   icon: '◈',  color: '#181717' },
+      { name: 'Vite',     icon: '⚡', color: '#646cff' },
+    ],
+  },
+];
+---
+
+<section class="stack section" id="stack" aria-label="Stack technique">
+  <div class="container">
+    <header class="stack__header">
+      <SectionLabel label="Technologies" />
+      <h2 class="stack__title">Mon stack</h2>
+    </header>
+
+    <div class="stack__categories">
+      {stack.map((category) => (
+        <div class="stack__category">
+          <h3 class="stack__category-label">{category.label}</h3>
+          <ul class="stack__items" role="list">
+            {category.items.map((tech) => (
+              <li class="stack__item" style={`--tech-color: ${tech.color ?? 'var(--color-accent)'}`}>
+                <span class="stack__item-icon" aria-hidden="true">{tech.icon}</span>
+                <span class="stack__item-name">{tech.name}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .stack__header {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+    margin-bottom: var(--space-12);
+  }
+
+  .stack__title {
+    font-size: clamp(var(--text-3xl), 4vw, var(--text-5xl));
+  }
+
+  .stack__categories {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0;
+    border: var(--border-width) solid var(--color-border);
+  }
+
+  .stack__category {
+    padding: var(--space-8);
+    border-right: var(--border-width) solid var(--color-border);
+  }
+
+  .stack__category:last-child {
+    border-right: none;
+  }
+
+  .stack__category-label {
+    font-family: var(--font-display);
+    font-size: var(--text-xs);
+    font-weight: var(--weight-bold);
+    letter-spacing: var(--tracking-widest);
+    text-transform: uppercase;
+    color: var(--color-accent);
+    margin-bottom: var(--space-6);
+    padding-bottom: var(--space-3);
+    border-bottom: var(--border-width) solid var(--color-border-soft);
+  }
+
+  .stack__items {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+    list-style: none;
+  }
+
+  .stack__item {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    padding: var(--space-3);
+    border: var(--border-width) solid transparent;
+    transition:
+      border-color var(--transition-fast),
+      background-color var(--transition-fast),
+      transform var(--transition-brutal);
+    cursor: default;
+  }
+
+  .stack__item:hover {
+    border-color: var(--tech-color, var(--color-border));
+    background: color-mix(in srgb, var(--tech-color, var(--color-accent)) 6%, transparent);
+    transform: translateX(4px);
+  }
+
+  .stack__item-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.25rem;
+    height: 2.25rem;
+    flex-shrink: 0;
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    font-weight: var(--weight-black);
+    background: color-mix(in srgb, var(--tech-color, var(--color-accent)) 12%, var(--color-bg-alt));
+    color: var(--tech-color, var(--color-accent));
+    border: var(--border-width) solid color-mix(in srgb, var(--tech-color, var(--color-accent)) 25%, transparent);
+    border-radius: var(--radius-none);
+    transition: background-color var(--transition-fast);
+  }
+
+  .stack__item:hover .stack__item-icon {
+    background: color-mix(in srgb, var(--tech-color, var(--color-accent)) 20%, var(--color-bg-alt));
+  }
+
+  .stack__item-name {
+    font-family: var(--font-body);
+    font-size: var(--text-sm);
+    font-weight: var(--weight-medium);
+    color: var(--color-fg);
+  }
+
+  @media (max-width: 900px) {
+    .stack__categories {
+      grid-template-columns: 1fr;
+    }
+
+    .stack__category {
+      border-right: none;
+      border-bottom: var(--border-width) solid var(--color-border);
+    }
+
+    .stack__category:last-child { border-bottom: none; }
+
+    .stack__items {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (max-width: 480px) {
+    .stack__items {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

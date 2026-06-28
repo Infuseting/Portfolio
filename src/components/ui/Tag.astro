@@ -1,0 +1,32 @@
+---
+interface Props {
+  label: string;
+  color?: string; // optional custom accent
+}
+const { label, color } = Astro.props;
+---
+<span class="tag" style={color ? `--tag-color: ${color}` : undefined}>{label}</span>
+
+<style>
+  .tag {
+    display: inline-block;
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    font-weight: var(--weight-medium);
+    letter-spacing: var(--tracking-wide);
+    padding: 0.2em 0.6em;
+    border: var(--border-width) solid var(--tag-color, var(--color-border-soft));
+    color: var(--tag-color, var(--color-fg-muted));
+    background: transparent;
+    border-radius: var(--radius-none);
+    white-space: nowrap;
+    transition:
+      background-color var(--transition-fast),
+      color var(--transition-fast);
+  }
+
+  .tag:hover {
+    background: var(--tag-color, var(--color-border-soft));
+    color: var(--color-bg);
+  }
+</style>

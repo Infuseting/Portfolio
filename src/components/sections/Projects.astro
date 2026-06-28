@@ -1,0 +1,256 @@
+---
+import { getCollection } from 'astro:content';
+import SectionLabel from '../ui/SectionLabel.astro';
+import Tag from '../ui/Tag.astro';
+
+const allProjects = await getCollection('projects');
+const projects = allProjects
+  .filter((p) => !p.data.draft)
+  .sort((a, b) => a.data.order - b.data.order)
+  .slice(0, 6);
+---
+
+<section class="projects section" id="projects" aria-label="Projets">
+  <div class="container">
+    <header class="projects__header">
+      <SectionLabel label="Sélection de projets" />
+      <h2 class="projects__title">Ce que j'ai construit</h2>
+    </header>
+
+    {projects.length === 0 ? (
+      <p class="projects__empty">Les projets arrivent bientôt.</p>
+    ) : (
+      <ul class="projects__grid" role="list">
+        {projects.map((project, i) => (
+          <li class="project-card" data-index={i}>
+            <article>
+              <div class="project-card__header">
+                <div class="project-card__meta">
+                  <span class="project-card__year">{project.data.year}</span>
+                  {project.data.status === 'wip' && (
+                    <span class="project-card__status">WIP</span>
+                  )}
+                  {project.data.featured && (
+                    <span class="project-card__featured">Featured</span>
+                  )}
+                </div>
+                <div class="project-card__links">
+                  {project.data.liveUrl && (
+                    <a
+                      href={project.data.liveUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      class="project-card__link"
+                      aria-label={`Voir ${project.data.title} en ligne`}
+                    >↗</a>
+                  )}
+                  {project.data.githubUrl && (
+                    <a
+                      href={project.data.githubUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      class="project-card__link"
+                      aria-label={`Code source de ${project.data.title}`}
+                    >
+                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>
+                    </a>
+                  )}
+                </div>
+              </div>
+
+              <h3 class="project-card__title">{project.data.title}</h3>
+              <p class="project-card__desc">{project.data.description}</p>
+
+              {project.data.tags.length > 0 && (
+                <ul class="project-card__tags" aria-label="Technologies">
+                  {project.data.tags.map((tag) => (
+                    <li><Tag label={tag} /></li>
+                  ))}
+                </ul>
+              )}
+            </article>
+          </li>
+        ))}
+      </ul>
+    )}
+  </div>
+</section>
+
+<style>
+  .projects__header {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+    margin-bottom: var(--space-12);
+  }
+
+  .projects__title {
+    font-size: clamp(var(--text-3xl), 4vw, var(--text-5xl));
+  }
+
+  .projects__empty {
+    color: var(--color-fg-muted);
+    font-style: italic;
+  }
+
+  /* Grid */
+  .projects__grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0;
+    list-style: none;
+    border: var(--border-width) solid var(--color-border);
+  }
+
+  .project-card {
+    border: var(--border-width) solid var(--color-border);
+    margin: calc(-1 * var(--border-width)) 0 0 calc(-1 * var(--border-width));
+    transition:
+      background-color var(--transition-fast),
+      transform var(--transition-brutal),
+      box-shadow var(--transition-brutal);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .project-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: var(--color-accent);
+    opacity: 0;
+    transform: translateY(100%);
+    transition:
+      transform var(--transition-brutal),
+      opacity var(--transition-brutal);
+    z-index: 0;
+  }
+
+  .project-card:hover::before {
+    opacity: 0.04;
+    transform: translateY(0);
+  }
+
+  .project-card:hover {
+    transform: translate(-3px, -3px);
+    box-shadow: var(--shadow-brutal-hover);
+    z-index: 1;
+  }
+
+  .project-card article {
+    position: relative;
+    z-index: 1;
+    padding: var(--space-8);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+    height: 100%;
+  }
+
+  /* Card header */
+  .project-card__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+  }
+
+  .project-card__meta {
+    display: flex;
+    gap: var(--space-2);
+    align-items: center;
+    flex-wrap: wrap;
+  }
+
+  .project-card__year {
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    color: var(--color-fg-subtle);
+  }
+
+  .project-card__status,
+  .project-card__featured {
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    font-weight: var(--weight-bold);
+    letter-spacing: var(--tracking-wide);
+    text-transform: uppercase;
+    padding: 0.1em 0.4em;
+    border: 1px solid;
+  }
+
+  .project-card__status {
+    color: var(--color-fg-muted);
+    border-color: var(--color-border-soft);
+  }
+
+  .project-card__featured {
+    color: var(--color-accent);
+    border-color: var(--color-accent);
+  }
+
+  .project-card__links {
+    display: flex;
+    gap: var(--space-2);
+  }
+
+  .project-card__link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 2rem;
+    height: 2rem;
+    color: var(--color-fg-muted);
+    border: var(--border-width) solid var(--color-border-soft);
+    font-weight: var(--weight-bold);
+    font-size: var(--text-base);
+    transition:
+      color var(--transition-fast),
+      background-color var(--transition-fast),
+      border-color var(--transition-fast);
+    text-decoration: none;
+  }
+
+  .project-card__link:hover {
+    color: var(--color-bg);
+    background: var(--color-fg);
+    border-color: var(--color-fg);
+  }
+
+  /* Title */
+  .project-card__title {
+    font-size: var(--text-xl);
+    font-weight: var(--weight-black);
+    line-height: var(--leading-tight);
+    color: var(--color-fg);
+    transition: color var(--transition-fast);
+  }
+
+  .project-card:hover .project-card__title {
+    color: var(--color-accent);
+  }
+
+  /* Description */
+  .project-card__desc {
+    font-size: var(--text-sm);
+    color: var(--color-fg-muted);
+    line-height: var(--leading-normal);
+    max-width: none;
+    flex: 1;
+    margin: 0;
+  }
+
+  /* Tags */
+  .project-card__tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    list-style: none;
+  }
+
+  /* Responsive */
+  @media (max-width: 640px) {
+    .projects__grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

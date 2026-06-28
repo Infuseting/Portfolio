@@ -1,0 +1,213 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Header from '../../components/layout/Header.astro';
+import Footer from '../../components/layout/Footer.astro';
+import SectionLabel from '../../components/ui/SectionLabel.astro';
+import Tag from '../../components/ui/Tag.astro';
+import { formatDate } from '../../utils/formatDate';
+import { getReadingTime } from '../../utils/getReadingTime';
+
+const allPosts = await getCollection('blog');
+const posts = allPosts
+  .filter((p) => !p.data.draft)
+  .sort((a, b) => b.data.publishDate.getTime() - a.data.publishDate.getTime());
+---
+
+<BaseLayout
+  title="Blog"
+  description="Articles techniques d'Arthur SERRET — TypeScript, architecture web, performance, et développement fullstack."
+>
+  <Header />
+  <main id="main-content" style="padding-top: var(--header-h);">
+    <section class="blog-list section">
+      <div class="container">
+        <header class="blog-list__header">
+          <SectionLabel label="Écritures" />
+          <h1 class="blog-list__title">Blog</h1>
+          <p class="blog-list__subtitle">
+            Réflexions techniques, retours d'expérience et guides pratiques.
+          </p>
+        </header>
+
+        {posts.length === 0 ? (
+          <p class="blog-list__empty">Les articles arrivent bientôt.</p>
+        ) : (
+          <ul class="blog-list__posts" role="list">
+            {posts.map((post) => {
+              const readingTime = getReadingTime(post.body ?? '');
+              return (
+                <li class="post-row">
+                  <article>
+                    <a href={`/blog/${post.id}`} class="post-row__link">
+                      <div class="post-row__left">
+                        <time datetime={post.data.publishDate.toISOString()} class="post-row__date">
+                          {formatDate(post.data.publishDate)}
+                        </time>
+                        <span class="post-row__time">{readingTime}</span>
+                      </div>
+
+                      <div class="post-row__center">
+                        <h2 class="post-row__title">{post.data.title}</h2>
+                        <p class="post-row__desc">{post.data.description}</p>
+                        {post.data.tags.length > 0 && (
+                          <ul class="post-row__tags" aria-label="Tags">
+                            {post.data.tags.map((tag) => (
+                              <li><Tag label={tag} /></li>
+                            ))}
+                          </ul>
+                        )}
+                      </div>
+
+                      <span class="post-row__arrow" aria-hidden="true">→</span>
+                    </a>
+                  </article>
+                </li>
+              );
+            })}
+          </ul>
+        )}
+      </div>
+    </section>
+  </main>
+  <Footer />
+</BaseLayout>
+
+<style>
+  .blog-list__header {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+    margin-bottom: var(--space-12);
+    padding-bottom: var(--space-8);
+    border-bottom: var(--border-width) solid var(--color-border);
+  }
+
+  .blog-list__title {
+    font-size: clamp(var(--text-5xl), 8vw, var(--text-8xl));
+  }
+
+  .blog-list__subtitle {
+    font-size: var(--text-lg);
+    color: var(--color-fg-muted);
+    max-width: 55ch;
+    margin: 0;
+  }
+
+  .blog-list__empty {
+    color: var(--color-fg-muted);
+    font-style: italic;
+  }
+
+  .blog-list__posts {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .post-row {
+    border-bottom: var(--border-width) solid var(--color-border-soft);
+  }
+
+  .post-row:first-child {
+    border-top: var(--border-width) solid var(--color-border-soft);
+  }
+
+  .post-row__link {
+    display: grid;
+    grid-template-columns: 10rem 1fr auto;
+    gap: var(--space-8);
+    padding: var(--space-6) 0;
+    text-decoration: none;
+    color: inherit;
+    align-items: start;
+    transition: background-color var(--transition-fast);
+  }
+
+  .post-row:hover {
+    background: var(--color-bg-alt);
+    margin-inline: calc(-1 * var(--container-pad));
+    padding-inline: var(--container-pad);
+  }
+
+  .post-row__left {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+    padding-top: var(--space-1);
+  }
+
+  .post-row__date {
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    color: var(--color-fg-muted);
+  }
+
+  .post-row__time {
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    color: var(--color-fg-subtle);
+  }
+
+  .post-row__center {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+
+  .post-row__title {
+    font-size: var(--text-xl);
+    font-weight: var(--weight-black);
+    color: var(--color-fg);
+    line-height: var(--leading-snug);
+    transition: color var(--transition-fast);
+  }
+
+  .post-row:hover .post-row__title {
+    color: var(--color-accent);
+  }
+
+  .post-row__desc {
+    font-size: var(--text-sm);
+    color: var(--color-fg-muted);
+    line-height: var(--leading-normal);
+    max-width: 70ch;
+    margin: 0;
+  }
+
+  .post-row__tags {
+    display: flex;
+    gap: var(--space-2);
+    flex-wrap: wrap;
+    list-style: none;
+  }
+
+  .post-row__arrow {
+    font-size: var(--text-xl);
+    color: var(--color-fg-subtle);
+    padding-top: var(--space-1);
+    transition:
+      transform var(--transition-brutal),
+      color var(--transition-fast);
+    flex-shrink: 0;
+  }
+
+  .post-row:hover .post-row__arrow {
+    transform: translateX(6px);
+    color: var(--color-accent);
+  }
+
+  @media (max-width: 768px) {
+    .post-row__link {
+      grid-template-columns: 1fr;
+      gap: var(--space-3);
+    }
+
+    .post-row__left {
+      flex-direction: row;
+      gap: var(--space-4);
+    }
+
+    .post-row__arrow { display: none; }
+  }
+</style>

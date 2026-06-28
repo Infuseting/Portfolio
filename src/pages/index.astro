@@ -1,0 +1,25 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Header from '../components/layout/Header.astro';
+import Footer from '../components/layout/Footer.astro';
+import Hero from '../components/sections/Hero.astro';
+import Projects from '../components/sections/Projects.astro';
+import Stack from '../components/sections/Stack.astro';
+import BlogPreview from '../components/sections/BlogPreview.astro';
+import Contact from '../components/sections/Contact.astro';
+---
+
+<BaseLayout
+  title="Arthur SERRET"
+  description="Arthur SERRET — Développeur Fullstack TypeScript. Projets, blog technique et collaboration freelance."
+>
+  <Header />
+  <main id="main-content" style="padding-top: var(--header-h);">
+    <Hero />
+    <Projects />
+    <Stack />
+    <BlogPreview />
+    <Contact />
+  </main>
+  <Footer />
+</BaseLayout>

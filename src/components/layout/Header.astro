@@ -1,0 +1,315 @@
+---
+import ThemeToggle from './ThemeToggle.astro';
+
+const navLinks = [
+  { href: '/#projects', label: 'Projets' },
+  { href: '/#stack',    label: 'Stack' },
+  { href: '/blog',      label: 'Blog' },
+  { href: '/#contact',  label: 'Contact' },
+];
+
+const currentPath = Astro.url.pathname;
+---
+
+<header class="header" id="site-header">
+  <nav class="header__nav container" aria-label="Navigation principale">
+    <!-- Logo / Name -->
+    <a href="/" class="header__logo" aria-label="Arthur SERRET — Accueil">
+      <span class="header__logo-text">AS</span>
+    </a>
+
+    <!-- Desktop nav links -->
+    <ul class="header__links" role="list">
+      {navLinks.map(({ href, label }) => (
+        <li>
+          <a
+            href={href}
+            class:list={['header__link', {
+              'header__link--active': currentPath === href,
+            }]}
+          >
+            {label}
+          </a>
+        </li>
+      ))}
+    </ul>
+
+    <!-- Actions -->
+    <div class="header__actions">
+      <ThemeToggle />
+      <a
+        href="/cv.pdf"
+        download="CV_Arthur_SERRET.pdf"
+        class="header__cv-btn"
+        aria-label="Télécharger le CV"
+      >
+        CV ↓
+      </a>
+
+      <!-- Mobile hamburger -->
+      <button
+        id="mobile-menu-btn"
+        class="header__hamburger"
+        aria-label="Menu"
+        aria-expanded="false"
+        aria-controls="mobile-menu"
+      >
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- Mobile menu -->
+  <div id="mobile-menu" class="header__mobile" aria-hidden="true">
+    <ul role="list">
+      {navLinks.map(({ href, label }) => (
+        <li><a href={href} class="header__mobile-link">{label}</a></li>
+      ))}
+      <li>
+        <a href="/cv.pdf" download="CV_Arthur_SERRET.pdf" class="header__mobile-link">
+          Télécharger le CV ↓
+        </a>
+      </li>
+    </ul>
+  </div>
+</header>
+
+<script>
+  function initHeader(): void {
+    const btn   = document.getElementById('mobile-menu-btn');
+    const menu  = document.getElementById('mobile-menu');
+    const header = document.getElementById('site-header');
+    if (!btn || !menu || !header) return;
+
+    // Mobile menu toggle
+    btn.addEventListener('click', () => {
+      const isOpen = btn.getAttribute('aria-expanded') === 'true';
+      btn.setAttribute('aria-expanded', String(!isOpen));
+      menu.setAttribute('aria-hidden', String(isOpen));
+      menu.classList.toggle('is-open', !isOpen);
+      btn.classList.toggle('is-open', !isOpen);
+    });
+
+    // Close on nav link click
+    menu.querySelectorAll('a').forEach((link) => {
+      link.addEventListener('click', () => {
+        btn.setAttribute('aria-expanded', 'false');
+        menu.setAttribute('aria-hidden', 'true');
+        menu.classList.remove('is-open');
+        btn.classList.remove('is-open');
+      });
+    });
+
+    // Header scroll shadow
+    const onScroll = (): void => {
+      header.classList.toggle('header--scrolled', window.scrollY > 20);
+    };
+    window.addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
+  }
+
+  initHeader();
+  document.addEventListener('astro:page-load', initHeader);
+</script>
+
+<style>
+  .header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
+    background: var(--color-bg);
+    border-bottom: var(--border-width) solid transparent;
+    transition:
+      border-color var(--transition-base),
+      background-color var(--transition-base),
+      box-shadow var(--transition-base);
+  }
+
+  .header--scrolled {
+    border-bottom-color: var(--color-border-soft);
+    box-shadow: 0 2px 0 var(--color-border-soft);
+  }
+
+  .header__nav {
+    display: flex;
+    align-items: center;
+    height: var(--header-h);
+    gap: var(--space-8);
+  }
+
+  /* Logo */
+  .header__logo {
+    text-decoration: none;
+    flex-shrink: 0;
+  }
+
+  .header__logo-text {
+    font-family: var(--font-display);
+    font-size: var(--text-xl);
+    font-weight: var(--weight-black);
+    color: var(--color-fg);
+    letter-spacing: var(--tracking-tight);
+    transition: color var(--transition-fast);
+  }
+
+  .header__logo:hover .header__logo-text {
+    color: var(--color-accent);
+  }
+
+  /* Nav links */
+  .header__links {
+    display: flex;
+    gap: var(--space-6);
+    list-style: none;
+    margin-left: auto;
+  }
+
+  .header__link {
+    font-family: var(--font-display);
+    font-size: var(--text-sm);
+    font-weight: var(--weight-bold);
+    letter-spacing: var(--tracking-wide);
+    text-transform: uppercase;
+    color: var(--color-fg-muted);
+    text-decoration: none;
+    position: relative;
+    transition: color var(--transition-fast);
+  }
+
+  .header__link::after {
+    content: '';
+    position: absolute;
+    bottom: -3px;
+    left: 0;
+    width: 0;
+    height: var(--border-width);
+    background: var(--color-accent);
+    transition: width var(--transition-brutal);
+  }
+
+  .header__link:hover,
+  .header__link--active {
+    color: var(--color-fg);
+  }
+
+  .header__link:hover::after,
+  .header__link--active::after {
+    width: 100%;
+  }
+
+  /* Actions */
+  .header__actions {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    flex-shrink: 0;
+  }
+
+  .header__cv-btn {
+    font-family: var(--font-display);
+    font-size: var(--text-xs);
+    font-weight: var(--weight-bold);
+    letter-spacing: var(--tracking-widest);
+    text-transform: uppercase;
+    color: var(--color-bg);
+    background: var(--color-fg);
+    border: var(--border-width) solid var(--color-border);
+    padding: var(--space-2) var(--space-4);
+    text-decoration: none;
+    transition:
+      transform var(--transition-brutal),
+      box-shadow var(--transition-brutal),
+      background-color var(--transition-fast);
+  }
+
+  .header__cv-btn:hover {
+    background: var(--color-accent);
+    border-color: var(--color-accent);
+    transform: translate(-2px, -2px);
+    box-shadow: var(--shadow-brutal);
+  }
+
+  /* Hamburger */
+  .header__hamburger {
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    gap: 5px;
+    width: 2.5rem;
+    height: 2.5rem;
+    background: transparent;
+    border: var(--border-width) solid var(--color-border);
+    cursor: pointer;
+    padding: var(--space-2);
+    border-radius: var(--radius-none);
+    transition:
+      background-color var(--transition-fast),
+      transform var(--transition-brutal);
+  }
+
+  .header__hamburger span {
+    display: block;
+    height: 2px;
+    width: 100%;
+    background: var(--color-fg);
+    transition: transform var(--transition-base), opacity var(--transition-fast);
+    transform-origin: center;
+  }
+
+  .header__hamburger.is-open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+  .header__hamburger.is-open span:nth-child(2) { opacity: 0; }
+  .header__hamburger.is-open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+  .header__hamburger:hover {
+    background: var(--color-fg);
+  }
+
+  .header__hamburger:hover span {
+    background: var(--color-bg);
+  }
+
+  /* Mobile menu */
+  .header__mobile {
+    display: none;
+    border-top: var(--border-width) solid var(--color-border-soft);
+    background: var(--color-bg);
+  }
+
+  .header__mobile.is-open { display: block; }
+
+  .header__mobile ul {
+    list-style: none;
+    padding: var(--space-4) var(--container-pad);
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .header__mobile-link {
+    display: block;
+    font-family: var(--font-display);
+    font-weight: var(--weight-bold);
+    font-size: var(--text-lg);
+    color: var(--color-fg);
+    text-decoration: none;
+    padding: var(--space-4) 0;
+    border-bottom: 1px solid var(--color-border-soft);
+    transition: color var(--transition-fast), padding-left var(--transition-brutal);
+  }
+
+  .header__mobile-link:hover {
+    color: var(--color-accent);
+    padding-left: var(--space-2);
+  }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    .header__links { display: none; }
+    .header__cv-btn { display: none; }
+    .header__hamburger { display: flex; }
+  }
+</style>
