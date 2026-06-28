@@ -33,34 +33,45 @@ const targetPath = currentPath.replace(`/${lang}/`, `/${altLang}/`);
 </div>
 
 <script>
-  const langBtn = document.getElementById('lang-btn');
-  const langMenu = document.getElementById('lang-menu');
-  const links = langMenu?.querySelectorAll('a[data-lang]');
+  function initLangPicker() {
+    const langBtn = document.getElementById('lang-btn');
+    const langMenu = document.getElementById('lang-menu');
+    const links = langMenu?.querySelectorAll('a[data-lang]');
 
-  // Toggle menu
-  langBtn?.addEventListener('click', () => {
-    const expanded = langBtn.getAttribute('aria-expanded') === 'true';
-    langBtn.setAttribute('aria-expanded', String(!expanded));
-    langMenu?.classList.toggle('show');
-  });
+    if (!langBtn || !langMenu) return;
 
-  // Close menu when clicking outside
-  document.addEventListener('click', (e) => {
-    if (!langBtn?.contains(e.target as Node) && !langMenu?.contains(e.target as Node)) {
-      langBtn?.setAttribute('aria-expanded', 'false');
-      langMenu?.classList.remove('show');
-    }
-  });
+    // Remove existing event listeners by cloning if necessary, or just rely on DOM replacement 
+    // (Astro replaces the DOM, so old listeners attached to old elements are gone)
+    
+    // Toggle menu
+    langBtn.addEventListener('click', (e) => {
+      // Prevent event from immediately propagating to document
+      e.stopPropagation();
+      const expanded = langBtn.getAttribute('aria-expanded') === 'true';
+      langBtn.setAttribute('aria-expanded', String(!expanded));
+      langMenu.classList.toggle('show');
+    });
 
-  // Save to localStorage when a language link is clicked
-  links?.forEach(link => {
-    link.addEventListener('click', (e) => {
-      const targetLang = (e.currentTarget as HTMLAnchorElement).getAttribute('data-lang');
-      if (targetLang) {
-        localStorage.setItem('lang', targetLang);
+    // Close menu when clicking outside
+    document.addEventListener('click', (e) => {
+      if (!langBtn.contains(e.target as Node) && !langMenu.contains(e.target as Node)) {
+        langBtn.setAttribute('aria-expanded', 'false');
+        langMenu.classList.remove('show');
       }
     });
-  });
+
+    // Save to localStorage when a language link is clicked
+    links?.forEach(link => {
+      link.addEventListener('click', (e) => {
+        const targetLang = (e.currentTarget as HTMLAnchorElement).getAttribute('data-lang');
+        if (targetLang) {
+          localStorage.setItem('lang', targetLang);
+        }
+      });
+    });
+  }
+
+  document.addEventListener('astro:page-load', initLangPicker);
 </script>
 
 <style>

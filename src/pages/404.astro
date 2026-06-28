@@ -25,18 +25,19 @@ const t = useTranslations(lang);
       </p>
 
       <script>
-        const pathname = window.location.pathname;
-        const errorMsg = document.getElementById('error-msg');
-        
-        // S'il s'agit d'un article ou projet, on affiche le message de traduction manquante
-        if (pathname.includes('/blog/') || pathname.includes('/projects/')) {
-          const lang = pathname.startsWith('/en/') ? 'en' : 'fr';
-          if (errorMsg) {
-            errorMsg.textContent = lang === 'en' 
-              ? "The translation for this article does not exist." 
-              : "La traduction de cet article n'existe pas.";
+        document.addEventListener('astro:page-load', () => {
+          const pathname = window.location.pathname;
+          const errorMsg = document.getElementById('error-msg');
+          
+          if (pathname.includes('/blog/') || pathname.includes('/projects/')) {
+            const lang = pathname.startsWith('/en/') ? 'en' : 'fr';
+            if (errorMsg) {
+              errorMsg.textContent = lang === 'en' 
+                ? "The translation for this article does not exist." 
+                : "La traduction de cet article n'existe pas.";
+            }
           }
-        }
+        });
       </script>
       <div style="margin-top: var(--space-4);">
         <Button href={`/${lang}/`} variant="primary" size="lg">
