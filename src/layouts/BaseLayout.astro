@@ -10,6 +10,7 @@ interface Props {
   ogType?:      'website' | 'article';
   canonicalUrl?: string;
   publishDate?:  string;
+  robots?:       string;
 }
 
 const {
@@ -19,6 +20,7 @@ const {
   ogType       = 'website',
   canonicalUrl = Astro.url.href,
   publishDate,
+  robots       = 'index, follow',
 } = Astro.props;
 
 const fullTitle = title === 'Arthur SERRET'
@@ -46,6 +48,7 @@ const siteUrl = 'https://infuseting.fr';
 
     <!-- Primary Meta -->
     <title>{fullTitle}</title>
+    <meta name="robots"      content={robots} />
     <meta name="description" content={description} />
     <meta name="author"      content="Arthur SERRET" />
     <meta name="generator"   content={Astro.generator} />

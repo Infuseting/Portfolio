@@ -32,6 +32,22 @@ const {
 const readingTime = getReadingTime(body);
 const formattedPublish = formatDate(publishDate);
 const formattedUpdate  = updatedDate ? formatDate(updatedDate) : null;
+
+const siteUrl = 'https://infuseting.fr';
+const articleSchema = {
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": title,
+  "description": description,
+  "image": coverImage ? `${siteUrl}${coverImage}` : undefined,
+  "author": {
+    "@type": "Person",
+    "name": "Arthur SERRET",
+    "url": siteUrl
+  },
+  "datePublished": publishDate.toISOString(),
+  "dateModified": updatedDate ? updatedDate.toISOString() : publishDate.toISOString()
+};
 ---
 
 <BaseLayout
@@ -86,6 +102,8 @@ const formattedUpdate  = updatedDate ? formatDate(updatedDate) : null;
     </article>
   </main>
   <Footer />
+
+  <script type="application/ld+json" set:html={JSON.stringify(articleSchema)} />
 </BaseLayout>
 
 <style>
