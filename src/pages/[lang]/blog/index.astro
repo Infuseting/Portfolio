@@ -1,55 +1,73 @@
 ---
 import { getCollection } from 'astro:content';
-import BaseLayout from '../../layouts/BaseLayout.astro';
-import Header from '../../components/layout/Header.astro';
-import Footer from '../../components/layout/Footer.astro';
-import SectionLabel from '../../components/ui/SectionLabel.astro';
-import Tag from '../../components/ui/Tag.astro';
-import { formatDate } from '../../utils/formatDate';
-import { getReadingTime } from '../../utils/getReadingTime';
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import Header from '../../../components/layout/Header.astro';
+import Footer from '../../../components/layout/Footer.astro';
+import SectionLabel from '../../../components/ui/SectionLabel.astro';
+import Tag from '../../../components/ui/Tag.astro';
+import { formatDate } from '../../../utils/formatDate';
+import { getReadingTime } from '../../../utils/getReadingTime';
+import { useTranslations } from '../../../i18n/utils';
+import { getBlogPostUrl } from '../../../utils/urls';
 
-const allPosts = await getCollection('blog');
+export function getStaticPaths() {
+  return [
+    { params: { lang: 'fr' } },
+    { params: { lang: 'en' } },
+  ];
+}
+
+const { lang } = Astro.params;
+const t = useTranslations(lang);
+
+const [allPosts, allTags, allProjects] = await Promise.all([
+  getCollection('blog'),
+  getCollection('tags'),
+  getCollection('projects')
+]);
 const posts = allPosts
-  .filter((p) => !p.data.draft)
+  .filter((p) => !p.data.draft && p.id.startsWith(`${lang}/`))
   .sort((a, b) => b.data.publishDate.getTime() - a.data.publishDate.getTime());
 ---
 
 <BaseLayout
-  title="Blog"
-  description="Articles techniques d'Arthur SERRET — TypeScript, architecture web, performance, et développement fullstack."
+  title={t('blog.title')}
+  description={t('blog.description')}
 >
   <Header />
   <main id="main-content" style="padding-top: var(--header-h);">
     <section class="blog-list section">
       <div class="container">
         <header class="blog-list__header">
-          <SectionLabel label="Écritures" />
-          <h1 class="blog-list__title">Blog</h1>
+          <SectionLabel label={t('blog.section_label')} />
+          <h1 class="blog-list__title">{t('blog.title')}</h1>
           <p class="blog-list__subtitle">
-            Réflexions techniques, retours d'expérience et guides pratiques.
+            {t('blog.subtitle')}
           </p>
         </header>
 
         {posts.length === 0 ? (
-          <p class="blog-list__empty">Les articles arrivent bientôt.</p>
+          <p class="blog-list__empty">{t('blog.empty')}</p>
         ) : (
           <ul class="blog-list__posts" role="list">
             {posts.map((post) => {
-              const readingTime = getReadingTime(post.body ?? '');
+              const readingTime = getReadingTime(post.body ?? '', lang);
+              // Clean slug: remove lang/ prefix
+              const slug = post.id.replace(`${lang}/`, '');
               return (
                 <li class="post-row">
                   <article>
                     <div class="post-row__content">
                       <div class="post-row__left">
                         <time datetime={post.data.publishDate.toISOString()} class="post-row__date">
-                          {formatDate(post.data.publishDate)}
+                          {formatDate(post.data.publishDate, lang)}
                         </time>
                         <span class="post-row__time">{readingTime}</span>
                       </div>
 
                       <div class="post-row__center">
                         <h2 class="post-row__title">
-                          <a href={`/blog/${post.id}`} class="post-row__title-link">
+                          <a href={getBlogPostUrl(lang, post.id)} class="post-row__title-link">
                             {post.data.title}
                           </a>
                         </h2>
@@ -57,7 +75,7 @@ const posts = allPosts
                         {post.data.tags.length > 0 && (
                           <ul class="post-row__tags" aria-label="Tags">
                             {post.data.tags.map((tag) => (
-                              <li><Tag label={tag} /></li>
+                              <li><Tag label={tag} allTags={allTags} allProjects={allProjects} allBlog={allPosts} /></li>
                             ))}
                           </ul>
                         )}

@@ -1,20 +1,25 @@
 ---
 import ThemeToggle from './ThemeToggle.astro';
+import LanguagePicker from '../LanguagePicker.astro';
+import { getLangFromUrl, useTranslations } from '../../i18n/utils';
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
 
 const navLinks = [
-  { href: '/#projects', label: 'Projets' },
-  { href: '/#stack',    label: 'Stack' },
-  { href: '/blog',      label: 'Blog' },
-  { href: '/#contact',  label: 'Contact' },
+  { href: `/${lang}/#projects`, label: t('nav.projects') },
+  { href: `/${lang}/#stack`,    label: 'Stack' },
+  { href: `/${lang}/blog`,      label: t('nav.blog') },
+  { href: `/${lang}/#contact`,  label: 'Contact' },
 ];
 
 const currentPath = Astro.url.pathname;
 ---
 
 <header class="header" id="site-header">
-  <nav class="header__nav container" aria-label="Navigation principale">
+  <nav class="header__nav container" aria-label={t('nav.aria_label')}>
     <!-- Logo / Name -->
-    <a href="/" class="header__logo" aria-label="Arthur SERRET — Accueil">
+    <a href={`/${lang}/`} class="header__logo" aria-label={`Arthur SERRET — ${t('nav.home')}`}>
       <span class="header__logo-text">AS</span>
     </a>
 
@@ -36,6 +41,7 @@ const currentPath = Astro.url.pathname;
 
     <!-- Actions -->
     <div class="header__actions">
+      <LanguagePicker />
       <ThemeToggle />
       <a
         href="/cv.pdf"
@@ -50,7 +56,7 @@ const currentPath = Astro.url.pathname;
       <button
         id="mobile-menu-btn"
         class="header__hamburger"
-        aria-label="Menu"
+        aria-label={t('nav.menu')}
         aria-expanded="false"
         aria-controls="mobile-menu"
       >

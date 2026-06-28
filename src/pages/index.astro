@@ -1,25 +1,26 @@
----
-import BaseLayout from '../layouts/BaseLayout.astro';
-import Header from '../components/layout/Header.astro';
-import Footer from '../components/layout/Footer.astro';
-import Hero from '../components/sections/Hero.astro';
-import Projects from '../components/sections/Projects.astro';
-import Stack from '../components/sections/Stack.astro';
-import BlogPreview from '../components/sections/BlogPreview.astro';
-import Contact from '../components/sections/Contact.astro';
----
-
-<BaseLayout
-  title="Arthur SERRET"
-  description="Arthur SERRET — Développeur Full-Stack (Java, Angular). Alternant chez Sopra Steria, futur ENSICAEN en Cybersécurité & Monétique."
->
-  <Header />
-  <main id="main-content" style="padding-top: var(--header-h);">
-    <Hero />
-    <Projects />
-    <Stack />
-    <BlogPreview />
-    <Contact />
-  </main>
-  <Footer />
-</BaseLayout>
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Arthur SERRET</title>
+  <script>
+    (function() {
+      const storedLang = localStorage.getItem('lang');
+      const browserLang = navigator.language.split('-')[0];
+      const defaultLang = 'fr';
+      const supportedLangs = ['fr', 'en'];
+      
+      let targetLang = defaultLang;
+      if (storedLang && supportedLangs.includes(storedLang)) {
+        targetLang = storedLang;
+      } else if (browserLang && supportedLangs.includes(browserLang)) {
+        targetLang = browserLang;
+      }
+      
+      window.location.replace('/' + targetLang + '/');
+    })();
+  </script>
+</head>
+<body>
+</body>
+</html>

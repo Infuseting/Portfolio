@@ -2,10 +2,18 @@
 import { getCollection } from 'astro:content';
 import SectionLabel from '../ui/SectionLabel.astro';
 import Tag from '../ui/Tag.astro';
+import { getLangFromUrl, useTranslations } from '../../i18n/utils';
 
-const allProjects = await getCollection('projects');
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+
+const [allProjects, allTags, allBlog] = await Promise.all([
+  getCollection('projects'),
+  getCollection('tags'),
+  getCollection('blog')
+]);
 const projects = allProjects
-  .filter((p) => !(p.data as any).draft)
+  .filter((p) => !(p.data as any).draft && p.id.startsWith(`${lang}/`))
   .sort((a, b) => a.data.order - b.data.order)
   .slice(0, 6);
 ---
@@ -13,12 +21,12 @@ const projects = allProjects
 <section class="projects section" id="projects" aria-label="Projets">
   <div class="container">
     <header class="projects__header">
-      <SectionLabel label="Sélection de projets" />
-      <h2 class="projects__title">Ce que j'ai construit</h2>
+      <SectionLabel label={t('nav.projects')} />
+      <h2 class="projects__title">{t('projects.title')}</h2>
     </header>
 
     {projects.length === 0 ? (
-      <p class="projects__empty">Les projets arrivent bientôt.</p>
+      <p class="projects__empty">{t('projects.empty')}</p>
     ) : (
       <ul class="projects__grid" role="list">
         {projects.map((project, i) => (
@@ -28,10 +36,10 @@ const projects = allProjects
                 <div class="project-card__meta">
                   <span class="project-card__year">{project.data.year}</span>
                   {project.data.status === 'wip' && (
-                    <span class="project-card__status">WIP</span>
+                    <span class="project-card__status">{t('project.wip')}</span>
                   )}
                   {project.data.featured && (
-                    <span class="project-card__featured">Featured</span>
+                    <span class="project-card__featured">{t('project.featured')}</span>
                   )}
                 </div>
                 <div class="project-card__links">
@@ -41,7 +49,7 @@ const projects = allProjects
                       target="_blank"
                       rel="noopener noreferrer"
                       class="project-card__link"
-                      aria-label={`Voir ${project.data.title} en ligne`}
+                      aria-label={`${t('projects.live')} — ${project.data.title}`}
                     >↗</a>
                   )}
                   {project.data.githubUrl && (
@@ -64,7 +72,7 @@ const projects = allProjects
               {project.data.tags.length > 0 && (
                 <ul class="project-card__tags" aria-label="Technologies">
                   {project.data.tags.map((tag) => (
-                    <li><Tag label={tag} /></li>
+                    <li><Tag label={tag} allTags={allTags} allProjects={allProjects} allBlog={allBlog} /></li>
                   ))}
                 </ul>
               )}
@@ -76,7 +84,7 @@ const projects = allProjects
 
     <div class="projects__footer" style="margin-top: var(--space-8); border-top: var(--border-width) dashed var(--color-border-soft); padding-top: var(--space-6);">
       <p style="color: var(--color-fg-muted); font-size: var(--text-sm);">
-        Retrouvez mes autres projets sur <a href="https://github.com/infuseting" target="_blank" rel="noopener noreferrer" style="color: var(--color-fg); text-decoration: underline;">mon GitHub</a> ou consultez mes articles dans la section <a href="#blog" style="color: var(--color-fg); text-decoration: underline;">Blog</a>.
+        {t('projects.footer')} <a href="https://github.com/infuseting" target="_blank" rel="noopener noreferrer" style="color: var(--color-fg); text-decoration: underline;">{t('projects.footer.github')}</a> {t('projects.footer.or')} <a href={`/${lang}/blog`} style="color: var(--color-fg); text-decoration: underline;">{t('projects.footer.blog')}</a>.
       </p>
     </div>
   </div>

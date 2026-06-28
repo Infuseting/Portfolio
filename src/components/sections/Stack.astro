@@ -2,10 +2,17 @@
 import SectionLabel from '../ui/SectionLabel.astro';
 import { Icon } from 'astro-icon/components';
 import TagTooltip from '../ui/TagTooltip.astro';
-
 import { getCollection } from 'astro:content';
+import { getLangFromUrl, useTranslations } from '../../i18n/utils';
 
-const allTags = await getCollection('tags');
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+
+const [allTags, allProjects, allBlog] = await Promise.all([
+  getCollection('tags'),
+  getCollection('projects'),
+  getCollection('blog'),
+]);
 
 const categoriesMap = new Map();
 for (const tag of allTags) {
@@ -24,8 +31,8 @@ const stack = categoryOrder.map(label => ({
 <section class="stack section" id="stack" aria-label="Stack technique">
   <div class="container">
     <header class="stack__header">
-      <SectionLabel label="Technologies" />
-      <h2 class="stack__title">Mon stack</h2>
+      <SectionLabel label={t('stack.title')} />
+      <h2 class="stack__title">{t('stack.heading')}</h2>
     </header>
 
     <div class="stack__categories">
@@ -36,11 +43,11 @@ const stack = categoryOrder.map(label => ({
             {category.items.map((tech: any) => (
               <li>
                 <interactive-tag class="stack-interactive-wrapper">
-                  <a href={`/tags/${tech.id}`} class="stack__item" style={`--tech-color: ${tech.data.color ?? 'var(--color-accent)'}`}>
+                  <a href={`/${lang}/tags/${tech.id}`} class="stack__item" style={`--tech-color: ${tech.data.color ?? 'var(--color-accent)'}`}>
                     <span class="stack__item-icon" aria-hidden="true"><Icon name={tech.data.icon} width={20} height={20} /></span>
                     <span class="stack__item-name">{tech.data.name}</span>
                   </a>
-                  <TagTooltip id={tech.id} />
+                  <TagTooltip id={tech.id} allProjects={allProjects} allBlog={allBlog} />
                 </interactive-tag>
               </li>
             ))}

@@ -1,6 +1,10 @@
 ---
 import Button from '../ui/Button.astro';
 import SectionLabel from '../ui/SectionLabel.astro';
+import { getLangFromUrl, useTranslations } from '../../i18n/utils';
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
 ---
 
 <section class="hero" id="hero" aria-label="Introduction">
@@ -8,7 +12,7 @@ import SectionLabel from '../ui/SectionLabel.astro';
 
     <!-- Left: Text content -->
     <div class="hero__content" id="hero-content">
-      <SectionLabel label="Disponible · Freelance & CDI" class="hero__badge" />
+      <SectionLabel label={t('hero.badge')} class="hero__badge" />
 
       <h1 class="hero__name" id="hero-name">
         <span class="hero__name-first">Arthur</span>
@@ -16,19 +20,19 @@ import SectionLabel from '../ui/SectionLabel.astro';
       </h1>
 
       <p class="hero__title" id="hero-title">
-        Développeur<br /><em>Full-Stack & Passionné</em>
+        {t('hero.title.1')}<br /><em>{t('hero.title.2')}</em>
       </p>
 
       <p class="hero__description" id="hero-desc">
-        Actuellement en alternance chez Sopra Steria, je rejoins l'ENSICAEN en Cybersécurité & Monétique. Je crée des solutions allant du backend Java/Spring à des interfaces web modernes.
+        {t('hero.description')}
       </p>
 
       <div class="hero__ctas" id="hero-ctas">
         <Button href="/cv.pdf" download="CV_Arthur_SERRET.pdf" variant="primary" size="lg" id="hero-cv-btn">
-          Télécharger CV ↓
+          {t('hero.cv')}
         </Button>
         <Button href="mailto:serretarthur@gmail.com" variant="secondary" size="lg" id="hero-contact-btn">
-          Me contacter →
+          {t('hero.contact')}
         </Button>
       </div>
     </div>

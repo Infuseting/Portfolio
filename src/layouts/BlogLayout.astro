@@ -29,9 +29,13 @@ const {
   body = '',
 } = Astro.props;
 
-const readingTime = getReadingTime(body);
-const formattedPublish = formatDate(publishDate);
-const formattedUpdate  = updatedDate ? formatDate(updatedDate) : null;
+import { getLangFromUrl, useTranslations } from '../i18n/utils';
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+
+const readingTime = getReadingTime(body, lang);
+const formattedPublish = formatDate(publishDate, lang);
+const formattedUpdate  = updatedDate ? formatDate(updatedDate, lang) : null;
 
 const siteUrl = 'https://infuseting.fr';
 const articleSchema = {
@@ -48,6 +52,31 @@ const articleSchema = {
   "datePublished": publishDate.toISOString(),
   "dateModified": updatedDate ? updatedDate.toISOString() : publishDate.toISOString()
 };
+
+const breadcrumbSchema = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": t('nav.home'),
+      "item": `${siteUrl}/${lang}`
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": t('nav.blog'),
+      "item": `${siteUrl}/${lang}/blog`
+    },
+    {
+      "@type": "ListItem",
+      "position": 3,
+      "name": title,
+      "item": Astro.url.href
+    }
+  ]
+};
 ---
 
 <BaseLayout
@@ -60,10 +89,10 @@ const articleSchema = {
   <main id="main-content" style="padding-top: var(--header-h);">
     <article>
       <header class="post-header container">
-        <nav class="breadcrumb" aria-label="Fil d'Ariane">
-          <a href="/">Accueil</a>
+        <nav class="breadcrumb" aria-label={t('breadcrumb.label')}>
+          <a href={`/${lang}`}>{t('nav.home')}</a>
           <span aria-hidden="true">/</span>
-          <a href="/blog">Blog</a>
+          <a href={`/${lang}/blog`}>{t('nav.blog')}</a>
           <span aria-hidden="true">/</span>
           <span aria-current="page">{title}</span>
         </nav>
@@ -72,7 +101,7 @@ const articleSchema = {
           <time datetime={publishDate.toISOString()}>{formattedPublish}</time>
           {formattedUpdate && (
             <span class="updated">
-              Mis à jour : <time datetime={updatedDate!.toISOString()}>{formattedUpdate}</time>
+              {t('blog.updated')} <time datetime={updatedDate!.toISOString()}>{formattedUpdate}</time>
             </span>
           )}
           <span class="reading-time">{readingTime}</span>
@@ -104,6 +133,7 @@ const articleSchema = {
   <Footer />
 
   <script type="application/ld+json" is:inline set:html={JSON.stringify(articleSchema)} />
+  <script type="application/ld+json" is:inline set:html={JSON.stringify(breadcrumbSchema)} />
 </BaseLayout>
 
 <style>

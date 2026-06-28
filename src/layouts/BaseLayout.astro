@@ -23,18 +23,30 @@ const {
   robots       = 'index, follow',
 } = Astro.props;
 
+import { getLangFromUrl, defaultLang, useTranslations } from '../i18n/utils';
+const lang = getLangFromUrl(Astro.url);
+const t_layout = useTranslations(lang);
+const altLang = lang === 'fr' ? 'en' : 'fr';
+const altUrl = Astro.url.href.includes(`/${lang}/`)
+  ? Astro.url.href.replace(`/${lang}/`, `/${altLang}/`)
+  : Astro.url.href;
+
 const fullTitle = title === 'Arthur SERRET'
-  ? 'Arthur SERRET — Développeur Fullstack'
+  ? `Arthur SERRET — ${t_layout('site.tagline')}`
   : `${title} — Arthur SERRET`;
 
-const siteUrl = 'https://infuseting.fr';
+const siteUrl = Astro.site?.origin ?? 'https://infuseting.fr';
 ---
 
 <!doctype html>
-<html lang="fr" data-theme="light">
+<html lang={lang} data-theme="light">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    
+    <link rel="alternate" hreflang={lang} href={canonicalUrl} />
+    <link rel="alternate" hreflang={altLang} href={altUrl} />
+    <link rel="alternate" hreflang="x-default" href={canonicalUrl.replace(`/${lang}/`, `/${defaultLang}/`)} />
 
     <!-- FOUC prevention: must be is:inline and first in <head> -->
     <script is:inline>
@@ -61,7 +73,7 @@ const siteUrl = 'https://infuseting.fr';
     <meta property="og:description" content={description} />
     <meta property="og:image"       content={`${siteUrl}${ogImage}`} />
     <meta property="og:site_name"   content="Arthur SERRET" />
-    <meta property="og:locale"      content="fr_FR" />
+    <meta property="og:locale"      content={lang === 'fr' ? 'fr_FR' : 'en_GB'} />
     {publishDate && <meta property="article:published_time" content={publishDate} />}
 
     <!-- Twitter Card -->
@@ -96,7 +108,7 @@ const siteUrl = 'https://infuseting.fr';
   </head>
 
   <body>
-    <a href="#main-content" class="skip-to-content">Aller au contenu</a>
+    <a href="#main-content" class="skip-to-content">{t_layout('a11y.skip')}</a>
     <slot />
     <script src="../scripts/animations.ts"></script>
   </body>

@@ -1,20 +1,22 @@
 ---
 import SectionLabel from '../ui/SectionLabel.astro';
+import { getLangFromUrl, useTranslations } from '../../i18n/utils';
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
 ---
 
 <section class="contact section" id="contact" aria-label="Contact">
   <div class="container">
     <div class="contact__inner">
-      <SectionLabel label="Travaillons ensemble" />
+      <SectionLabel label={t('contact.badge')} />
 
       <h2 class="contact__title">
-        Un projet ?<br />
-        <span class="contact__title-accent">Parlons-en.</span>
+        {t('contact.title')}
       </h2>
 
       <p class="contact__description">
-        Disponible pour des missions freelance et des opportunités en CDI.
-        Réponse sous 24h.
+        {t('contact.description')}
       </p>
 
       <div class="contact__actions">
@@ -59,7 +61,7 @@ import SectionLabel from '../ui/SectionLabel.astro';
           aria-label="Télécharger le CV d'Arthur SERRET"
         >
           <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><title>CV</title><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-          Télécharger CV
+          {t('hero.cv')}
         </a>
       </div>
     </div>

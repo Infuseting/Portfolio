@@ -1,31 +1,27 @@
 ---
 import { getCollection } from 'astro:content';
+import type { CollectionEntry } from 'astro:content';
+import { getLangFromUrl, useTranslations } from '../../i18n/utils';
+import { getRelatedItems } from '../../utils/getRelatedItems';
+import { getBlogPostUrl } from '../../utils/urls';
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
 
 interface Props {
   id: string;
+  allProjects?: CollectionEntry<'projects'>[];
+  allBlog?: CollectionEntry<'blog'>[];
 }
-const { id } = Astro.props;
+const { id, allProjects: propProjects, allBlog: propBlog } = Astro.props;
 
-const [allProjects, allBlog] = await Promise.all([
-  getCollection('projects'),
-  getCollection('blog'),
-]);
+const allProjects = propProjects ?? await getCollection('projects');
+const allBlog = propBlog ?? await getCollection('blog');
 
-const matchTag = (tagArr: string[]) => tagArr.some((t: string) => t.toLowerCase() === id.toLowerCase());
-
-const pMatches = allProjects.filter((p: any) => matchTag(p.data.tags || [])).map((p: any) => ({ ...p, type: 'project' }));
-const bMatches = allBlog.filter((b: any) => matchTag(b.data.tags || [])).map((b: any) => ({ ...b, type: 'blog' }));
-
-const relatedItems = [...pMatches, ...bMatches]
-  .sort((a, b) => {
-    const dateA = a.type === 'project' ? new Date(a.data.year, 0) : a.data.publishDate;
-    const dateB = b.type === 'project' ? new Date(b.data.year, 0) : b.data.publishDate;
-    return dateB.getTime() - dateA.getTime();
-  })
-  .slice(0, 3);
+const relatedItems = getRelatedItems(id, id, lang, allProjects, allBlog);
 
 const hasRelated = relatedItems.length > 0;
-const tagHref = `/tags/${id}`;
+const tagHref = `/${lang}/tags/${id}`;
 ---
 
 <div class="tag-tooltip">
@@ -34,17 +30,17 @@ const tagHref = `/tags/${id}`;
       <ul class="related-list">
         {relatedItems.map(item => (
           <li>
-            <a href={item.type === 'project' ? (item.data.liveUrl || item.data.githubUrl || `/tags/${id}`) : `/blog/${item.id}`}>
-              <span class="item-type">{item.type === 'project' ? 'Projet' : 'Article'}</span>
+            <a href={item.type === 'project' ? (item.data.liveUrl || item.data.githubUrl || `/${lang}/tags/${id}`) : getBlogPostUrl(lang, item.id)}>
+              <span class="item-type">{item.type === 'project' ? t('tooltip.project') : t('tooltip.article')}</span>
               <span class="item-title">{item.data.title}</span>
             </a>
           </li>
         ))}
       </ul>
     ) : (
-      <p class="empty-msg">Pas de référence pour le moment.</p>
+      <p class="empty-msg">{t('tooltip.empty')}</p>
     )}
-    <a href={tagHref} class="see-more">Voir +</a>
+    <a href={tagHref} class="see-more">{t('tooltip.more')}</a>
   </div>
 </div>
 

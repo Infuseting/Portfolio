@@ -1,54 +1,69 @@
 ---
 import { getCollection } from 'astro:content';
-import Layout from '../../layouts/BaseLayout.astro';
-import Header from '../../components/layout/Header.astro';
-import Footer from '../../components/layout/Footer.astro';
-import Tag from '../../components/ui/Tag.astro';
-import SectionLabel from '../../components/ui/SectionLabel.astro';
+import Layout from '../../../layouts/BaseLayout.astro';
+import Header from '../../../components/layout/Header.astro';
+import Footer from '../../../components/layout/Footer.astro';
+import Tag from '../../../components/ui/Tag.astro';
+import SectionLabel from '../../../components/ui/SectionLabel.astro';
+import { useTranslations } from '../../../i18n/utils';
+import { getBlogPostUrl } from '../../../utils/urls';
+import { formatDate } from '../../../utils/formatDate';
 
 export async function getStaticPaths() {
   const allTags = await getCollection('tags');
   const allProjects = await getCollection('projects');
   const allBlog = await getCollection('blog');
 
-  const uniqueTagNames = new Set<string>();
-  
-  allProjects.forEach(p => p.data.tags?.forEach((t: string) => uniqueTagNames.add(t)));
-  allBlog.forEach(b => b.data.tags?.forEach((t: string) => uniqueTagNames.add(t)));
-
+  const langs = ['fr', 'en'];
   const paths = [];
-  const handledNames = new Set<string>();
 
-  for (const tag of allTags) {
-    handledNames.add(tag.id.toLowerCase());
-    handledNames.add(tag.data.name.toLowerCase());
-    paths.push({
-      params: { slug: tag.id },
-      props: { tag }
-    });
-  }
+  for (const lang of langs) {
+    const uniqueTagNames = new Set<string>();
+    
+    allProjects
+      .filter(p => p.id.startsWith(`${lang}/`))
+      .forEach(p => p.data.tags?.forEach((t: string) => uniqueTagNames.add(t)));
+    allBlog
+      .filter(b => b.id.startsWith(`${lang}/`))
+      .forEach(b => b.data.tags?.forEach((t: string) => uniqueTagNames.add(t)));
 
-  for (const tagName of uniqueTagNames) {
-    if (!handledNames.has(tagName.toLowerCase())) {
-      const slug = tagName.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+    const handledNames = new Set<string>();
+
+    for (const tag of allTags) {
+      const tagLabel = typeof tag.data.name === 'string' ? tag.data.name : (tag.data.name[lang] || tag.data.name['fr']);
+      handledNames.add(tag.id.toLowerCase());
+      handledNames.add(tagLabel.toLowerCase());
       paths.push({
-        params: { slug },
-        props: { 
-          tag: { id: slug, data: { name: tagName } }
-        }
+        params: { lang, slug: tag.id },
+        props: { tag: { id: tag.id, data: { ...tag.data, name: tagLabel } } }
       });
-      handledNames.add(tagName.toLowerCase());
+    }
+
+    for (const tagName of uniqueTagNames) {
+      if (!handledNames.has(tagName.toLowerCase())) {
+        const slug = tagName.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+        paths.push({
+          params: { lang, slug },
+          props: { 
+            tag: { id: slug, data: { name: tagName } }
+          }
+        });
+        handledNames.add(tagName.toLowerCase());
+      }
     }
   }
 
   return paths;
 }
 
+const { lang } = Astro.params as { lang: 'fr' | 'en' };
 const { tag } = Astro.props;
+const t = useTranslations(lang);
 
-const [allProjects, allBlog] = await Promise.all([
+const [allProjects, allBlog, allTags] = await Promise.all([
   getCollection('projects'),
   getCollection('blog'),
+  getCollection('tags')
 ]);
 
 const matchTag = (tagArr: string[]) => tagArr.some((t: string) => 
@@ -56,24 +71,24 @@ const matchTag = (tagArr: string[]) => tagArr.some((t: string) =>
   t.toLowerCase() === tag.data.name.toLowerCase()
 );
 
-const projects = allProjects.filter((p: any) => matchTag(p.data.tags || [])).sort((a: any, b: any) => a.data.order - b.data.order);
-const blogPosts = allBlog.filter((b: any) => matchTag(b.data.tags || [])).sort((a: any, b: any) => b.data.publishDate.valueOf() - a.data.publishDate.valueOf());
+const projects = allProjects.filter((p: any) => matchTag(p.data.tags || []) && p.id.startsWith(`${lang}/`)).sort((a: any, b: any) => a.data.order - b.data.order);
+const blogPosts = allBlog.filter((b: any) => matchTag(b.data.tags || []) && b.id.startsWith(`${lang}/`)).sort((a: any, b: any) => b.data.publishDate.valueOf() - a.data.publishDate.valueOf());
 ---
 
-<Layout title={`Tag: ${tag.data.name} | Mon Portfolio`} description={`Tous mes projets et articles liés à ${tag.data.name}`}>
+<Layout title={`${t('tag.title')}: ${tag.data.name} | Arthur SERRET`} description={`${t('tag.meta_description').replace('{{tag}}', tag.data.name)}`}>
   <Header />
   <main class="tag-page section container" id="main-content" style="padding-top: var(--header-h);">
     <header class="tag-header">
-      <SectionLabel label="Recherche par technologie" />
+      <SectionLabel label={t('tag.section_label')} />
       <h1 class="title" style={`--tag-color: ${(tag.data as any).color || 'var(--color-accent)'}`}>
         {tag.data.name}
       </h1>
-      <p class="subtitle">Tous les projets et articles utilisant cette technologie.</p>
+      <p class="subtitle">{t('tag.subtitle')}</p>
     </header>
 
     {projects.length > 0 && (
       <section class="tag-section">
-        <h2 class="section-title">Projets</h2>
+        <h2 class="section-title">{t('nav.projects')}</h2>
         <ul class="projects__grid" role="list">
           {projects.map((project: any) => (
             <li class="project-card">
@@ -90,7 +105,7 @@ const blogPosts = allBlog.filter((b: any) => matchTag(b.data.tags || [])).sort((
                 <p class="project-card__desc">{project.data.description}</p>
                 <ul class="project-card__tags">
                   {project.data.tags.map((t: string) => (
-                    <li><Tag label={t} /></li>
+                    <li><Tag label={t} allTags={allTags} allProjects={allProjects} allBlog={allBlog} /></li>
                   ))}
                 </ul>
               </article>
@@ -102,7 +117,7 @@ const blogPosts = allBlog.filter((b: any) => matchTag(b.data.tags || [])).sort((
 
     {blogPosts.length > 0 && (
       <section class="tag-section">
-        <h2 class="section-title">Articles</h2>
+        <h2 class="section-title">{t('nav.blog')}</h2>
         <ul class="blog-grid" role="list">
           {blogPosts.map((post: any) => (
             <li class="blog-card">
@@ -110,21 +125,21 @@ const blogPosts = allBlog.filter((b: any) => matchTag(b.data.tags || [])).sort((
                 <div class="blog-card__content">
                   <div class="blog-card__meta">
                     <time datetime={post.data.publishDate.toISOString()} class="blog-card__date">
-                      {post.data.publishDate.toLocaleDateString('fr-FR', { year: 'numeric', month: 'short', day: 'numeric' })}
+                      {formatDate(post.data.publishDate, lang)}
                     </time>
                     <ul class="blog-card__tags">
                       {post.data.tags.slice(0, 2).map((t: string) => (
-                        <li><Tag label={t} /></li>
+                        <li><Tag label={t} allTags={allTags} allProjects={allProjects} allBlog={allBlog} /></li>
                       ))}
                     </ul>
                   </div>
                   <h3 class="blog-card__title">
-                    <a href={`/blog/${post.id}`} class="blog-card__title-link" aria-label={post.data.title}>
+                    <a href={getBlogPostUrl(lang, post.id)} class="blog-card__title-link" aria-label={post.data.title}>
                       {post.data.title}
                     </a>
                   </h3>
                   <p class="blog-card__desc">{post.data.description}</p>
-                  <span class="blog-card__read">Lire l'article →</span>
+                  <span class="blog-card__read">{t('blogpreview.read')}</span>
                 </div>
               </article>
             </li>
@@ -134,11 +149,11 @@ const blogPosts = allBlog.filter((b: any) => matchTag(b.data.tags || [])).sort((
     )}
 
     {projects.length === 0 && blogPosts.length === 0 && (
-      <p class="empty-state">Aucun projet ni article pour cette technologie pour le moment.</p>
+      <p class="empty-state">{t('tag.empty')}</p>
     )}
     
     <div class="back-link">
-      <a href="/">&larr; Retour à l'accueil</a>
+      <a href={`/${lang}/`}>&larr; {t('button.back_home')}</a>
     </div>
   </main>
   <Footer />

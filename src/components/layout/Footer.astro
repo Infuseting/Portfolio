@@ -1,5 +1,9 @@
 ---
+import { getLangFromUrl, useTranslations } from '../../i18n/utils';
 const year = new Date().getFullYear();
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
 
 const socials = [
   {
@@ -19,18 +23,18 @@ const socials = [
   <div class="footer__inner container">
     <div class="footer__brand">
       <span class="footer__name">Arthur SERRET</span>
-      <span class="footer__role">Développeur Fullstack</span>
+      <span class="footer__role">{t('footer.role')}</span>
     </div>
 
     <nav class="footer__nav" aria-label="Navigation pied de page">
-      <a href="/#projects">Projets</a>
-      <a href="/#stack">Stack</a>
-      <a href="/blog">Blog</a>
-      <a href="/#contact">Contact</a>
+      <a href={`/${lang}/#projects`}>{t('nav.projects')}</a>
+      <a href={`/${lang}/#stack`}>Stack</a>
+      <a href={`/${lang}/blog`}>{t('nav.blog')}</a>
+      <a href={`/${lang}/#contact`}>Contact</a>
     </nav>
 
     <div class="footer__actions">
-      <ul class="footer__socials" aria-label="Réseaux sociaux" role="list">
+      <ul class="footer__socials" aria-label={t('footer.socials_label')} role="list">
         {socials.map(({ label, href, icon }) => (
           <li>
             <a
@@ -50,14 +54,14 @@ const socials = [
         download="CV_Arthur_SERRET.pdf"
         class="footer__cv"
       >
-        Télécharger CV ↓
+        {t('footer.cv')}
       </a>
     </div>
   </div>
 
   <div class="footer__bottom container">
-    <p>© {year} Arthur SERRET. Tous droits réservés.</p>
-    <p class="footer__built">Construit avec <a href="https://astro.build" target="_blank" rel="noopener noreferrer">Astro</a></p>
+    <p>© {year} Arthur SERRET. {t('footer.rights')}</p>
+    <p class="footer__built">{t('footer.built')} <a href="https://astro.build" target="_blank" rel="noopener noreferrer">Astro</a></p>
   </div>
 </footer>
 

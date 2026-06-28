@@ -6,10 +6,10 @@ const tags = defineCollection({
   loader: file('src/data/tags.json'),
   schema: z.object({
     id: z.string(),
-    name: z.string(),
+    name: z.union([z.string(), z.record(z.string())]),
     icon: z.string(),
     color: z.string().optional(),
-    category: z.string(),
+    category: z.union([z.string(), z.record(z.string())]),
   }),
 });
 
