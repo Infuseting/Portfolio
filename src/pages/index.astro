@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Arthur SERRET</title>
+  <script>
+    (function() {
+      const storedLang = localStorage.getItem('lang');
+      const browserLang = navigator.language.split('-')[0];
+      const defaultLang = 'fr';
+      const supportedLangs = ['fr', 'en'];
+      
+      let targetLang = defaultLang;
+      if (storedLang && supportedLangs.includes(storedLang)) {
+        targetLang = storedLang;
+      } else if (browserLang && supportedLangs.includes(browserLang)) {
+        targetLang = browserLang;
+      }
+      
+      window.location.replace('/' + targetLang + '/');
+    })();
+  </script>
+</head>
+<body>
+</body>
+</html>

@@ -1,0 +1,49 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Header from '../components/layout/Header.astro';
+import Footer from '../components/layout/Footer.astro';
+import Button from '../components/ui/Button.astro';
+import { getLangFromUrl, useTranslations } from '../i18n/utils';
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+---
+
+<BaseLayout
+  title={lang === 'en' ? 'Page Not Found' : 'Page Introuvable'}
+  description={lang === 'en' ? "The page you're looking for doesn't exist or has been moved." : "La page que vous recherchez n'existe pas ou a été déplacée."}
+  robots="noindex, follow"
+>
+  <Header />
+  <main id="main-content" style="padding-top: var(--header-h); min-height: 80svh; display: flex; align-items: center; justify-content: center; text-align: center;">
+    <div class="container" style="display: flex; flex-direction: column; align-items: center; gap: var(--space-6);">
+      <h1 style="font-family: var(--font-display); font-size: clamp(var(--text-6xl), 15vw, 12rem); font-weight: var(--weight-black); margin: 0; line-height: 1; color: var(--color-fg);">
+        404
+      </h1>
+      <p id="error-msg" style="font-size: var(--text-xl); color: var(--color-fg-muted); margin: 0; max-width: 40ch;">
+        {lang === 'en' ? "Oops! The page you're looking for has vanished into cyberspace." : "Oops ! La page que vous cherchez a disparu dans le cyberespace."}
+      </p>
+
+      <script>
+        const pathname = window.location.pathname;
+        const errorMsg = document.getElementById('error-msg');
+        
+        // S'il s'agit d'un article ou projet, on affiche le message de traduction manquante
+        if (pathname.includes('/blog/') || pathname.includes('/projects/')) {
+          const lang = pathname.startsWith('/en/') ? 'en' : 'fr';
+          if (errorMsg) {
+            errorMsg.textContent = lang === 'en' 
+              ? "The translation for this article does not exist." 
+              : "La traduction de cet article n'existe pas.";
+          }
+        }
+      </script>
+      <div style="margin-top: var(--space-4);">
+        <Button href={`/${lang}/`} variant="primary" size="lg">
+          {t('button.back_home')} →
+        </Button>
+      </div>
+    </div>
+  </main>
+  <Footer />
+</BaseLayout>

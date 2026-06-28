@@ -1,0 +1,138 @@
+/* ============================================================
+   ANIMATIONS — Portfolio Arthur SERRET
+   Global @keyframes. Import in global.css (after tokens).
+   Use class-based triggers or GSAP for scroll-driven variants.
+   ============================================================ */
+
+/* ── ENTRANCE ANIMATIONS ─────────────────────────────────── */
+@keyframes fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes fade-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(2rem);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fade-in-down {
+  from {
+    opacity: 0;
+    transform: translateY(-2rem);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slide-in-left {
+  from {
+    opacity: 0;
+    transform: translateX(-3rem);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slide-in-right {
+  from {
+    opacity: 0;
+    transform: translateX(3rem);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* ── BRUTALISTE TRANSITIONS ──────────────────────────────── */
+@keyframes brutal-slide-out {
+  from {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateX(-1.5rem);
+    clip-path: inset(0 100% 0 0);
+  }
+}
+
+@keyframes brutal-slide-in {
+  from {
+    opacity: 0;
+    transform: translateX(1.5rem);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* ── ACCENT & DECORATION ─────────────────────────────────── */
+@keyframes underline-expand {
+  from { transform: scaleX(0); transform-origin: left; }
+  to   { transform: scaleX(1); transform-origin: left; }
+}
+
+@keyframes border-draw {
+  from { clip-path: inset(0 100% 0 0); }
+  to   { clip-path: inset(0 0% 0 0); }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50%       { transform: translateY(-0.75rem); }
+}
+
+@keyframes pulse-accent {
+  0%, 100% { box-shadow: 0 0 0 0 transparent; }
+  50%       { box-shadow: 0 0 0 6px color-mix(in srgb, var(--color-accent) 20%, transparent); }
+}
+
+/* ── STAGGER HELPERS (CSS only, override with GSAP) ──────── */
+.stagger-1 { animation-delay: 0ms; }
+.stagger-2 { animation-delay: 80ms; }
+.stagger-3 { animation-delay: 160ms; }
+.stagger-4 { animation-delay: 240ms; }
+.stagger-5 { animation-delay: 320ms; }
+.stagger-6 { animation-delay: 400ms; }
+
+/* ── UTILITY CLASSES ─────────────────────────────────────── */
+.animate-fade-in {
+  animation: fade-in var(--transition-slow) ease forwards;
+}
+
+.animate-fade-in-up {
+  animation: fade-in-up 0.6s ease forwards;
+  opacity: 0; /* start hidden */
+}
+
+.animate-underline-expand {
+  animation: underline-expand 0.4s var(--transition-brutal) forwards;
+}
+
+/* Respect reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation: none !important;
+  }
+}

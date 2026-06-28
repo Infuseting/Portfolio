@@ -1,0 +1,135 @@
+---
+import { languages } from '../i18n/ui';
+import { getLangFromUrl } from '../i18n/utils';
+import { Icon } from 'astro-icon/components';
+
+const lang = getLangFromUrl(Astro.url);
+const currentPath = Astro.url.pathname;
+const altLang = lang === 'fr' ? 'en' : 'fr';
+// For the switcher, we just replace the language prefix
+const targetPath = currentPath.replace(`/${lang}/`, `/${altLang}/`);
+---
+
+<div class="lang-picker">
+  <button id="lang-btn" aria-haspopup="menu" aria-expanded="false" class="lang-btn">
+    <Icon name="mdi:translate" class="icon" />
+    <span>{lang.toUpperCase()}</span>
+    <Icon name="mdi:chevron-down" class="icon-small" />
+  </button>
+  
+  <ul id="lang-menu" class="lang-menu" role="menu">
+    {Object.entries(languages).map(([l, label]) => (
+      <li role="menuitem">
+        <a 
+          href={l === lang ? '#' : currentPath.replace(`/${lang}/`, `/${l}/`)} 
+          class={l === lang ? 'active' : ''}
+          data-lang={l}
+        >
+          {label}
+        </a>
+      </li>
+    ))}
+  </ul>
+</div>
+
+<script>
+  const langBtn = document.getElementById('lang-btn');
+  const langMenu = document.getElementById('lang-menu');
+  const links = langMenu?.querySelectorAll('a[data-lang]');
+
+  // Toggle menu
+  langBtn?.addEventListener('click', () => {
+    const expanded = langBtn.getAttribute('aria-expanded') === 'true';
+    langBtn.setAttribute('aria-expanded', String(!expanded));
+    langMenu?.classList.toggle('show');
+  });
+
+  // Close menu when clicking outside
+  document.addEventListener('click', (e) => {
+    if (!langBtn?.contains(e.target as Node) && !langMenu?.contains(e.target as Node)) {
+      langBtn?.setAttribute('aria-expanded', 'false');
+      langMenu?.classList.remove('show');
+    }
+  });
+
+  // Save to localStorage when a language link is clicked
+  links?.forEach(link => {
+    link.addEventListener('click', (e) => {
+      const targetLang = (e.currentTarget as HTMLAnchorElement).getAttribute('data-lang');
+      if (targetLang) {
+        localStorage.setItem('lang', targetLang);
+      }
+    });
+  });
+</script>
+
+<style>
+  .lang-picker {
+    position: relative;
+    display: inline-block;
+  }
+  .lang-btn {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    background: transparent;
+    border: var(--border-width) solid var(--color-border);
+    padding: var(--space-2) var(--space-4);
+    border-radius: var(--radius-none);
+    cursor: pointer;
+    color: var(--color-fg);
+    font-family: var(--font-mono);
+    font-size: var(--text-sm);
+    transition: all var(--transition-fast);
+  }
+  .lang-btn:hover {
+    background: var(--color-bg-alt);
+    border-color: var(--color-accent);
+    color: var(--color-accent);
+  }
+  .icon {
+    width: 1.2rem;
+    height: 1.2rem;
+  }
+  .icon-small {
+    width: 1rem;
+    height: 1rem;
+  }
+  .lang-menu {
+    display: none;
+    position: absolute;
+    top: calc(100% + var(--space-2));
+    right: 0;
+    background: var(--color-bg);
+    border: var(--border-width) solid var(--color-border);
+    list-style: none;
+    padding: var(--space-2) 0;
+    min-width: 120px;
+    box-shadow: var(--shadow-brutal);
+    z-index: 100;
+  }
+  .lang-menu.show {
+    display: block;
+    animation: fadeInDown 0.2s ease;
+  }
+  .lang-menu a {
+    display: block;
+    padding: var(--space-2) var(--space-4);
+    color: var(--color-fg-muted);
+    text-decoration: none;
+    transition: color var(--transition-fast), background-color var(--transition-fast);
+  }
+  .lang-menu a:hover {
+    color: var(--color-accent);
+    background: var(--color-bg-alt);
+  }
+  .lang-menu a.active {
+    color: var(--color-fg);
+    font-weight: var(--weight-bold);
+  }
+
+  @keyframes fadeInDown {
+    from { opacity: 0; transform: translateY(-5px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+</style>

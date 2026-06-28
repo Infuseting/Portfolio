@@ -1,0 +1,20 @@
+[
+  { "id": "java", "name": "Java", "icon": "mdi:language-java", "color": "#007396", "category": "Langages" },
+  { "id": "python", "name": "Python", "icon": "simple-icons:python", "color": "#3776AB", "category": "Langages" },
+  { "id": "rust", "name": "Rust", "icon": "simple-icons:rust", "color": "#DEA584", "category": "Langages" },
+  { "id": "c", "name": "C", "icon": "simple-icons:c", "color": "#A8B9CC", "category": "Langages" },
+  { "id": "kotlin", "name": "Kotlin", "icon": "simple-icons:kotlin", "color": "#7F52FF", "category": "Langages" },
+  { "id": "php", "name": "PHP", "icon": "simple-icons:php", "color": "#777bb4", "category": "Langages" },
+  
+  { "id": "typescript", "name": "TypeScript", "icon": "simple-icons:typescript", "color": "#3178c6", "category": "Web & App" },
+  { "id": "javascript", "name": "JavaScript", "icon": "simple-icons:javascript", "color": "#f7df1e", "category": "Web & App" },
+  { "id": "react", "name": "React", "icon": "simple-icons:react", "color": "#61DAFB", "category": "Web & App" },
+  { "id": "nodejs", "name": "Node.js", "icon": "simple-icons:nodedotjs", "color": "#339933", "category": "Web & App" },
+  { "id": "electron", "name": "Electron", "icon": "simple-icons:electron", "color": "#47848F", "category": "Web & App" },
+  { "id": "dart", "name": "Dart", "icon": "simple-icons:dart", "color": "#0175C2", "category": "Web & App" },
+  
+  { "id": "sql", "name": "SQL / DB", "icon": "simple-icons:postgresql", "color": "#336791", "category": "Data & DevOps" },
+  { "id": "docker", "name": "Docker", "icon": "simple-icons:docker", "color": "#2496ed", "category": "Data & DevOps" },
+  { "id": "github-ci", "name": "GitHub CI", "icon": "simple-icons:githubactions", "color": "#8b949e", "category": "Data & DevOps" },
+  { "id": "gitlab-ci", "name": "GitLab CI", "icon": "simple-icons:gitlab", "color": "#FC6D26", "category": "Data & DevOps" }
+]

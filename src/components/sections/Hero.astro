@@ -1,0 +1,293 @@
+---
+import Button from '../ui/Button.astro';
+import SectionLabel from '../ui/SectionLabel.astro';
+import { getLangFromUrl, useTranslations } from '../../i18n/utils';
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+---
+
+<section class="hero" id="hero" aria-label="Introduction">
+  <div class="hero__inner container">
+
+    <!-- Left: Text content -->
+    <div class="hero__content" id="hero-content">
+      <SectionLabel label={t('hero.badge')} class="hero__badge" />
+
+      <h1 class="hero__name" id="hero-name">
+        <span class="hero__name-first">Arthur</span>
+        <span class="hero__name-last">SERRET</span>
+      </h1>
+
+      <p class="hero__title" id="hero-title">
+        {t('hero.title.1')}<br /><em>{t('hero.title.2')}</em>
+      </p>
+
+      <p class="hero__description" id="hero-desc">
+        {t('hero.description')}
+      </p>
+
+      <div class="hero__ctas" id="hero-ctas">
+        <Button href="/cv.pdf" download="CV_Arthur_SERRET.pdf" variant="primary" size="lg" id="hero-cv-btn">
+          {t('hero.cv')}
+        </Button>
+        <Button href="mailto:serretarthur@gmail.com" variant="secondary" size="lg" id="hero-contact-btn">
+          {t('hero.contact')}
+        </Button>
+      </div>
+    </div>
+
+    <!-- Right: Photo frame -->
+    <div class="hero__photo-wrap" id="hero-photo">
+      <div class="hero__photo-frame" aria-hidden="true">
+        <!-- Placeholder SVG — swap with <Image /> when photo is ready -->
+        <svg
+          class="hero__photo-placeholder"
+          viewBox="0 0 400 480"
+          xmlns="http://www.w3.org/2000/svg"
+          aria-label="Photo d'Arthur SERRET"
+          role="img"
+        >
+          <title>Photo d'Arthur SERRET</title>
+          <rect width="400" height="480" fill="var(--color-bg-inset)" />
+          <!-- Silhouette placeholder -->
+          <circle cx="200" cy="160" r="80" fill="var(--color-border-soft)" />
+          <path d="M 60 480 Q 60 320 200 320 Q 340 320 340 480 Z" fill="var(--color-border-soft)" />
+          <!-- Corner accents -->
+          <rect x="0"   y="0"   width="40" height="4"  fill="var(--color-accent)" />
+          <rect x="0"   y="0"   width="4"  height="40" fill="var(--color-accent)" />
+          <rect x="360" y="476" width="40" height="4"  fill="var(--color-accent)" />
+          <rect x="396" y="440" width="4"  height="40" fill="var(--color-accent)" />
+          <!-- Label -->
+          <text x="200" y="430" text-anchor="middle" font-family="monospace" font-size="13" fill="var(--color-fg-subtle)">photo bientôt</text>
+        </svg>
+        <!-- Decorative dot grid -->
+        <div class="hero__dot-grid" aria-hidden="true"></div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Scroll indicator -->
+  <div class="hero__scroll" aria-hidden="true">
+    <span>Scroll</span>
+    <div class="hero__scroll-line"></div>
+  </div>
+</section>
+
+<style>
+  .hero {
+    min-height: 100svh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+    border-bottom: var(--border-width) solid var(--color-border-soft);
+  }
+
+  /* Subtle dot grid background */
+  .hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: radial-gradient(
+      circle,
+      var(--color-border-soft) 1px,
+      transparent 1px
+    );
+    background-size: 28px 28px;
+    opacity: 0.35;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .hero__inner {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    grid-template-columns: 55fr 45fr;
+    gap: var(--space-16);
+    align-items: center;
+    padding-block: var(--space-20);
+  }
+
+  /* ── Text content ── */
+  .hero__content {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-6);
+  }
+
+  .hero__badge {
+    opacity: 0; /* GSAP will animate this */
+  }
+
+  .hero__name {
+    font-family: var(--font-display);
+    font-weight: var(--weight-black);
+    letter-spacing: var(--tracking-tight);
+    line-height: 0.9;
+    display: flex;
+    flex-direction: column;
+    gap: 0.05em;
+    font-size: clamp(var(--text-6xl), 9vw, var(--text-9xl));
+    opacity: 0; /* GSAP will animate */
+  }
+
+  .hero__name-first {
+    color: var(--color-fg);
+  }
+
+  .hero__name-last {
+    color: var(--color-accent);
+    /* Outline text effect for brutaliste */
+    -webkit-text-stroke: 2px var(--color-accent);
+    color: transparent;
+  }
+
+  [data-theme="dark"] .hero__name-last {
+    -webkit-text-stroke: 2px var(--color-accent);
+  }
+
+  .hero__title {
+    font-family: var(--font-display);
+    font-size: clamp(var(--text-3xl), 4vw, var(--text-5xl));
+    font-weight: var(--weight-bold);
+    line-height: var(--leading-tight);
+    color: var(--color-fg);
+    max-width: none;
+    margin: 0;
+    opacity: 0;
+  }
+
+  .hero__title em {
+    font-style: normal;
+    color: var(--color-accent);
+  }
+
+  .hero__description {
+    font-size: var(--text-lg);
+    line-height: var(--leading-loose);
+    color: var(--color-fg-muted);
+    max-width: 48ch;
+    opacity: 0;
+  }
+
+  .hero__ctas {
+    display: flex;
+    gap: var(--space-4);
+    flex-wrap: wrap;
+    opacity: 0;
+  }
+
+  /* ── Photo ── */
+  .hero__photo-wrap {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+  }
+
+  .hero__photo-frame {
+    position: relative;
+    width: 100%;
+    max-width: 400px;
+  }
+
+  .hero__photo-placeholder,
+  .hero__photo-frame img {
+    display: block;
+    width: 100%;
+    aspect-ratio: 5 / 6;
+    object-fit: cover;
+    border: var(--border-width-thick) solid var(--color-border);
+    box-shadow: var(--shadow-brutal-lg);
+  }
+
+  /* Decorative dot grid behind photo */
+  .hero__dot-grid {
+    position: absolute;
+    bottom: -1.5rem;
+    right: -1.5rem;
+    width: 7rem;
+    height: 7rem;
+    background-image: radial-gradient(
+      circle,
+      var(--color-accent) 1.5px,
+      transparent 1.5px
+    );
+    background-size: 12px 12px;
+    opacity: 0.4;
+    z-index: -1;
+  }
+
+  /* ── Scroll indicator ── */
+  .hero__scroll {
+    position: absolute;
+    bottom: var(--space-8);
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-2);
+    opacity: 0.4;
+    animation: float 3s ease-in-out infinite;
+  }
+
+  .hero__scroll span {
+    font-family: var(--font-display);
+    font-size: var(--text-xs);
+    font-weight: var(--weight-bold);
+    letter-spacing: var(--tracking-widest);
+    text-transform: uppercase;
+    color: var(--color-fg-subtle);
+  }
+
+  .hero__scroll-line {
+    width: 1px;
+    height: 3rem;
+    background: linear-gradient(to bottom, var(--color-fg-subtle), transparent);
+  }
+
+  /* ── Responsive ── */
+  @media (max-width: 900px) {
+    .hero__inner {
+      grid-template-columns: 1fr;
+      gap: var(--space-12);
+      padding-block: var(--space-16);
+    }
+
+    .hero__photo-wrap {
+      order: -1;
+      max-width: 280px;
+      margin-inline: auto;
+    }
+
+    .hero__name {
+      font-size: clamp(var(--text-5xl), 12vw, var(--text-7xl));
+    }
+  }
+
+  @media (max-width: 480px) {
+    .hero__name {
+      font-size: clamp(var(--text-4xl), 14vw, var(--text-6xl));
+    }
+
+    .hero__ctas {
+      flex-direction: column;
+    }
+
+    .hero__ctas :global(.btn) {
+      width: 100%;
+      justify-content: center;
+    }
+  }
+
+  @media (max-width: 360px) {
+    .hero__name {
+      font-size: clamp(var(--text-3xl), 15vw, var(--text-5xl));
+    }
+  }
+</style>

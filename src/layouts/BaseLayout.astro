@@ -1,0 +1,115 @@
+---
+// BaseLayout.astro — HTML shell with SEO, theme, and ClientRouter
+import { ClientRouter } from 'astro:transitions';
+import '../styles/global.css';
+
+interface Props {
+  title:        string;
+  description:  string;
+  ogImage?:     string;
+  ogType?:      'website' | 'article';
+  canonicalUrl?: string;
+  publishDate?:  string;
+  robots?:       string;
+}
+
+const {
+  title,
+  description,
+  ogImage      = '/og-image.png',
+  ogType       = 'website',
+  canonicalUrl = Astro.url.href,
+  publishDate,
+  robots       = 'index, follow',
+} = Astro.props;
+
+import { getLangFromUrl, defaultLang, useTranslations } from '../i18n/utils';
+const lang = getLangFromUrl(Astro.url);
+const t_layout = useTranslations(lang);
+const altLang = lang === 'fr' ? 'en' : 'fr';
+const altUrl = Astro.url.href.includes(`/${lang}/`)
+  ? Astro.url.href.replace(`/${lang}/`, `/${altLang}/`)
+  : Astro.url.href;
+
+const fullTitle = title === 'Arthur SERRET'
+  ? `Arthur SERRET — ${t_layout('site.tagline')}`
+  : `${title} — Arthur SERRET`;
+
+const siteUrl = Astro.site?.origin ?? 'https://infuseting.fr';
+---
+
+<!doctype html>
+<html lang={lang} data-theme="light">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    
+    <link rel="alternate" hreflang={lang} href={canonicalUrl} />
+    <link rel="alternate" hreflang={altLang} href={altUrl} />
+    <link rel="alternate" hreflang="x-default" href={canonicalUrl.replace(`/${lang}/`, `/${defaultLang}/`)} />
+
+    <!-- FOUC prevention: must be is:inline and first in <head> -->
+    <script is:inline>
+      (function () {
+        const stored = localStorage.getItem('theme');
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        const theme = stored ?? (prefersDark ? 'dark' : 'light');
+        document.documentElement.setAttribute('data-theme', theme);
+      })();
+    </script>
+
+    <!-- Primary Meta -->
+    <title>{fullTitle}</title>
+    <meta name="robots"      content={robots} />
+    <meta name="description" content={description} />
+    <meta name="author"      content="Arthur SERRET" />
+    <meta name="generator"   content={Astro.generator} />
+    <link rel="canonical"    href={canonicalUrl} />
+
+    <!-- Open Graph -->
+    <meta property="og:type"        content={ogType} />
+    <meta property="og:url"         content={canonicalUrl} />
+    <meta property="og:title"       content={fullTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image"       content={`${siteUrl}${ogImage}`} />
+    <meta property="og:site_name"   content="Arthur SERRET" />
+    <meta property="og:locale"      content={lang === 'fr' ? 'fr_FR' : 'en_GB'} />
+    {publishDate && <meta property="article:published_time" content={publishDate} />}
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card"        content="summary_large_image" />
+    <meta name="twitter:title"       content={fullTitle} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image"       content={`${siteUrl}${ogImage}`} />
+
+    <!-- Favicon -->
+    <link rel="icon"             href="/favicon.svg" type="image/svg+xml" />
+    <link rel="icon"             href="/favicon.ico" sizes="32x32" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+
+    <!-- Sitemap -->
+    <link rel="sitemap" href="/sitemap-index.xml" />
+
+    <!-- JSON-LD Person Schema -->
+    <script type="application/ld+json" is:inline set:html={JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "Person",
+      "name": "Arthur SERRET",
+      "url": siteUrl,
+      "jobTitle": "Développeur Fullstack",
+      "sameAs": [
+        "https://github.com/Infuseting",
+        "https://www.linkedin.com/in/arthur-serret/"
+      ]
+    })} />
+
+    <!-- Astro View Transitions (ClientRouter) -->
+    <ClientRouter />
+  </head>
+
+  <body>
+    <a href="#main-content" class="skip-to-content">{t_layout('a11y.skip')}</a>
+    <slot />
+    <script src="../scripts/animations.ts"></script>
+  </body>
+</html>

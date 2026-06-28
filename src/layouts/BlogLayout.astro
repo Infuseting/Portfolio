@@ -1,0 +1,247 @@
+---
+// BlogLayout.astro — Article layout extending BaseLayout
+import BaseLayout from './BaseLayout.astro';
+import Header from '../components/layout/Header.astro';
+import Footer from '../components/layout/Footer.astro';
+import Tag from '../components/ui/Tag.astro';
+import { formatDate } from '../utils/formatDate';
+import { getReadingTime } from '../utils/getReadingTime';
+
+interface Props {
+  title:       string;
+  description: string;
+  publishDate: Date;
+  updatedDate?: Date;
+  tags?:       string[];
+  coverImage?: string;
+  coverAlt?:   string;
+  body?:       string; // raw MDX body for reading time
+}
+
+const {
+  title,
+  description,
+  publishDate,
+  updatedDate,
+  tags = [],
+  coverImage,
+  coverAlt,
+  body = '',
+} = Astro.props;
+
+import { getLangFromUrl, useTranslations } from '../i18n/utils';
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+
+const readingTime = getReadingTime(body, lang);
+const formattedPublish = formatDate(publishDate, lang);
+const formattedUpdate  = updatedDate ? formatDate(updatedDate, lang) : null;
+
+const siteUrl = 'https://infuseting.fr';
+const articleSchema = {
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": title,
+  "description": description,
+  "image": coverImage ? `${siteUrl}${coverImage}` : undefined,
+  "author": {
+    "@type": "Person",
+    "name": "Arthur SERRET",
+    "url": siteUrl
+  },
+  "datePublished": publishDate.toISOString(),
+  "dateModified": updatedDate ? updatedDate.toISOString() : publishDate.toISOString()
+};
+
+const breadcrumbSchema = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": t('nav.home'),
+      "item": `${siteUrl}/${lang}`
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": t('nav.blog'),
+      "item": `${siteUrl}/${lang}/blog`
+    },
+    {
+      "@type": "ListItem",
+      "position": 3,
+      "name": title,
+      "item": Astro.url.href
+    }
+  ]
+};
+---
+
+<BaseLayout
+  title={title}
+  description={description}
+  ogType="article"
+  publishDate={publishDate.toISOString()}
+>
+  <Header />
+  <main id="main-content" style="padding-top: var(--header-h);">
+    <article>
+      <header class="post-header container">
+        <nav class="breadcrumb" aria-label={t('breadcrumb.label')}>
+          <a href={`/${lang}`}>{t('nav.home')}</a>
+          <span aria-hidden="true">/</span>
+          <a href={`/${lang}/blog`}>{t('nav.blog')}</a>
+          <span aria-hidden="true">/</span>
+          <span aria-current="page">{title}</span>
+        </nav>
+
+        <div class="post-meta">
+          <time datetime={publishDate.toISOString()}>{formattedPublish}</time>
+          {formattedUpdate && (
+            <span class="updated">
+              {t('blog.updated')} <time datetime={updatedDate!.toISOString()}>{formattedUpdate}</time>
+            </span>
+          )}
+          <span class="reading-time">{readingTime}</span>
+        </div>
+
+        <h1 class="post-title">{title}</h1>
+        <p class="post-description">{description}</p>
+
+        {tags.length > 0 && (
+          <ul class="post-tags" aria-label="Tags">
+            {tags.map((tag) => (
+              <li><Tag label={tag} /></li>
+            ))}
+          </ul>
+        )}
+      </header>
+
+      {coverImage && (
+        <div class="post-cover container">
+          <img src={coverImage} alt={coverAlt ?? title} loading="eager" />
+        </div>
+      )}
+
+      <div class="post-body container">
+        <slot />
+      </div>
+    </article>
+  </main>
+  <Footer />
+
+  <script type="application/ld+json" is:inline set:html={JSON.stringify(articleSchema)} />
+  <script type="application/ld+json" is:inline set:html={JSON.stringify(breadcrumbSchema)} />
+</BaseLayout>
+
+<style>
+  .post-header {
+    padding-block: var(--space-12) var(--space-8);
+    border-bottom: var(--border-width) solid var(--color-border-soft);
+    margin-bottom: var(--space-12);
+  }
+
+  .breadcrumb {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    font-size: var(--text-sm);
+    color: var(--color-fg-muted);
+    margin-bottom: var(--space-6);
+  }
+
+  .breadcrumb a {
+    color: var(--color-fg-muted);
+    transition: color var(--transition-fast);
+  }
+
+  .breadcrumb a:hover { color: var(--color-accent); }
+
+  .post-meta {
+    display: flex;
+    align-items: center;
+    gap: var(--space-4);
+    font-size: var(--text-sm);
+    color: var(--color-fg-muted);
+    margin-bottom: var(--space-4);
+    flex-wrap: wrap;
+  }
+
+  .updated { font-style: italic; }
+
+  .reading-time::before { content: '· '; }
+
+  .post-title {
+    margin-bottom: var(--space-4);
+    font-size: clamp(var(--text-3xl), 5vw, var(--text-6xl));
+  }
+
+  .post-description {
+    font-size: var(--text-lg);
+    color: var(--color-fg-muted);
+    max-width: 70ch;
+    margin-bottom: var(--space-6);
+    line-height: var(--leading-snug);
+  }
+
+  .post-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    list-style: none;
+    position: relative;
+    z-index: 2;
+  }
+
+  .post-cover {
+    margin-bottom: var(--space-12);
+  }
+
+  .post-cover img {
+    width: 100%;
+    max-height: 480px;
+    object-fit: cover;
+    border: var(--border-width-thick) solid var(--color-border);
+    box-shadow: var(--shadow-brutal-lg);
+  }
+
+  /* Prose styles */
+  .post-body {
+    max-width: 72ch;
+    margin-bottom: var(--space-24);
+  }
+
+  .post-body :global(h2) {
+    font-size: var(--text-3xl);
+    margin-top: var(--space-12);
+    margin-bottom: var(--space-4);
+    padding-bottom: var(--space-2);
+    border-bottom: var(--border-width) solid var(--color-border-soft);
+  }
+
+  .post-body :global(h3) {
+    font-size: var(--text-xl);
+    margin-top: var(--space-8);
+    margin-bottom: var(--space-3);
+  }
+
+  .post-body :global(p) { margin-bottom: var(--space-4); }
+
+  .post-body :global(ul),
+  .post-body :global(ol) {
+    margin-bottom: var(--space-4);
+    padding-left: var(--space-6);
+  }
+
+  .post-body :global(li) { margin-bottom: var(--space-2); }
+
+  .post-body :global(blockquote) {
+    border-left: var(--border-width-thick) solid var(--color-accent);
+    padding-left: var(--space-6);
+    margin: var(--space-8) 0;
+    color: var(--color-fg-muted);
+    font-style: italic;
+  }
+</style>

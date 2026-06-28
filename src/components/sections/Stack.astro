@@ -1,0 +1,200 @@
+---
+import SectionLabel from '../ui/SectionLabel.astro';
+import { Icon } from 'astro-icon/components';
+import TagTooltip from '../ui/TagTooltip.astro';
+import { getCollection } from 'astro:content';
+import { getLangFromUrl, useTranslations } from '../../i18n/utils';
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+
+const [allTags, allProjects, allBlog] = await Promise.all([
+  getCollection('tags'),
+  getCollection('projects'),
+  getCollection('blog'),
+]);
+
+const categoriesMap = new Map();
+for (const tag of allTags) {
+  const cat = tag.data.category;
+  if (!categoriesMap.has(cat)) categoriesMap.set(cat, []);
+  categoriesMap.get(cat).push(tag);
+}
+
+const categoryOrder = ['Langages', 'Web & App', 'Data & DevOps'];
+const stack = categoryOrder.map(label => ({
+  label,
+  items: categoriesMap.get(label) || []
+}));
+---
+
+<section class="stack section" id="stack" aria-label="Stack technique">
+  <div class="container">
+    <header class="stack__header">
+      <SectionLabel label={t('stack.title')} />
+      <h2 class="stack__title">{t('stack.heading')}</h2>
+    </header>
+
+    <div class="stack__categories">
+      {stack.map((category) => (
+        <div class="stack__category">
+          <h3 class="stack__category-label">{category.label}</h3>
+          <ul class="stack__items" role="list">
+            {category.items.map((tech: any) => (
+              <li>
+                <interactive-tag class="stack-interactive-wrapper">
+                  <a href={`/${lang}/tags/${tech.id}`} class="stack__item" style={`--tech-color: ${tech.data.color ?? 'var(--color-accent)'}`}>
+                    <span class="stack__item-icon" aria-hidden="true"><Icon name={tech.data.icon} width={20} height={20} /></span>
+                    <span class="stack__item-name">{tech.data.name}</span>
+                  </a>
+                  <TagTooltip id={tech.id} allProjects={allProjects} allBlog={allBlog} />
+                </interactive-tag>
+              </li>
+            ))}
+          </ul>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .stack__header {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+    margin-bottom: var(--space-12);
+  }
+
+  .stack__title {
+    font-size: clamp(var(--text-3xl), 4vw, var(--text-5xl));
+  }
+
+  .stack__categories {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0;
+    border: var(--border-width) solid var(--color-border);
+  }
+
+  .stack__category {
+    padding: var(--space-8);
+    border-right: var(--border-width) solid var(--color-border);
+  }
+
+  .stack__category:last-child {
+    border-right: none;
+  }
+
+  .stack__category-label {
+    font-family: var(--font-display);
+    font-size: var(--text-xs);
+    font-weight: var(--weight-bold);
+    letter-spacing: var(--tracking-widest);
+    text-transform: uppercase;
+    color: var(--color-accent);
+    margin-bottom: var(--space-6);
+    padding-bottom: var(--space-3);
+    border-bottom: var(--border-width) solid var(--color-border-soft);
+  }
+
+  .stack__items {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+    list-style: none;
+  }
+
+  .stack__item {
+    display: flex;
+    align-items: center;
+    gap: var(--space-4);
+    padding: var(--space-3) var(--space-4);
+    border: var(--border-width) solid var(--color-border);
+    background: var(--color-bg);
+    transition: transform var(--transition-brutal), box-shadow var(--transition-brutal);
+    cursor: default;
+  }
+
+  .stack__item:hover {
+    transform: translate(-4px, -4px);
+    box-shadow: 4px 4px 0px var(--tech-color, var(--color-fg));
+    border-color: var(--tech-color, var(--color-border));
+  }
+
+  .stack__item-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.5rem;
+    height: 2.5rem;
+    flex-shrink: 0;
+    font-family: var(--font-mono);
+    font-size: var(--text-sm);
+    font-weight: var(--weight-bold);
+    background: var(--color-bg-alt);
+    color: var(--color-fg);
+    border: var(--border-width) solid var(--color-border);
+    border-radius: var(--radius-none);
+    transition: all var(--transition-fast);
+  }
+
+  .stack__item:hover .stack__item-icon {
+    background: var(--tech-color, var(--color-accent));
+    color: var(--color-bg);
+    border-color: var(--tech-color, var(--color-accent));
+  }
+
+  .stack__item-name {
+    font-family: var(--font-body);
+    font-size: var(--text-base);
+    font-weight: var(--weight-bold);
+    color: var(--color-fg);
+  }
+
+  @media (max-width: 900px) {
+    .stack__categories {
+      grid-template-columns: 1fr;
+    }
+
+    .stack__category {
+      border-right: none;
+      border-bottom: var(--border-width) solid var(--color-border);
+    }
+
+    .stack__category:last-child { border-bottom: none; }
+
+    .stack__items {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (max-width: 480px) {
+    .stack__items {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .stack-interactive-wrapper {
+    position: relative;
+    display: block;
+    width: 100%;
+  }
+
+  @media (hover: hover) {
+    .stack-interactive-wrapper:hover :global(.tag-tooltip) {
+      opacity: 1 !important;
+      visibility: visible !important;
+      transform: translateX(-50%) translateY(0) !important;
+      pointer-events: auto !important;
+    }
+  }
+
+  .stack-interactive-wrapper.is-open :global(.tag-tooltip) {
+    opacity: 1 !important;
+    visibility: visible !important;
+    transform: translateX(-50%) translateY(0) !important;
+    pointer-events: auto !important;
+  }
+</style>
