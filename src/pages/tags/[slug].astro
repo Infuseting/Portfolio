@@ -65,7 +65,7 @@ const blogPosts = allBlog.filter((b: any) => matchTag(b.data.tags || [])).sort((
   <main class="tag-page section container" id="main-content" style="padding-top: var(--header-h);">
     <header class="tag-header">
       <SectionLabel label="Recherche par technologie" />
-      <h1 class="title" style={`--tag-color: ${tag.data.color || 'var(--color-accent)'}`}>
+      <h1 class="title" style={`--tag-color: ${(tag.data as any).color || 'var(--color-accent)'}`}>
         {tag.data.name}
       </h1>
       <p class="subtitle">Tous les projets et articles utilisant cette technologie.</p>
@@ -82,7 +82,7 @@ const blogPosts = allBlog.filter((b: any) => matchTag(b.data.tags || [])).sort((
                   <span class="project-card__year">{project.data.year}</span>
                   <div class="project-card__links">
                     {project.data.liveUrl && (
-                      <a href={project.data.liveUrl} target="_blank" rel="noopener noreferrer" class="project-card__link">↗</a>
+                      <a href={project.data.liveUrl} target="_blank" rel="noopener noreferrer" class="project-card__link" aria-label={`Voir ${project.data.title} en ligne`}>↗</a>
                     )}
                   </div>
                 </div>
