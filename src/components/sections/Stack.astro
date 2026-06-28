@@ -177,17 +177,17 @@ const stack = categoryOrder.map(label => ({
 
   @media (hover: hover) {
     .stack-interactive-wrapper:hover :global(.tag-tooltip) {
-      opacity: 1;
-      visibility: visible;
-      transform: translateX(-50%) translateY(0);
-      pointer-events: auto;
+      opacity: 1 !important;
+      visibility: visible !important;
+      transform: translateX(-50%) translateY(0) !important;
+      pointer-events: auto !important;
     }
   }
 
   .stack-interactive-wrapper.is-open :global(.tag-tooltip) {
-    opacity: 1;
-    visibility: visible;
-    transform: translateX(-50%) translateY(0);
-    pointer-events: auto;
+    opacity: 1 !important;
+    visibility: visible !important;
+    transform: translateX(-50%) translateY(0) !important;
+    pointer-events: auto !important;
   }
 </style>

@@ -100,6 +100,11 @@ h6 { font-size: var(--text-base); }
 
 @media (max-width: 480px) {
   h1 { font-size: var(--text-4xl); }
+  h2 { font-size: var(--text-3xl); }
+}
+
+@media (max-width: 360px) {
+  h1 { font-size: var(--text-3xl); }
   h2 { font-size: var(--text-2xl); }
 }
 
@@ -163,6 +168,12 @@ pre code {
   }
   :root {
     --container-pad: var(--space-4);
+  }
+}
+
+@media (max-width: 480px) {
+  :root {
+    --container-pad: var(--space-3);
   }
 }
 

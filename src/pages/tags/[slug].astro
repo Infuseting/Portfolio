@@ -119,7 +119,7 @@ const blogPosts = allBlog.filter((b: any) => matchTag(b.data.tags || [])).sort((
                     </ul>
                   </div>
                   <h3 class="blog-card__title">
-                    <a href={`/blog/${post.slug}`} class="blog-card__title-link" aria-label={post.data.title}>
+                    <a href={`/blog/${post.id}`} class="blog-card__title-link" aria-label={post.data.title}>
                       {post.data.title}
                     </a>
                   </h3>

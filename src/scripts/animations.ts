@@ -262,10 +262,3 @@ function init(): void {
 // Astro View Transitions: cleanup before swap, re-init after load
 document.addEventListener('astro:before-swap', cleanup);
 document.addEventListener('astro:page-load', init);
-
-// Initial page load (no View Transition on first visit)
-if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', init);
-} else {
-  init();
-}

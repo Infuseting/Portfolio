@@ -110,7 +110,6 @@ const currentPath = Astro.url.pathname;
     onScroll();
   }
 
-  initHeader();
   document.addEventListener('astro:page-load', initHeader);
 </script>
 
@@ -137,6 +136,7 @@ const currentPath = Astro.url.pathname;
   .header__nav {
     display: flex;
     align-items: center;
+    justify-content: space-between;
     height: var(--header-h);
     gap: var(--space-8);
   }
@@ -272,38 +272,56 @@ const currentPath = Astro.url.pathname;
     background: var(--color-bg);
   }
 
-  /* Mobile menu */
+  /* Mobile menu (Fullscreen overlay) */
   .header__mobile {
-    display: none;
-    border-top: var(--border-width) solid var(--color-border-soft);
+    position: fixed;
+    top: var(--header-h);
+    left: 0;
+    width: 100vw;
+    height: calc(100dvh - var(--header-h));
     background: var(--color-bg);
+    z-index: 90;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    padding-top: var(--space-12);
+    border-top: var(--border-width) solid var(--color-border-soft);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity var(--transition-base), visibility var(--transition-base);
   }
 
-  .header__mobile.is-open { display: block; }
+  .header__mobile.is-open { 
+    opacity: 1; 
+    visibility: visible;
+  }
 
   .header__mobile ul {
     list-style: none;
     padding: var(--space-4) var(--container-pad);
     display: flex;
     flex-direction: column;
-    gap: 0;
+    align-items: center;
+    gap: var(--space-8);
   }
 
   .header__mobile-link {
     display: block;
     font-family: var(--font-display);
-    font-weight: var(--weight-bold);
-    font-size: var(--text-lg);
+    font-weight: var(--weight-black);
+    font-size: var(--text-2xl); /* Reduced from 3xl to fit on small screens */
     color: var(--color-fg);
     text-decoration: none;
-    padding: var(--space-4) 0;
-    border-bottom: 1px solid var(--color-border-soft);
-    transition: color var(--transition-fast), padding-left var(--transition-brutal);
+    text-transform: uppercase;
+    letter-spacing: var(--tracking-tight);
+    transition: color var(--transition-fast), transform var(--transition-brutal);
+    text-align: center;
   }
 
   .header__mobile-link:hover {
     color: var(--color-accent);
-    padding-left: var(--space-2);
+    transform: scale(1.05);
   }
 
   /* Responsive */

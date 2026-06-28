@@ -34,7 +34,7 @@ const tagHref = `/tags/${id}`;
       <ul class="related-list">
         {relatedItems.map(item => (
           <li>
-            <a href={item.type === 'project' ? (item.data.liveUrl || item.data.githubUrl || `/tags/${id}`) : `/blog/${item.slug}`}>
+            <a href={item.type === 'project' ? (item.data.liveUrl || item.data.githubUrl || `/tags/${id}`) : `/blog/${item.id}`}>
               <span class="item-type">{item.type === 'project' ? 'Projet' : 'Article'}</span>
               <span class="item-title">{item.data.title}</span>
             </a>
@@ -156,40 +156,3 @@ const tagHref = `/tags/${id}`;
     transform: translateY(-2px);
   }
 </style>
-
-<script>
-  class InteractiveTag extends HTMLElement {
-    constructor() {
-      super();
-      const trigger = this.children[0];
-      
-      if (trigger) {
-        trigger.addEventListener('click', (e) => {
-          // On mobile/touch devices without hover
-          if (window.matchMedia('(hover: none)').matches) {
-            if (!this.classList.contains('is-open')) {
-              e.preventDefault(); // prevent navigation on first tap
-              
-              // Close all other open tooltips
-              document.querySelectorAll('interactive-tag.is-open').forEach(el => {
-                if (el !== this) el.classList.remove('is-open');
-              });
-              
-              this.classList.add('is-open');
-            }
-          }
-        });
-
-        // Close when clicking outside
-        document.addEventListener('click', (e) => {
-          if (!this.contains(e.target as Node)) {
-            this.classList.remove('is-open');
-          }
-        });
-      }
-    }
-  }
-  if (!customElements.get('interactive-tag')) {
-    customElements.define('interactive-tag', InteractiveTag);
-  }
-</script>

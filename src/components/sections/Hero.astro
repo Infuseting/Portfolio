@@ -266,6 +266,10 @@ import SectionLabel from '../ui/SectionLabel.astro';
   }
 
   @media (max-width: 480px) {
+    .hero__name {
+      font-size: clamp(var(--text-4xl), 14vw, var(--text-6xl));
+    }
+
     .hero__ctas {
       flex-direction: column;
     }
@@ -273,6 +277,12 @@ import SectionLabel from '../ui/SectionLabel.astro';
     .hero__ctas :global(.btn) {
       width: 100%;
       justify-content: center;
+    }
+  }
+
+  @media (max-width: 360px) {
+    .hero__name {
+      font-size: clamp(var(--text-3xl), 15vw, var(--text-5xl));
     }
   }
 </style>
