@@ -77,17 +77,17 @@ export const GitHeatmap = memo(function GitHeatmap({
       transition={{ duration: 0.45, delay: 0.15 }}
     >
       <div className="heatmap__header">
-        <span>
+        <span className="heatmap__title">
           {t("metrics.git.contributions")} ({selectedYear})
         </span>
 
         {hoveredDay ? (
-          <span style={{ color: "var(--color-fg)", fontWeight: "bold" }}>
+          <span className="heatmap__status" style={{ color: "var(--color-fg)", fontWeight: "bold" }}>
             {hoveredDay.count} {hoveredDay.count > 1 ? "commits" : "commit"} · {hoveredDay.date}
             {hoveredDay.date === todayStr ? ` ${t("metrics.git.today")}` : ""}
           </span>
         ) : (
-          <span style={{ opacity: 0.6 }}>
+          <span className="heatmap__status" style={{ opacity: 0.6 }}>
             {t("metrics.git.hover_day")}
           </span>
         )}
@@ -297,8 +297,8 @@ export function GitActivityCardSkeletonContent() {
         {/* Heatmap Skeleton */}
         <div className="heatmap-wrap">
           <div className="heatmap__header">
-            <div className="skeleton-box" style={{ width: "120px", height: "12px", opacity: 0.7 }} />
-            <div className="skeleton-box" style={{ width: "90px", height: "12px", opacity: 0.5 }} />
+            <div className="skeleton-box heatmap__header-skel-title" style={{ width: "100px", height: "12px", opacity: 0.7 }} />
+            <div className="skeleton-box heatmap__header-skel-hint" style={{ width: "80px", height: "12px", opacity: 0.5 }} />
           </div>
 
           <div className="heatmap__grid">
