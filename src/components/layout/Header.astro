@@ -80,36 +80,44 @@ const currentPath = Astro.url.pathname;
 </header>
 
 <script>
+  let prevScrollHandler: (() => void) | null = null;
+
   function initHeader(): void {
-    const btn   = document.getElementById('mobile-menu-btn');
-    const menu  = document.getElementById('mobile-menu');
+    const btn    = document.getElementById('mobile-menu-btn');
+    const menu   = document.getElementById('mobile-menu');
     const header = document.getElementById('site-header');
     if (!btn || !menu || !header) return;
 
+    if (prevScrollHandler) {
+      window.removeEventListener('scroll', prevScrollHandler);
+      prevScrollHandler = null;
+    }
+
     // Mobile menu toggle
-    btn.addEventListener('click', () => {
+    btn.onclick = () => {
       const isOpen = btn.getAttribute('aria-expanded') === 'true';
       btn.setAttribute('aria-expanded', String(!isOpen));
       menu.setAttribute('aria-hidden', String(isOpen));
       menu.classList.toggle('is-open', !isOpen);
       btn.classList.toggle('is-open', !isOpen);
-    });
+    };
 
     // Close on nav link click
     menu.querySelectorAll('a').forEach((link) => {
-      link.addEventListener('click', () => {
+      link.onclick = () => {
         btn.setAttribute('aria-expanded', 'false');
         menu.setAttribute('aria-hidden', 'true');
         menu.classList.remove('is-open');
         btn.classList.remove('is-open');
-      });
+      };
     });
 
-    // Header scroll shadow
+    // Header scroll shadow (passive listener with cleanup)
     const onScroll = (): void => {
       header.classList.toggle('header--scrolled', window.scrollY > 20);
     };
     window.addEventListener('scroll', onScroll, { passive: true });
+    prevScrollHandler = onScroll;
     onScroll();
   }
 

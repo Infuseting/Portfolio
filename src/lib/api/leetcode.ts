@@ -71,6 +71,7 @@ export async function getLeetCodeStats(customUsername?: string): Promise<LeetCod
         query: LEETCODE_QUERY,
         variables: { username },
       }),
+      signal: AbortSignal.timeout(8000),
     });
 
     if (!response.ok) {

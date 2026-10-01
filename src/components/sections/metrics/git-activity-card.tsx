@@ -1,6 +1,6 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useMemo, memo } from "react";
 import { motion, useInView, useReducedMotion } from "motion/react";
-import type { GitActivitySummary, ContributionDay } from "@/lib/api/types";
+import type { GitActivitySummary, ContributionDay, LanguageStat } from "@/lib/api/types";
 import { AnimatedNumber } from "@/components/motion/animated-number";
 import { GitCommit } from "lucide-react";
 import { useTranslations } from "@/i18n/utils";
@@ -8,7 +8,6 @@ import { useCachedQuery } from "@/lib/cache/use-cached-query";
 
 interface GitActivityCardProps {
   initialData?: GitActivitySummary | null;
-  yearCache?: Record<number, GitActivitySummary>;
   lang?: string;
 }
 
@@ -18,10 +17,215 @@ function formatBytes(bytes: number): string {
   return `${bytes} B`;
 }
 
+const getCellLevelClass = (level: number) => {
+  switch (level) {
+    case 1:
+      return "heatmap__cell--level-1";
+    case 2:
+      return "heatmap__cell--level-2";
+    case 3:
+      return "heatmap__cell--level-3";
+    case 4:
+      return "heatmap__cell--level-4";
+    default:
+      return "heatmap__cell--level-0";
+  }
+};
+
+/* ── Compound Subcomponent: Heatmap (Isolated hover state & memoized weeks) ── */
+interface GitHeatmapProps {
+  days: ContributionDay[];
+  selectedYear: number;
+  isAnimateActive: boolean;
+  shouldReduceMotion: boolean | null;
+  lang: string;
+}
+
+export const GitHeatmap = memo(function GitHeatmap({
+  days,
+  selectedYear,
+  isAnimateActive,
+  shouldReduceMotion,
+  lang,
+}: GitHeatmapProps) {
+  const t = useTranslations(lang);
+  const [hoveredDay, setHoveredDay] = useState<ContributionDay | null>(null);
+
+  const todayStr = useMemo(() => new Date().toISOString().split("T")[0], []);
+
+  // Memoized 53 weeks grouping (rerender-memo)
+  const weeks = useMemo(() => {
+    const list: Array<ContributionDay[]> = [];
+    let currentWeek: ContributionDay[] = [];
+
+    days.forEach((day, index) => {
+      currentWeek.push(day);
+      if (currentWeek.length === 7 || index === days.length - 1) {
+        list.push(currentWeek);
+        currentWeek = [];
+      }
+    });
+
+    return list;
+  }, [days]);
+
+  return (
+    <motion.div
+      className="heatmap-wrap"
+      initial={shouldReduceMotion ? { opacity: 1 } : { opacity: 0 }}
+      animate={isAnimateActive ? { opacity: 1 } : shouldReduceMotion ? { opacity: 1 } : { opacity: 0 }}
+      transition={{ duration: 0.45, delay: 0.15 }}
+    >
+      <div className="heatmap__header">
+        <span>
+          {t("metrics.git.contributions")} ({selectedYear})
+        </span>
+
+        {hoveredDay ? (
+          <span style={{ color: "var(--color-fg)", fontWeight: "bold" }}>
+            {hoveredDay.count} {hoveredDay.count > 1 ? "commits" : "commit"} · {hoveredDay.date}
+            {hoveredDay.date === todayStr ? ` ${t("metrics.git.today")}` : ""}
+          </span>
+        ) : (
+          <span style={{ opacity: 0.6 }}>
+            {t("metrics.git.hover_day")}
+          </span>
+        )}
+      </div>
+
+      <div className="heatmap__grid">
+        {weeks.map((week, wIndex) => (
+          <div key={`${selectedYear}-${wIndex}`} className="heatmap__column">
+            {week.map((day) => {
+              const isToday = day.date === todayStr;
+              return (
+                <div
+                  key={day.date}
+                  onMouseEnter={() => setHoveredDay(day)}
+                  onMouseLeave={() => setHoveredDay(null)}
+                  className={`heatmap__cell ${getCellLevelClass(day.level)} ${isToday ? "heatmap__cell--today" : ""}`}
+                  aria-label={`${day.count} commits le ${day.date}`}
+                />
+              );
+            })}
+          </div>
+        ))}
+      </div>
+    </motion.div>
+  );
+});
+
+/* ── Compound Subcomponent: Languages Bar (Isolated hover state & memoized bounds) ── */
+interface GitLanguagesBarProps {
+  languages: LanguageStat[];
+  isAnimateActive: boolean;
+  shouldReduceMotion: boolean | null;
+}
+
+export const GitLanguagesBar = memo(function GitLanguagesBar({
+  languages,
+  isAnimateActive,
+  shouldReduceMotion,
+}: GitLanguagesBarProps) {
+  const [hoveredLang, setHoveredLang] = useState<{
+    name: string;
+    color: string;
+    percentage: number;
+    size: number;
+    midX: number;
+  } | null>(null);
+
+  const segmentsWithPos = useMemo(() => {
+    const totalCodeBytes = languages.reduce((acc, curr) => acc + curr.size, 0);
+    let accumulatedPercent = 0;
+    return languages.map((item) => {
+      const widthPercent = totalCodeBytes > 0 ? (item.size / totalCodeBytes) * 100 : item.percentage;
+      const startX = accumulatedPercent;
+      const midX = startX + widthPercent / 2;
+      accumulatedPercent += widthPercent;
+      return {
+        ...item,
+        widthPercent,
+        midX,
+      };
+    });
+  }, [languages]);
+
+  if (languages.length === 0) return null;
+
+  return (
+    <div className="languages-bar-wrap">
+      {hoveredLang && (
+        <div
+          className="languages-bar__tooltip"
+          style={{
+            left: `${hoveredLang.midX}%`,
+            transform:
+              hoveredLang.midX < 18
+                ? "translateX(0%)"
+                : hoveredLang.midX > 82
+                ? "translateX(-100%)"
+                : "translateX(-50%)",
+          }}
+        >
+          <div className="languages-bar__tooltip-inner">
+            <span className="languages-bar__dot" style={{ backgroundColor: hoveredLang.color }} />
+            <span style={{ color: "var(--color-fg)" }}>{hoveredLang.name}</span>
+            <span style={{ color: "var(--color-fg-muted)" }}>{hoveredLang.percentage}%</span>
+            <span style={{ color: "var(--color-fg-subtle)" }}>({formatBytes(hoveredLang.size)})</span>
+          </div>
+        </div>
+      )}
+
+      <div className="languages-bar__track">
+        <motion.div
+          initial={{ clipPath: "inset(0 100% 0 0)" }}
+          animate={isAnimateActive ? { clipPath: "inset(0 0% 0 0)" } : { clipPath: "inset(0 100% 0 0)" }}
+          transition={
+            shouldReduceMotion
+              ? { duration: 0 }
+              : {
+                  type: "spring",
+                  stiffness: 100,
+                  damping: 20,
+                  delay: 0.25,
+                }
+          }
+          className="languages-bar__inner"
+        >
+          {segmentsWithPos.map((item) => {
+            const isHovered = hoveredLang?.name === item.name;
+            return (
+              <div
+                key={item.name}
+                onMouseEnter={() =>
+                  setHoveredLang({
+                    name: item.name,
+                    color: item.color,
+                    percentage: item.percentage,
+                    size: item.size,
+                    midX: item.midX,
+                  })
+                }
+                onMouseLeave={() => setHoveredLang(null)}
+                className="languages-bar__segment"
+                style={{
+                  width: `${item.widthPercent}%`,
+                  backgroundColor: item.color,
+                  opacity: hoveredLang && !isHovered ? 0.75 : 1,
+                }}
+              />
+            );
+          })}
+        </motion.div>
+      </div>
+    </div>
+  );
+});
+
 export function GitActivityCardSkeletonContent() {
   const dummyYears = [1, 2, 3];
 
-  // 53 columns x 7 rows patterned cells for zero-CLS GitHub-style calendar placeholder
   const dummyWeeks = Array.from({ length: 53 }, (_, wIndex) =>
     Array.from({ length: 7 }, (_, dIndex) => {
       const pattern = (wIndex * 3 + dIndex * 5) % 11;
@@ -166,8 +370,8 @@ export function GitActivityCard({ initialData, lang = "fr" }: GitActivityCardPro
 
   const { data: currentData, isLoading } = useCachedQuery<GitActivitySummary>({
     key: `portfolio_git_activity_${selectedYear}`,
-    ttlMs: 1000 * 60 * 60 * 4, // 4 heures de TTL dans React / localStorage
-    minLoadingMs: 800, // 800ms minimum pour voir le skeleton élégamment
+    ttlMs: 1000 * 60 * 60 * 4,
+    minLoadingMs: 800,
     initialData: selectedYear === initialData?.year ? initialData : null,
     fetcher: async (signal) => {
       let res = await fetch(`/api/activity/${selectedYear}.json`, { signal });
@@ -179,15 +383,6 @@ export function GitActivityCard({ initialData, lang = "fr" }: GitActivityCardPro
     },
   });
 
-  const [hoveredDay, setHoveredDay] = useState<ContributionDay | null>(null);
-  const [hoveredLang, setHoveredLang] = useState<{
-    name: string;
-    color: string;
-    percentage: number;
-    size: number;
-    midX: number;
-  } | null>(null);
-
   useEffect(() => {
     setHasMounted(true);
   }, []);
@@ -195,61 +390,16 @@ export function GitActivityCard({ initialData, lang = "fr" }: GitActivityCardPro
   const isContentReady = !isLoading && currentData !== null;
   const isAnimateActive = isContentReady && (isInView || hasMounted);
 
-  const sortedYears = [
-    ...(currentData?.availableYears || [currentYear, currentYear - 1, currentYear - 2]),
-  ].sort((a, b) => b - a);
-
-  const todayDate = new Date();
-  const todayStr = todayDate.toISOString().split("T")[0];
+  const sortedYears = useMemo(() => {
+    return [
+      ...(currentData?.availableYears || [currentYear, currentYear - 1, currentYear - 2]),
+    ].sort((a, b) => b - a);
+  }, [currentData?.availableYears, currentYear]);
 
   const handleYearChange = (year: number) => {
     if (year === selectedYear) return;
     setSelectedYear(year);
   };
-
-  const weeks: Array<ContributionDay[]> = [];
-  let currentWeek: ContributionDay[] = [];
-
-  if (currentData) {
-    currentData.days.forEach((day, index) => {
-      currentWeek.push(day);
-      if (currentWeek.length === 7 || index === currentData.days.length - 1) {
-        weeks.push(currentWeek);
-        currentWeek = [];
-      }
-    });
-  }
-
-  const getCellLevelClass = (level: number) => {
-    switch (level) {
-      case 1:
-        return "heatmap__cell--level-1";
-      case 2:
-        return "heatmap__cell--level-2";
-      case 3:
-        return "heatmap__cell--level-3";
-      case 4:
-        return "heatmap__cell--level-4";
-      default:
-        return "heatmap__cell--level-0";
-    }
-  };
-
-  const languages = currentData?.languages || [];
-  const totalCodeBytes = languages.reduce((acc, curr) => acc + curr.size, 0);
-
-  let accumulatedPercent = 0;
-  const segmentsWithPos = languages.map((item) => {
-    const widthPercent = totalCodeBytes > 0 ? (item.size / totalCodeBytes) * 100 : item.percentage;
-    const startX = accumulatedPercent;
-    const midX = startX + widthPercent / 2;
-    accumulatedPercent += widthPercent;
-    return {
-      ...item,
-      widthPercent,
-      midX,
-    };
-  });
 
   return (
     <motion.div
@@ -359,125 +509,26 @@ export function GitActivityCard({ initialData, lang = "fr" }: GitActivityCardPro
               </div>
             </div>
 
-            {/* Heatmap */}
-            <motion.div
-              className="heatmap-wrap"
-              initial={shouldReduceMotion ? { opacity: 1 } : { opacity: 0 }}
-              animate={isAnimateActive ? { opacity: 1 } : shouldReduceMotion ? { opacity: 1 } : { opacity: 0 }}
-              transition={{ duration: 0.45, delay: 0.15 }}
-            >
-              <div className="heatmap__header">
-                <span>
-                  {t("metrics.git.contributions")} ({selectedYear})
-                </span>
+            {/* Heatmap (Memoized Compound Component) */}
+            <GitHeatmap
+              days={currentData.days}
+              selectedYear={selectedYear}
+              isAnimateActive={isAnimateActive}
+              shouldReduceMotion={shouldReduceMotion}
+              lang={lang}
+            />
 
-                {hoveredDay ? (
-                  <span style={{ color: "var(--color-fg)", fontWeight: "bold" }}>
-                    {hoveredDay.count} {hoveredDay.count > 1 ? "commits" : "commit"} · {hoveredDay.date}
-                    {hoveredDay.date === todayStr ? t("metrics.git.today") : ""}
-                  </span>
-                ) : (
-                  <span style={{ opacity: 0.6 }}>
-                    {t("metrics.git.hover_day")}
-                  </span>
-                )}
-              </div>
-
-              <div className="heatmap__grid">
-                {weeks.map((week, wIndex) => (
-                  <div key={`${selectedYear}-${wIndex}`} className="heatmap__column">
-                    {week.map((day) => {
-                      const isToday = day.date === todayStr;
-                      return (
-                        <div
-                          key={day.date}
-                          onMouseEnter={() => setHoveredDay(day)}
-                          onMouseLeave={() => setHoveredDay(null)}
-                          className={`heatmap__cell ${getCellLevelClass(day.level)} ${isToday ? "heatmap__cell--today" : ""}`}
-                          aria-label={`${day.count} commits le ${day.date}`}
-                        />
-                      );
-                    })}
-                  </div>
-                ))}
-              </div>
-            </motion.div>
-
-            {/* Languages Bar with bounded tooltip */}
-            {languages.length > 0 && (
-              <div className="languages-bar-wrap">
-                {hoveredLang && (
-                  <div
-                    className="languages-bar__tooltip"
-                    style={{
-                      left: `${hoveredLang.midX}%`,
-                      transform:
-                        hoveredLang.midX < 18
-                          ? "translateX(0%)"
-                          : hoveredLang.midX > 82
-                          ? "translateX(-100%)"
-                          : "translateX(-50%)",
-                    }}
-                  >
-                    <div className="languages-bar__tooltip-inner">
-                      <span className="languages-bar__dot" style={{ backgroundColor: hoveredLang.color }} />
-                      <span style={{ color: "var(--color-fg)" }}>{hoveredLang.name}</span>
-                      <span style={{ color: "var(--color-fg-muted)" }}>{hoveredLang.percentage}%</span>
-                      <span style={{ color: "var(--color-fg-subtle)" }}>({formatBytes(hoveredLang.size)})</span>
-                    </div>
-                  </div>
-                )}
-
-                <div className="languages-bar__track">
-                  <motion.div
-                    initial={{ clipPath: "inset(0 100% 0 0)" }}
-                    animate={isAnimateActive ? { clipPath: "inset(0 0% 0 0)" } : { clipPath: "inset(0 100% 0 0)" }}
-                    transition={
-                      shouldReduceMotion
-                        ? { duration: 0 }
-                        : {
-                            type: "spring",
-                            stiffness: 100,
-                            damping: 20,
-                            delay: 0.25,
-                          }
-                    }
-                    className="languages-bar__inner"
-                  >
-                    {segmentsWithPos.map((item) => {
-                      const isHovered = hoveredLang?.name === item.name;
-                      return (
-                        <div
-                          key={item.name}
-                          onMouseEnter={() =>
-                            setHoveredLang({
-                              name: item.name,
-                              color: item.color,
-                              percentage: item.percentage,
-                              size: item.size,
-                              midX: item.midX,
-                            })
-                          }
-                          onMouseLeave={() => setHoveredLang(null)}
-                          className="languages-bar__segment"
-                          style={{
-                            width: `${item.widthPercent}%`,
-                            backgroundColor: item.color,
-                            opacity: hoveredLang && !isHovered ? 0.75 : 1,
-                          }}
-                        />
-                      );
-                    })}
-                  </motion.div>
-                </div>
-              </div>
-            )}
+            {/* Languages Bar (Memoized Compound Component) */}
+            <GitLanguagesBar
+              languages={currentData.languages}
+              isAnimateActive={isAnimateActive}
+              shouldReduceMotion={shouldReduceMotion}
+            />
           </div>
 
           {/* Footer Legend */}
           <div className="metrics-card__footer">
-            <div>
-            </div>
+            <div />
             <div className="metrics-card__legend-scale">
               <span>{t("metrics.git.less")}</span>
               <div className="metrics-card__legend-cell" style={{ backgroundColor: "var(--color-bg-inset)" }} />
@@ -494,5 +545,7 @@ export function GitActivityCard({ initialData, lang = "fr" }: GitActivityCardPro
   );
 }
 
-// Compound export adhering to component-skeleton-contract
+// Compound exports adhering to component-skeleton-contract and vercel-composition-patterns
 GitActivityCard.Skeleton = GitActivityCardSkeleton;
+GitActivityCard.Heatmap = GitHeatmap;
+GitActivityCard.Languages = GitLanguagesBar;

@@ -68,6 +68,7 @@ export async function getGitHubContributions(
         query: GITHUB_CONTRIBUTIONS_QUERY,
         variables: { username, from, to },
       }),
+      signal: AbortSignal.timeout(8000),
     });
 
     if (!response.ok) {
@@ -115,6 +116,7 @@ export async function getGitHubLanguages(
         query: GITHUB_TOP_LANGUAGES_QUERY,
         variables: { username },
       }),
+      signal: AbortSignal.timeout(8000),
     });
 
     if (!response.ok) {
