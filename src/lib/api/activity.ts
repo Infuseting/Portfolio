@@ -119,6 +119,44 @@ export async function getUnifiedLanguages(): Promise<LanguageStat[]> {
   return mainLanguages;
 }
 
+function computeActiveStreak(
+  githubMap: Map<string, number>,
+  giteaMap: Map<string, number>,
+  todayStr: string
+): number {
+  let streak = 0;
+  const d = new Date(todayStr + "T00:00:00Z");
+
+  const todayCount = (githubMap.get(todayStr) || 0) + (giteaMap.get(todayStr) || 0);
+
+  if (todayCount > 0) {
+    streak = 1;
+    d.setUTCDate(d.getUTCDate() - 1);
+  } else {
+    d.setUTCDate(d.getUTCDate() - 1);
+    const yesterdayStr = d.toISOString().split("T")[0];
+    const yesterdayCount = (githubMap.get(yesterdayStr) || 0) + (giteaMap.get(yesterdayStr) || 0);
+    if (yesterdayCount === 0) {
+      return 0;
+    }
+    streak = 1;
+    d.setUTCDate(d.getUTCDate() - 1);
+  }
+
+  while (true) {
+    const prevDateStr = d.toISOString().split("T")[0];
+    const count = (githubMap.get(prevDateStr) || 0) + (giteaMap.get(prevDateStr) || 0);
+    if (count > 0) {
+      streak += 1;
+      d.setUTCDate(d.getUTCDate() - 1);
+    } else {
+      break;
+    }
+  }
+
+  return streak;
+}
+
 const activityCache = new Map<number, GitActivitySummary>();
 
 export async function getUnifiedGitActivity(targetYear?: number): Promise<GitActivitySummary> {
@@ -148,7 +186,6 @@ export async function getUnifiedGitActivity(targetYear?: number): Promise<GitAct
   const days: ContributionDay[] = [];
   let githubTotal = 0;
   let giteaTotal = 0;
-  let currentStreak = 0;
   let longestStreak = 0;
   let tempStreak = 0;
   let elapsedDaysCount = 0;
@@ -198,7 +235,11 @@ export async function getUnifiedGitActivity(targetYear?: number): Promise<GitAct
     }
   }
 
-  currentStreak = tempStreak;
+  let liveActiveStreak = 0;
+  if (year === currentYear) {
+    liveActiveStreak = computeActiveStreak(githubMap, giteaMap, todayStr);
+  }
+
   const totalContributions = githubTotal + giteaTotal;
 
   // Calcul du grand total absolu combinant toutes les années disponibles ("affiche vraiment tout")
@@ -209,6 +250,9 @@ export async function getUnifiedGitActivity(targetYear?: number): Promise<GitAct
         getGitHubContributions(y),
         getGiteaContributions(y),
       ]);
+      if (y === currentYear) {
+        liveActiveStreak = computeActiveStreak(gh, gt, todayStr);
+      }
       let sum = 0;
       for (const [dateStr, val] of gh.entries()) {
         if (dateStr.startsWith(`${y}-`) && dateStr <= todayStr) sum += val;
@@ -238,7 +282,7 @@ export async function getUnifiedGitActivity(targetYear?: number): Promise<GitAct
     totalContributions,
     averagePerWeek,
     averagePerMonth,
-    currentStreak: year === currentYear ? currentStreak : 0,
+    currentStreak: liveActiveStreak,
     longestStreak,
     githubTotal,
     giteaTotal,

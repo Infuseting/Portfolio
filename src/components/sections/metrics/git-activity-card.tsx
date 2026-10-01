@@ -486,7 +486,12 @@ export function GitActivityCard({ initialData, lang = "fr" }: GitActivityCardPro
                   {t("metrics.git.active_streak")}
                 </span>
                 <span className="metrics-tile__value">
-                  <AnimatedNumber value={currentData.currentStreak} start={isAnimateActive} stiffness={90} damping={18} />{" "}
+                  <AnimatedNumber
+                    value={currentData.currentStreak > 0 ? currentData.currentStreak : (initialData?.currentStreak || currentData.currentStreak)}
+                    start={isAnimateActive}
+                    stiffness={90}
+                    damping={18}
+                  />{" "}
                   <span style={{ fontSize: "11px", fontWeight: "normal", color: "var(--color-fg-muted)" }}>
                     {t("metrics.days")}
                   </span>
