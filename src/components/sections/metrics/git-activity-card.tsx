@@ -421,7 +421,13 @@ export function GitActivityCard({ initialData, lang = "fr" }: GitActivityCardPro
       {!isContentReady || !currentData ? (
         <GitActivityCardSkeletonContent />
       ) : (
-        <>
+        <motion.div
+          key="git-content"
+          initial={shouldReduceMotion ? { opacity: 1 } : { opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.35, ease: "easeOut" }}
+          style={{ display: "flex", flexDirection: "column", justifyContent: "space-between", height: "100%", width: "100%" }}
+        >
           <div>
             {/* Header */}
             <div className="metrics-card__header">
@@ -547,7 +553,7 @@ export function GitActivityCard({ initialData, lang = "fr" }: GitActivityCardPro
               <span>{t("metrics.git.more")}</span>
             </div>
           </div>
-        </>
+        </motion.div>
       )}
     </motion.div>
   );

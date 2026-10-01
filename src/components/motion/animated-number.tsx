@@ -42,9 +42,8 @@ export function AnimatedNumber({
   }, [decimals]);
 
   const activeFormat = format || defaultFormat;
-  const targetValue = shouldReduceMotion ? value : (start ? value : initialValue);
 
-  const motionValue = useMotionValue(targetValue);
+  const motionValue = useMotionValue(shouldReduceMotion ? value : initialValue);
   const spring = useSpring(motionValue, {
     stiffness,
     damping,
@@ -60,6 +59,12 @@ export function AnimatedNumber({
       return;
     }
 
+    const unsubscribe = spring.on("change", (latest) => {
+      if (spanRef.current) {
+        spanRef.current.textContent = activeFormat(latest);
+      }
+    });
+
     if (start) {
       motionValue.set(value);
     } else {
@@ -68,24 +73,14 @@ export function AnimatedNumber({
         spanRef.current.textContent = activeFormat(initialValue);
       }
     }
-  }, [value, start, motionValue, shouldReduceMotion, activeFormat, initialValue]);
-
-  useEffect(() => {
-    if (shouldReduceMotion) return;
-
-    const unsubscribe = spring.on("change", (latest) => {
-      if (spanRef.current) {
-        spanRef.current.textContent = activeFormat(latest);
-      }
-    });
 
     return () => unsubscribe();
-  }, [spring, activeFormat, shouldReduceMotion]);
+  }, [value, start, motionValue, spring, shouldReduceMotion, activeFormat, initialValue]);
 
-  // Initial text rendered server-side and client-side without layout shift (CLS = 0)
+  // Initial text rendered with initialValue so spring starts from initialValue (CLS = 0)
   return (
     <span ref={spanRef} className={className}>
-      {activeFormat(targetValue)}
+      {activeFormat(shouldReduceMotion ? value : initialValue)}
     </span>
   );
 }
