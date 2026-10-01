@@ -51,7 +51,10 @@ export const GitHeatmap = memo(function GitHeatmap({
   const t = useTranslations(lang);
   const [hoveredDay, setHoveredDay] = useState<ContributionDay | null>(null);
 
-  const todayStr = useMemo(() => new Date().toISOString().split("T")[0], []);
+  const todayStr = useMemo(() => {
+    const n = new Date();
+    return `${n.getFullYear()}-${String(n.getMonth() + 1).padStart(2, "0")}-${String(n.getDate()).padStart(2, "0")}`;
+  }, []);
 
   // Memoized 53 weeks grouping (rerender-memo)
   const weeks = useMemo(() => {

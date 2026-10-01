@@ -139,9 +139,11 @@ export async function getUnifiedGitActivity(targetYear?: number): Promise<GitAct
     getUnifiedLanguages(),
   ]);
 
-  const startDate = new Date(year, 0, 1);
-  const endDate = new Date(year, 11, 31);
   const now = new Date();
+  const todayStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")}`;
+
+  const startDate = new Date(Date.UTC(year, 0, 1));
+  const endDate = new Date(Date.UTC(year, 11, 31));
 
   const days: ContributionDay[] = [];
   let githubTotal = 0;
@@ -153,9 +155,9 @@ export async function getUnifiedGitActivity(targetYear?: number): Promise<GitAct
   let activeDays = 0;
   let maxDayContributions = 0;
 
-  for (let d = new Date(startDate); d <= endDate; d.setDate(d.getDate() + 1)) {
-    const isFuture = d > now;
+  for (let d = new Date(startDate); d <= endDate; d.setUTCDate(d.getUTCDate() + 1)) {
     const dateStr = d.toISOString().split("T")[0];
+    const isFuture = dateStr > todayStr;
     const ghCount = isFuture ? 0 : githubMap.get(dateStr) || 0;
     const gtCount = isFuture ? 0 : giteaMap.get(dateStr) || 0;
     const combinedCount = ghCount + gtCount;
@@ -208,8 +210,12 @@ export async function getUnifiedGitActivity(targetYear?: number): Promise<GitAct
         getGiteaContributions(y),
       ]);
       let sum = 0;
-      for (const val of gh.values()) sum += val;
-      for (const val of gt.values()) sum += val;
+      for (const [dateStr, val] of gh.entries()) {
+        if (dateStr.startsWith(`${y}-`) && dateStr <= todayStr) sum += val;
+      }
+      for (const [dateStr, val] of gt.entries()) {
+        if (dateStr.startsWith(`${y}-`) && dateStr <= todayStr) sum += val;
+      }
       return sum;
     });
 
