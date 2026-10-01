@@ -1,4 +1,4 @@
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useRef, useMemo } from "react";
 import { useMotionValue, useSpring, useReducedMotion } from "motion/react";
 
 interface AnimatedNumberProps {
@@ -13,6 +13,14 @@ interface AnimatedNumberProps {
   mass?: number;
 }
 
+// Hoisted NumberFormat instances to avoid creating objects on every tick (js-hoist-intl)
+const integerFormatter = new Intl.NumberFormat();
+const createDecimalFormatter = (decimals: number) =>
+  new Intl.NumberFormat(undefined, {
+    minimumFractionDigits: decimals,
+    maximumFractionDigits: decimals,
+  });
+
 export function AnimatedNumber({
   value,
   startFrom,
@@ -24,56 +32,55 @@ export function AnimatedNumber({
   damping = 18,
   mass = 0.6,
 }: AnimatedNumberProps) {
+  const spanRef = useRef<HTMLSpanElement>(null);
   const shouldReduceMotion = useReducedMotion();
   const initialValue = startFrom !== undefined ? startFrom : 0;
-  
+
   const defaultFormat = useMemo(() => {
-    return (val: number) => {
-      if (decimals > 0) {
-        return val.toFixed(decimals);
-      }
-      return Math.round(val).toLocaleString();
-    };
+    const formatter = decimals > 0 ? createDecimalFormatter(decimals) : integerFormatter;
+    return (val: number) => formatter.format(decimals > 0 ? val : Math.round(val));
   }, [decimals]);
 
   const activeFormat = format || defaultFormat;
-  const [display, setDisplay] = useState(
-    activeFormat(shouldReduceMotion ? value : (start ? value : initialValue))
-  );
 
-  const motionValue = useMotionValue(
-    shouldReduceMotion ? value : (start ? value : initialValue)
-  );
-
+  const motionValue = useMotionValue(shouldReduceMotion ? value : initialValue);
   const spring = useSpring(motionValue, {
     stiffness,
     damping,
     mass,
   });
 
+  // Direct DOM updates on animation frames (rerender-use-ref-transient-values)
   useEffect(() => {
     if (shouldReduceMotion) {
-      setDisplay(activeFormat(value));
+      if (spanRef.current) {
+        spanRef.current.textContent = activeFormat(value);
+      }
       return;
     }
+
+    const unsubscribe = spring.on("change", (latest) => {
+      if (spanRef.current) {
+        spanRef.current.textContent = activeFormat(latest);
+      }
+    });
 
     if (start) {
       motionValue.set(value);
     } else {
       motionValue.set(initialValue);
-      setDisplay(activeFormat(initialValue));
+      if (spanRef.current) {
+        spanRef.current.textContent = activeFormat(initialValue);
+      }
     }
-  }, [value, start, motionValue, shouldReduceMotion, activeFormat, initialValue]);
-
-  useEffect(() => {
-    if (shouldReduceMotion) return;
-
-    const unsubscribe = spring.on("change", (latest) => {
-      setDisplay(activeFormat(latest));
-    });
 
     return () => unsubscribe();
-  }, [spring, activeFormat, shouldReduceMotion]);
+  }, [value, start, motionValue, spring, shouldReduceMotion, activeFormat, initialValue]);
 
-  return <span className={className}>{display}</span>;
+  // Initial text rendered with initialValue so spring starts from initialValue (CLS = 0)
+  return (
+    <span ref={spanRef} className={className}>
+      {activeFormat(shouldReduceMotion ? value : initialValue)}
+    </span>
+  );
 }

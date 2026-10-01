@@ -25,6 +25,7 @@ export async function getGiteaContributions(
         Authorization: `token ${token}`,
         Accept: "application/json",
       },
+      signal: AbortSignal.timeout(8000),
     });
 
     if (!response.ok) {
@@ -74,9 +75,11 @@ export async function getGiteaLanguages(
     const [userReposRes, subsRes] = await Promise.all([
       fetch(`${cleanUrl}/api/v1/user/repos?limit=200`, {
         headers,
+        signal: AbortSignal.timeout(8000),
       }),
       fetch(`${cleanUrl}/api/v1/users/${encodeURIComponent(username)}/subscriptions?limit=200`, {
         headers,
+        signal: AbortSignal.timeout(8000),
       }),
     ]);
 
@@ -100,6 +103,7 @@ export async function getGiteaLanguages(
       // Fallback public si le token n'a pas la portée adéquate
       const pubRes = await fetch(`${cleanUrl}/api/v1/users/${encodeURIComponent(username)}/repos`, {
         headers: { Accept: "application/json" },
+        signal: AbortSignal.timeout(8000),
       });
       if (pubRes.ok) addRepos(await pubRes.json());
     }
@@ -118,6 +122,7 @@ export async function getGiteaLanguages(
           `${cleanUrl}/api/v1/repos/${repo.full_name}/languages`,
           {
             headers,
+            signal: AbortSignal.timeout(8000),
           }
         );
         if (!lRes.ok && headers["Authorization"]) {
@@ -125,6 +130,7 @@ export async function getGiteaLanguages(
             `${cleanUrl}/api/v1/repos/${repo.full_name}/languages`,
             {
               headers: { Accept: "application/json" },
+              signal: AbortSignal.timeout(8000),
             }
           );
         }

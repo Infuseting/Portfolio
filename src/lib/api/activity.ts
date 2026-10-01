@@ -35,7 +35,13 @@ const LINGUIST_COLORS: Record<string, string> = {
   Other: "#64748b",
 };
 
+let languagesCache: LanguageStat[] | null = null;
+
 export async function getUnifiedLanguages(): Promise<LanguageStat[]> {
+  if (languagesCache) {
+    return languagesCache;
+  }
+
   const [ghMap, gtMap] = await Promise.all([
     getGitHubLanguages(),
     getGiteaLanguages(),
@@ -109,7 +115,46 @@ export async function getUnifiedLanguages(): Promise<LanguageStat[]> {
     });
   }
 
+  languagesCache = mainLanguages;
   return mainLanguages;
+}
+
+function computeActiveStreak(
+  githubMap: Map<string, number>,
+  giteaMap: Map<string, number>,
+  todayStr: string
+): number {
+  let streak = 0;
+  const d = new Date(todayStr + "T00:00:00Z");
+
+  const todayCount = (githubMap.get(todayStr) || 0) + (giteaMap.get(todayStr) || 0);
+
+  if (todayCount > 0) {
+    streak = 1;
+    d.setUTCDate(d.getUTCDate() - 1);
+  } else {
+    d.setUTCDate(d.getUTCDate() - 1);
+    const yesterdayStr = d.toISOString().split("T")[0];
+    const yesterdayCount = (githubMap.get(yesterdayStr) || 0) + (giteaMap.get(yesterdayStr) || 0);
+    if (yesterdayCount === 0) {
+      return 0;
+    }
+    streak = 1;
+    d.setUTCDate(d.getUTCDate() - 1);
+  }
+
+  while (true) {
+    const prevDateStr = d.toISOString().split("T")[0];
+    const count = (githubMap.get(prevDateStr) || 0) + (giteaMap.get(prevDateStr) || 0);
+    if (count > 0) {
+      streak += 1;
+      d.setUTCDate(d.getUTCDate() - 1);
+    } else {
+      break;
+    }
+  }
+
+  return streak;
 }
 
 const activityCache = new Map<number, GitActivitySummary>();
@@ -132,23 +177,24 @@ export async function getUnifiedGitActivity(targetYear?: number): Promise<GitAct
     getUnifiedLanguages(),
   ]);
 
-  const startDate = new Date(year, 0, 1);
-  const endDate = new Date(year, 11, 31);
   const now = new Date();
+  const todayStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")}`;
+
+  const startDate = new Date(Date.UTC(year, 0, 1));
+  const endDate = new Date(Date.UTC(year, 11, 31));
 
   const days: ContributionDay[] = [];
   let githubTotal = 0;
   let giteaTotal = 0;
-  let currentStreak = 0;
   let longestStreak = 0;
   let tempStreak = 0;
   let elapsedDaysCount = 0;
   let activeDays = 0;
   let maxDayContributions = 0;
 
-  for (let d = new Date(startDate); d <= endDate; d.setDate(d.getDate() + 1)) {
-    const isFuture = d > now;
+  for (let d = new Date(startDate); d <= endDate; d.setUTCDate(d.getUTCDate() + 1)) {
     const dateStr = d.toISOString().split("T")[0];
+    const isFuture = dateStr > todayStr;
     const ghCount = isFuture ? 0 : githubMap.get(dateStr) || 0;
     const gtCount = isFuture ? 0 : giteaMap.get(dateStr) || 0;
     const combinedCount = ghCount + gtCount;
@@ -189,7 +235,11 @@ export async function getUnifiedGitActivity(targetYear?: number): Promise<GitAct
     }
   }
 
-  currentStreak = tempStreak;
+  let liveActiveStreak = 0;
+  if (year === currentYear) {
+    liveActiveStreak = computeActiveStreak(githubMap, giteaMap, todayStr);
+  }
+
   const totalContributions = githubTotal + giteaTotal;
 
   // Calcul du grand total absolu combinant toutes les années disponibles ("affiche vraiment tout")
@@ -200,9 +250,16 @@ export async function getUnifiedGitActivity(targetYear?: number): Promise<GitAct
         getGitHubContributions(y),
         getGiteaContributions(y),
       ]);
+      if (y === currentYear) {
+        liveActiveStreak = computeActiveStreak(gh, gt, todayStr);
+      }
       let sum = 0;
-      for (const val of gh.values()) sum += val;
-      for (const val of gt.values()) sum += val;
+      for (const [dateStr, val] of gh.entries()) {
+        if (dateStr.startsWith(`${y}-`) && dateStr <= todayStr) sum += val;
+      }
+      for (const [dateStr, val] of gt.entries()) {
+        if (dateStr.startsWith(`${y}-`) && dateStr <= todayStr) sum += val;
+      }
       return sum;
     });
 
@@ -225,7 +282,7 @@ export async function getUnifiedGitActivity(targetYear?: number): Promise<GitAct
     totalContributions,
     averagePerWeek,
     averagePerMonth,
-    currentStreak: year === currentYear ? currentStreak : 0,
+    currentStreak: liveActiveStreak,
     longestStreak,
     githubTotal,
     giteaTotal,
