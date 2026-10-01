@@ -12,6 +12,7 @@
 /* ── TOKENS ──────────────────────────────────────────────── */
 @import './tokens.css';
 @import './animations.css';
+@import './metrics.css';
 
 /* ── RESET ───────────────────────────────────────────────── */
 *,
@@ -28,7 +29,7 @@ html {
   scroll-behavior: smooth;
   /* Prevent layout shift on scrollbar appear */
   scrollbar-gutter: stable;
-  color-scheme: light dark;
+  color-scheme: light;
 }
 
 img,

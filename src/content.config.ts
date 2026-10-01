@@ -6,26 +6,10 @@ const tags = defineCollection({
   loader: file('src/data/tags.json'),
   schema: z.object({
     id: z.string(),
-    name: z.union([z.string(), z.record(z.string())]),
+    name: z.union([z.string(), z.record(z.string(), z.string())]),
     icon: z.string(),
     color: z.string().optional(),
-    category: z.union([z.string(), z.record(z.string())]),
-  }),
-});
-
-// ── Blog Collection ──────────────────────────────────────────────────────────
-const blog = defineCollection({
-  loader: glob({ pattern: '**/*.{md,mdx}', base: './src/content/blog' }),
-  schema: z.object({
-    title:       z.string(),
-    description: z.string(),
-    publishDate: z.coerce.date(),
-    updatedDate: z.coerce.date().optional(),
-    tags:        z.array(z.string()).default([]),
-    draft:       z.boolean().default(false),
-    featured:    z.boolean().default(false),
-    coverImage:  z.string().optional(), // relative path in src/assets/
-    coverAlt:    z.string().optional(),
+    category: z.union([z.string(), z.record(z.string(), z.string())]),
   }),
 });
 
@@ -47,4 +31,4 @@ const projects = defineCollection({
   }),
 });
 
-export const collections = { tags, blog, projects };
+export const collections = { tags, projects };

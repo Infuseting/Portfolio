@@ -7,36 +7,74 @@ export const defaultLang = 'fr';
 
 export const ui = {
   fr: {
+    // Navigation
     'nav.home': 'Accueil',
+    'nav.about': 'À propos',
+    'nav.activity': 'Activité',
+    'nav.contact': 'Contact',
     'nav.projects': 'Projets',
-    'nav.blog': 'Blog',
     'nav.tags': 'Tags',
-    'error.not_translated': "La traduction de cet article n'existe pas.",
+    'nav.aria_label': 'Navigation principale',
+    'nav.menu': 'Menu',
+    'a11y.skip': 'Aller au contenu',
+    'error.not_translated': "La traduction n'existe pas.",
     'button.back_home': "Retour à l'accueil",
     'breadcrumb.label': "Fil d'Ariane",
-    'blog.read_more': 'Lire la suite',
     'projects.live': 'Voir en direct',
     'projects.source': 'Code source',
     
-    // Footer
-    'footer.role': 'Développeur Fullstack',
-    'footer.cv': 'CV ↓',
-    'footer.rights': 'Tous droits réservés.',
-    'footer.built': 'Construit avec',
-    'hero.badge': 'Disponible · Freelance',
-    'hero.title.1': 'Développeur',
-    'hero.title.2': 'Full-Stack & Passionné',
-    'hero.description': "Actuellement en alternance chez Sopra Steria, je rejoins l'ENSICAEN en Cybersécurité & Monétique. Je crée des solutions diverses et variées, que ce soit pour des projets fun et perso, ou pour des projets plus professionnels.",
+    // 404
+    '404.title': 'Page Introuvable',
+    '404.description': "La page que vous recherchez n'existe pas ou a été déplacée.",
+    '404.message': "Oops ! La page que vous cherchez a disparu dans le cyberespace.",
+
+    // Site & Meta
+    'site.tagline': 'Software Engineer · Alternant',
+    'site.locale': 'fr_FR',
+    'site.meta_description': "Arthur SERRET — Software Engineer en alternance (Sopra Steria & ENSICAEN). À la recherche d'un stage à l'étranger (min. 9 semaines) avant 2029.",
+
+    // Hero
+    'hero.badge': "Étudiant en alternance · Recherche stage à l'étranger (≥ 9 sem.) avant 2029",
+    'hero.title.1': 'Software',
+    'hero.title.2': 'Engineer',
+    'hero.description': "Étudiant en alternance chez Sopra Steria et à l'ENSICAEN en Cybersécurité & Monétique. Passionné par l'ingénierie logicielle et le craft technique, je recherche un stage à l'étranger d'au moins 9 semaines à effectuer avant 2029.",
     'hero.cv': 'CV ↓',
     'hero.contact': 'Me contacter →',
     
+    // Activity Section
+    'activity.section_label': 'Activité & Algorithmes',
+    'activity.title': 'Contributions & Algorithmes',
+
+    // Metrics — Communs
+    'metrics.days': 'jours',
+    'metrics.day': 'jour',
+
+    // Metrics — Git Activity Card
+    'metrics.git.total_global': 'Total global',
+    'metrics.git.avg_per_week': 'Moy. / semaine',
+    'metrics.git.active_streak': 'Streak actif',
+    'metrics.git.max': 'Max',
+    'metrics.git.active_days': 'Jours actifs',
+    'metrics.git.peak': 'Record',
+    'metrics.git.contributions': 'Contributions',
+    'metrics.git.today': " (Aujourd'hui)",
+    'metrics.git.hover_day': 'Survolez un jour',
+    'metrics.git.in_year': 'en',
+    'metrics.git.per_month': '/ mois',
+    'metrics.git.less': 'Moins',
+    'metrics.git.more': 'Plus',
+
+    // Metrics — LeetCode Card
+    'metrics.leetcode.global_rank': 'Rang mondial',
+    'metrics.leetcode.solved': 'résolus',
+    'metrics.leetcode.acceptance_rate': 'Taux de succès',
+    'metrics.leetcode.active_streak': 'Streak actif',
+
     // Projects
     'projects.title': "Ce que j'ai construit",
     'projects.empty': 'Les projets arrivent bientôt.',
     'projects.footer': 'Retrouvez mes autres projets sur',
     'projects.footer.github': 'mon GitHub',
-    'projects.footer.or': 'ou consultez mes articles dans la section',
-    'projects.footer.blog': 'Blog',
     
     // Stack
     'stack.heading': 'Mon stack',
@@ -44,81 +82,102 @@ export const ui = {
     
     // Tooltip
     'tooltip.project': 'Projet',
-    'tooltip.article': 'Article',
     'tooltip.empty': 'Pas de référence pour le moment.',
     'tooltip.more': 'Voir +',
-    
-    // BlogPreview
-    'blogpreview.title': 'Le blog',
-    'blogpreview.all': 'Tous les articles →',
-    'blogpreview.empty': 'Les articles arrivent bientôt.',
-    'blogpreview.read': "Lire l'article →",
     
     // Contact
     'contact.badge': 'Contact',
     'contact.title': 'Travaillons ensemble',
-    'contact.description': "Vous avez un projet en tête ou vous souhaitez simplement échanger ? Je suis toujours ouvert aux nouvelles opportunités.",
+    'contact.description': "Vous proposez une opportunité de stage à l'étranger (min. 9 semaines) avant 2029 ou souhaitez simplement échanger ? Je suis à votre écoute.",
     'contact.email': 'serretarthur@gmail.com',
     'contact.linkedin': 'LinkedIn',
     'contact.github': 'GitHub',
 
-    // Navigation / A11y
-    'nav.aria_label': 'Navigation principale',
-    'nav.menu': 'Menu',
-    'a11y.skip': 'Aller au contenu',
-    // Site
-    'site.tagline': 'Développeur Fullstack',
-    // Blog page
-    'blog.title': 'Blog',
-    'blog.description': "Articles techniques d'Arthur SERRET",
-    'blog.section_label': 'Écritures',
-    'blog.subtitle': 'Réflexions techniques et retours d\'expérience',
-    'blog.empty': 'Les articles arrivent bientôt.',
     // Tags page
     'tag.title': 'Tag',
-    'tag.meta_description': 'Tous les projets et articles liés à {{tag}}',
+    'tag.meta_description': 'Tous les projets liés à {{tag}}',
     'tag.section_label': 'Recherche par technologie',
-    'tag.subtitle': 'Tous les projets et articles associés à cette technologie.',
-    'tag.empty': 'Aucun projet ni article trouvé pour ce tag.',
+    'tag.subtitle': 'Tous les projets associés à cette technologie.',
+    'tag.empty': 'Aucun projet trouvé pour ce tag.',
     // Projects badges
     'project.wip': 'En cours',
     'project.featured': 'À la une',
-    // Blog updated label
-    'blog.updated': 'Mis à jour :',
     // Footer
+    'footer.role': 'Software Engineer · Alternant',
+    'footer.cv': 'CV ↓',
+    'footer.rights': 'Tous droits réservés.',
+    'footer.built': 'Construit avec',
     'footer.socials_label': 'Réseaux sociaux',
   },
   en: {
+    // Navigation
     'nav.home': 'Home',
+    'nav.about': 'About',
+    'nav.activity': 'Activity',
+    'nav.contact': 'Contact',
     'nav.projects': 'Projects',
-    'nav.blog': 'Blog',
     'nav.tags': 'Tags',
-    'error.not_translated': 'The translation of this article does not exist.',
+    'nav.aria_label': 'Main navigation',
+    'nav.menu': 'Menu',
+    'a11y.skip': 'Skip to content',
+    'error.not_translated': 'The translation does not exist.',
     'button.back_home': 'Back to Home',
     'breadcrumb.label': 'Breadcrumb',
-    'blog.read_more': 'Read more',
     'projects.live': 'Live Demo',
     'projects.source': 'Source Code',
-    
-    // Footer
-    'footer.role': 'Full-Stack Developer',
-    'footer.cv': 'Resume ↓',
-    'footer.rights': 'All rights reserved.',
-    'footer.built': 'Built with',
-    'hero.badge': 'Available · Freelance',
-    'hero.title.1': 'Passionate',
-    'hero.title.2': 'Full-Stack Developer',
-    'hero.description': "Currently an apprentice at Sopra Steria, joining ENSICAEN for Cybersecurity & E-payment. I create diverse solutions, whether for fun and personal projects or more professional endeavors.",
+
+    // 404
+    '404.title': 'Page Not Found',
+    '404.description': "The page you're looking for doesn't exist or has been moved.",
+    '404.message': "Oops! The page you're looking for has vanished into cyberspace.",
+
+    // Site & Meta
+    'site.tagline': 'Software Engineer · Apprentice',
+    'site.locale': 'en_GB',
+    'site.meta_description': 'Arthur SERRET — Apprentice Software Engineer (Sopra Steria & ENSICAEN). Seeking an international internship (9+ weeks) before 2029.',
+
+    // Hero
+    'hero.badge': 'Apprentice Student · Seeking Abroad Internship (9+ wks) before 2029',
+    'hero.title.1': 'Software',
+    'hero.title.2': 'Engineer',
+    'hero.description': "Apprentice Software Engineer at Sopra Steria and ENSICAEN (Cybersecurity & E-Payment). Passionate about software engineering and technical craft, actively seeking an international internship (minimum 9 weeks) to complete before 2029.",
     'hero.cv': 'Resume ↓',
     'hero.contact': 'Contact me →',
     
+    // Activity Section
+    'activity.section_label': 'Activity & Algorithms',
+    'activity.title': 'Contributions & Algorithms',
+
+    // Metrics — Common
+    'metrics.days': 'days',
+    'metrics.day': 'day',
+
+    // Metrics — Git Activity Card
+    'metrics.git.total_global': 'All-time total',
+    'metrics.git.avg_per_week': 'Avg / week',
+    'metrics.git.active_streak': 'Streak',
+    'metrics.git.max': 'Max',
+    'metrics.git.active_days': 'Active days',
+    'metrics.git.peak': 'Peak',
+    'metrics.git.contributions': 'Contributions',
+    'metrics.git.today': ' (Today)',
+    'metrics.git.hover_day': 'Hover a day',
+    'metrics.git.in_year': 'in',
+    'metrics.git.per_month': '/ month',
+    'metrics.git.less': 'Less',
+    'metrics.git.more': 'More',
+
+    // Metrics — LeetCode Card
+    'metrics.leetcode.global_rank': 'Global rank',
+    'metrics.leetcode.solved': 'solved',
+    'metrics.leetcode.acceptance_rate': 'Acceptance rate',
+    'metrics.leetcode.active_streak': 'Active streak',
+
     // Projects
     'projects.title': 'What I have built',
     'projects.empty': 'Projects coming soon.',
     'projects.footer': 'Find my other projects on',
     'projects.footer.github': 'my GitHub',
-    'projects.footer.or': 'or read my articles in the',
-    'projects.footer.blog': 'Blog section',
     
     // Stack
     'stack.heading': 'My stack',
@@ -126,48 +185,31 @@ export const ui = {
     
     // Tooltip
     'tooltip.project': 'Project',
-    'tooltip.article': 'Article',
     'tooltip.empty': 'No reference for now.',
     'tooltip.more': 'See +',
     
-    // BlogPreview
-    'blogpreview.title': 'The Blog',
-    'blogpreview.all': 'All articles →',
-    'blogpreview.empty': 'Articles coming soon.',
-    'blogpreview.read': 'Read article →',
-    
     // Contact
     'contact.badge': 'Contact',
-    'contact.title': "Let's work together",
-    'contact.description': "Do you have a project in mind or just want to chat? I'm always open to new opportunities.",
+    'contact.title': "Let's connect",
+    'contact.description': "Offering an international internship opportunity (min. 9 weeks) before 2029 or just want to connect? Feel free to reach out.",
     'contact.email': 'serretarthur@gmail.com',
     'contact.linkedin': 'LinkedIn',
     'contact.github': 'GitHub',
 
-    // Navigation / A11y
-    'nav.aria_label': 'Main navigation',
-    'nav.menu': 'Menu',
-    'a11y.skip': 'Skip to content',
-    // Site
-    'site.tagline': 'Full-Stack Developer',
-    // Blog page
-    'blog.title': 'Blog',
-    'blog.description': "Arthur SERRET's technical articles",
-    'blog.section_label': 'Writings',
-    'blog.subtitle': 'Technical reflections, and experience reports.',
-    'blog.empty': 'Articles coming soon.',
     // Tags page
     'tag.title': 'Tag',
-    'tag.meta_description': 'All projects and articles related to {{tag}}',
+    'tag.meta_description': 'All projects related to {{tag}}',
     'tag.section_label': 'Search by technology',
-    'tag.subtitle': 'All projects and articles linked to this technology.',
-    'tag.empty': 'No project or article found for this tag.',
+    'tag.subtitle': 'All projects linked to this technology.',
+    'tag.empty': 'No project found for this tag.',
     // Projects badges
     'project.wip': 'In progress',
     'project.featured': 'Featured',
-    // Blog updated label
-    'blog.updated': 'Updated:',
     // Footer
+    'footer.role': 'Software Engineer · Apprentice',
+    'footer.cv': 'Resume ↓',
+    'footer.rights': 'All rights reserved.',
+    'footer.built': 'Built with',
     'footer.socials_label': 'Social media',
   },
 } as const;

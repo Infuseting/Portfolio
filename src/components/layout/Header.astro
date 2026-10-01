@@ -1,5 +1,4 @@
 ---
-import ThemeToggle from './ThemeToggle.astro';
 import LanguagePicker from '../LanguagePicker.astro';
 import { getLangFromUrl, useTranslations } from '../../i18n/utils';
 
@@ -7,10 +6,9 @@ const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
 
 const navLinks = [
-  { href: `/${lang}/#projects`, label: t('nav.projects') },
-  { href: `/${lang}/#stack`,    label: 'Stack' },
-  { href: `/${lang}/blog`,      label: t('nav.blog') },
-  { href: `/${lang}/#contact`,  label: 'Contact' },
+  { href: `/${lang}/#hero`,     label: t('nav.about') },
+  { href: `/${lang}/#activity`, label: t('nav.activity') },
+  { href: `/${lang}/#contact`,  label: t('nav.contact') },
 ];
 
 const currentPath = Astro.url.pathname;
@@ -42,7 +40,6 @@ const currentPath = Astro.url.pathname;
     <!-- Actions -->
     <div class="header__actions">
       <LanguagePicker />
-      <ThemeToggle />
       <a
         href="/cv.pdf"
         download="CV_Arthur_SERRET.pdf"

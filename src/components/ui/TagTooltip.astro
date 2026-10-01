@@ -3,7 +3,6 @@ import { getCollection } from 'astro:content';
 import type { CollectionEntry } from 'astro:content';
 import { getLangFromUrl, useTranslations } from '../../i18n/utils';
 import { getRelatedItems } from '../../utils/getRelatedItems';
-import { getBlogPostUrl } from '../../utils/urls';
 
 const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
@@ -11,14 +10,12 @@ const t = useTranslations(lang);
 interface Props {
   id: string;
   allProjects?: CollectionEntry<'projects'>[];
-  allBlog?: CollectionEntry<'blog'>[];
 }
-const { id, allProjects: propProjects, allBlog: propBlog } = Astro.props;
+const { id, allProjects: propProjects } = Astro.props;
 
 const allProjects = propProjects ?? await getCollection('projects');
-const allBlog = propBlog ?? await getCollection('blog');
 
-const relatedItems = getRelatedItems(id, id, lang, allProjects, allBlog);
+const relatedItems = getRelatedItems(id, id, lang, allProjects);
 
 const hasRelated = relatedItems.length > 0;
 const tagHref = `/${lang}/tags/${id}`;
@@ -30,8 +27,8 @@ const tagHref = `/${lang}/tags/${id}`;
       <ul class="related-list">
         {relatedItems.map(item => (
           <li>
-            <a href={item.type === 'project' ? (item.data.liveUrl || item.data.githubUrl || `/${lang}/tags/${id}`) : getBlogPostUrl(lang, item.id)}>
-              <span class="item-type">{item.type === 'project' ? t('tooltip.project') : t('tooltip.article')}</span>
+            <a href={item.data.liveUrl || item.data.githubUrl || `/${lang}/tags/${id}`}>
+              <span class="item-type">{t('tooltip.project')}</span>
               <span class="item-title">{item.data.title}</span>
             </a>
           </li>

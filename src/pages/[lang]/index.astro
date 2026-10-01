@@ -9,24 +9,22 @@ export function getStaticPaths() {
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import Header from '../../components/layout/Header.astro';
 import Footer from '../../components/layout/Footer.astro';
+import ActivitySection from '../../components/sections/ActivitySection.astro';
 import Hero from '../../components/sections/Hero.astro';
-import Projects from '../../components/sections/Projects.astro';
-import Stack from '../../components/sections/Stack.astro';
-import BlogPreview from '../../components/sections/BlogPreview.astro';
 import Contact from '../../components/sections/Contact.astro';
-const { lang } = Astro.params;
+import { useTranslations } from '../../i18n/utils';
+const { lang } = Astro.params as { lang: 'fr' | 'en' };
+const t = useTranslations(lang);
 ---
 
 <BaseLayout
   title="Arthur SERRET"
-  description={lang === 'en' ? 'Arthur SERRET — Full-Stack Developer (Java, Angular, TypeScript) based in France.' : 'Arthur SERRET — Développeur Full-Stack (Java, Angular, TypeScript) basé en France.'}
+  description={t('site.meta_description')}
 >
   <Header />
   <main id="main-content" style="padding-top: var(--header-h);">
     <Hero />
-    <Projects />
-    <Stack />
-    <BlogPreview />
+    <ActivitySection />
     <Contact />
   </main>
   <Footer />

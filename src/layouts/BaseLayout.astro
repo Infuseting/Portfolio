@@ -23,10 +23,10 @@ const {
   robots       = 'index, follow',
 } = Astro.props;
 
-import { getLangFromUrl, defaultLang, useTranslations } from '../i18n/utils';
+import { getLangFromUrl, defaultLang, useTranslations, getAltLang } from '../i18n/utils';
 const lang = getLangFromUrl(Astro.url);
 const t_layout = useTranslations(lang);
-const altLang = lang === 'fr' ? 'en' : 'fr';
+const altLang = getAltLang(lang);
 const altUrl = Astro.url.href.includes(`/${lang}/`)
   ? Astro.url.href.replace(`/${lang}/`, `/${altLang}/`)
   : Astro.url.href;
@@ -48,15 +48,6 @@ const siteUrl = Astro.site?.origin ?? 'https://infuseting.fr';
     <link rel="alternate" hreflang={altLang} href={altUrl} />
     <link rel="alternate" hreflang="x-default" href={canonicalUrl.replace(`/${lang}/`, `/${defaultLang}/`)} />
 
-    <!-- FOUC prevention: must be is:inline and first in <head> -->
-    <script is:inline>
-      (function () {
-        const stored = localStorage.getItem('theme');
-        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-        const theme = stored ?? (prefersDark ? 'dark' : 'light');
-        document.documentElement.setAttribute('data-theme', theme);
-      })();
-    </script>
 
     <!-- Primary Meta -->
     <title>{fullTitle}</title>
@@ -73,7 +64,7 @@ const siteUrl = Astro.site?.origin ?? 'https://infuseting.fr';
     <meta property="og:description" content={description} />
     <meta property="og:image"       content={`${siteUrl}${ogImage}`} />
     <meta property="og:site_name"   content="Arthur SERRET" />
-    <meta property="og:locale"      content={lang === 'fr' ? 'fr_FR' : 'en_GB'} />
+    <meta property="og:locale"      content={t_layout('site.locale')} />
     {publishDate && <meta property="article:published_time" content={publishDate} />}
 
     <!-- Twitter Card -->
@@ -96,7 +87,7 @@ const siteUrl = Astro.site?.origin ?? 'https://infuseting.fr';
       "@type": "Person",
       "name": "Arthur SERRET",
       "url": siteUrl,
-      "jobTitle": "Développeur Fullstack",
+      "jobTitle": "Software Engineer",
       "sameAs": [
         "https://github.com/Infuseting",
         "https://www.linkedin.com/in/arthur-serret/"
@@ -110,6 +101,5 @@ const siteUrl = Astro.site?.origin ?? 'https://infuseting.fr';
   <body>
     <a href="#main-content" class="skip-to-content">{t_layout('a11y.skip')}</a>
     <slot />
-    <script src="../scripts/animations.ts"></script>
   </body>
 </html>

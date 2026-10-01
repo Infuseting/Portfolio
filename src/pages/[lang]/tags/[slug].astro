@@ -6,13 +6,11 @@ import Footer from '../../../components/layout/Footer.astro';
 import Tag from '../../../components/ui/Tag.astro';
 import SectionLabel from '../../../components/ui/SectionLabel.astro';
 import { useTranslations } from '../../../i18n/utils';
-import { getBlogPostUrl } from '../../../utils/urls';
-import { formatDate } from '../../../utils/formatDate';
+import { defaultLang } from '../../../i18n/ui';
 
 export async function getStaticPaths() {
   const allTags = await getCollection('tags');
   const allProjects = await getCollection('projects');
-  const allBlog = await getCollection('blog');
 
   const langs = ['fr', 'en'];
   const paths = [];
@@ -23,14 +21,13 @@ export async function getStaticPaths() {
     allProjects
       .filter(p => p.id.startsWith(`${lang}/`))
       .forEach(p => p.data.tags?.forEach((t: string) => uniqueTagNames.add(t)));
-    allBlog
-      .filter(b => b.id.startsWith(`${lang}/`))
-      .forEach(b => b.data.tags?.forEach((t: string) => uniqueTagNames.add(t)));
 
     const handledNames = new Set<string>();
 
     for (const tag of allTags) {
-      const tagLabel = typeof tag.data.name === 'string' ? tag.data.name : (tag.data.name[lang] || tag.data.name['fr']);
+      const tagLabel: string = typeof tag.data.name === 'string' 
+        ? tag.data.name 
+        : ((tag.data.name as Record<string, string>)?.[lang] || (tag.data.name as Record<string, string>)?.[defaultLang] || '');
       handledNames.add(tag.id.toLowerCase());
       handledNames.add(tagLabel.toLowerCase());
       paths.push({
@@ -56,13 +53,23 @@ export async function getStaticPaths() {
   return paths;
 }
 
+export interface Props {
+  tag: {
+    id: string;
+    data: {
+      name: string;
+      color?: string;
+      [key: string]: any;
+    };
+  };
+}
+
 const { lang } = Astro.params as { lang: 'fr' | 'en' };
 const { tag } = Astro.props;
 const t = useTranslations(lang);
 
-const [allProjects, allBlog, allTags] = await Promise.all([
+const [allProjects, allTags] = await Promise.all([
   getCollection('projects'),
-  getCollection('blog'),
   getCollection('tags')
 ]);
 
@@ -72,7 +79,6 @@ const matchTag = (tagArr: string[]) => tagArr.some((t: string) =>
 );
 
 const projects = allProjects.filter((p: any) => matchTag(p.data.tags || []) && p.id.startsWith(`${lang}/`)).sort((a: any, b: any) => a.data.order - b.data.order);
-const blogPosts = allBlog.filter((b: any) => matchTag(b.data.tags || []) && b.id.startsWith(`${lang}/`)).sort((a: any, b: any) => b.data.publishDate.valueOf() - a.data.publishDate.valueOf());
 ---
 
 <Layout title={`${t('tag.title')}: ${tag.data.name} | Arthur SERRET`} description={`${t('tag.meta_description').replace('{{tag}}', tag.data.name)}`}>
@@ -105,7 +111,7 @@ const blogPosts = allBlog.filter((b: any) => matchTag(b.data.tags || []) && b.id
                 <p class="project-card__desc">{project.data.description}</p>
                 <ul class="project-card__tags">
                   {project.data.tags.map((t: string) => (
-                    <li><Tag label={t} allTags={allTags} allProjects={allProjects} allBlog={allBlog} /></li>
+                    <li><Tag label={t} allTags={allTags} allProjects={allProjects} /></li>
                   ))}
                 </ul>
               </article>
@@ -115,40 +121,7 @@ const blogPosts = allBlog.filter((b: any) => matchTag(b.data.tags || []) && b.id
       </section>
     )}
 
-    {blogPosts.length > 0 && (
-      <section class="tag-section">
-        <h2 class="section-title">{t('nav.blog')}</h2>
-        <ul class="blog-grid" role="list">
-          {blogPosts.map((post: any) => (
-            <li class="blog-card">
-              <article>
-                <div class="blog-card__content">
-                  <div class="blog-card__meta">
-                    <time datetime={post.data.publishDate.toISOString()} class="blog-card__date">
-                      {formatDate(post.data.publishDate, lang)}
-                    </time>
-                    <ul class="blog-card__tags">
-                      {post.data.tags.slice(0, 2).map((t: string) => (
-                        <li><Tag label={t} allTags={allTags} allProjects={allProjects} allBlog={allBlog} /></li>
-                      ))}
-                    </ul>
-                  </div>
-                  <h3 class="blog-card__title">
-                    <a href={getBlogPostUrl(lang, post.id)} class="blog-card__title-link" aria-label={post.data.title}>
-                      {post.data.title}
-                    </a>
-                  </h3>
-                  <p class="blog-card__desc">{post.data.description}</p>
-                  <span class="blog-card__read">{t('blogpreview.read')}</span>
-                </div>
-              </article>
-            </li>
-          ))}
-        </ul>
-      </section>
-    )}
-
-    {projects.length === 0 && blogPosts.length === 0 && (
+    {projects.length === 0 && (
       <p class="empty-state">{t('tag.empty')}</p>
     )}
     
@@ -240,106 +213,7 @@ const blogPosts = allBlog.filter((b: any) => matchTag(b.data.tags || []) && b.id
     color: var(--color-bg);
   }
 
-  /* Blog Grid */
-  .blog-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: var(--space-6);
-    list-style: none;
-  }
-  .blog-card {
-    border: var(--border-width) solid var(--color-border);
-    transition: transform var(--transition-brutal), box-shadow var(--transition-brutal);
-    background: var(--color-bg);
-    position: relative;
-    height: 100%;
-  }
-  .blog-card:hover {
-    transform: translate(-3px, -3px);
-    box-shadow: var(--shadow-brutal-hover);
-    background: var(--color-bg-alt);
-    z-index: 1;
-  }
-  .blog-card__content {
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-3);
-    padding: var(--space-6);
-    height: 100%;
-  }
-  .blog-card__meta {
-    display: flex;
-    align-items: center;
-    gap: var(--space-2);
-    flex-wrap: wrap;
-    position: relative;
-    z-index: 2; /* Tags clickable */
-  }
-  .blog-card__tags {
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--space-2);
-    list-style: none;
-  }
-  .blog-card__date {
-    font-family: var(--font-mono);
-    font-size: var(--text-xs);
-    color: var(--color-fg-muted);
-  }
-  .blog-card__title {
-    font-size: var(--text-xl);
-    font-weight: var(--weight-black);
-    line-height: var(--leading-snug);
-    margin-bottom: var(--space-2);
-    word-wrap: break-word;
-    overflow-wrap: break-word;
-    hyphens: auto;
-  }
-  .blog-card__title-link {
-    color: var(--color-fg);
-    text-decoration: none;
-    transition: color var(--transition-fast);
-  }
-  .blog-card__title-link::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    z-index: 1;
-  }
-  .blog-card:hover .blog-card__title-link {
-    color: var(--color-accent);
-  }
-  .blog-card__desc {
-    color: var(--color-fg-muted);
-    font-size: var(--text-sm);
-    margin-bottom: var(--space-4);
-    line-height: var(--leading-normal);
-    flex: 1;
-    display: -webkit-box;
-    -webkit-line-clamp: 3;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-  }
-  .blog-card__tags {
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--space-2);
-    list-style: none;
-    margin-bottom: var(--space-4);
-  }
-  .blog-card__read {
-    font-family: var(--font-display);
-    font-size: var(--text-xs);
-    font-weight: var(--weight-bold);
-    letter-spacing: var(--tracking-wide);
-    text-transform: uppercase;
-    color: var(--color-accent);
-    margin-top: auto;
-    transition: letter-spacing var(--transition-brutal);
-  }
-  .blog-card:hover .blog-card__read {
-    letter-spacing: var(--tracking-wider, 0.1em);
-  }
+
 
   .empty-state {
     font-style: italic;

@@ -26,11 +26,10 @@ const socials = [
       <span class="footer__role">{t('footer.role')}</span>
     </div>
 
-    <nav class="footer__nav" aria-label="Navigation pied de page">
-      <a href={`/${lang}/#projects`}>{t('nav.projects')}</a>
-      <a href={`/${lang}/#stack`}>Stack</a>
-      <a href={`/${lang}/blog`}>{t('nav.blog')}</a>
-      <a href={`/${lang}/#contact`}>Contact</a>
+    <nav class="footer__nav" aria-label={t('nav.aria_label')}>
+      <a href={`/${lang}/#hero`}>{t('nav.about')}</a>
+      <a href={`/${lang}/#activity`}>{t('nav.activity')}</a>
+      <a href={`/${lang}/#contact`}>{t('nav.contact')}</a>
     </nav>
 
     <div class="footer__actions">

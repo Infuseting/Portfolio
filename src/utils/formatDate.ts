@@ -1,5 +1,10 @@
+const LOCALES: Record<string, string> = {
+  en: 'en-US',
+  fr: 'fr-FR',
+};
+
 export function formatDate(date: Date, lang: string = 'fr'): string {
-  const locale = lang === 'en' ? 'en-US' : 'fr-FR';
+  const locale = LOCALES[lang] || 'fr-FR';
   return new Intl.DateTimeFormat(locale, {
     year:  'numeric',
     month: 'long',

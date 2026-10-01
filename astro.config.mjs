@@ -1,9 +1,14 @@
 // @ts-check
 import { defineConfig } from 'astro/config';
 import sitemap from '@astrojs/sitemap';
-
 import mdx from '@astrojs/mdx';
 import icon from 'astro-icon';
+import react from '@astrojs/react';
+import { loadEnv } from 'vite';
+
+// Load .env variables directly into process.env for Astro builds
+const env = loadEnv(process.env.NODE_ENV || 'production', process.cwd(), '');
+Object.assign(process.env, env);
 
 // https://astro.build/config
 export default defineConfig({
@@ -17,7 +22,7 @@ export default defineConfig({
       redirectToDefaultLocale: false,
     }
   },
-  integrations: [sitemap(), mdx(), icon()],
+  integrations: [sitemap(), mdx(), icon(), react()],
   image: {
     // Use sharp for image optimization
     service: { entrypoint: 'astro/assets/services/sharp' },

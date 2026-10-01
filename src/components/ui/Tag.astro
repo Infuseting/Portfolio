@@ -3,7 +3,6 @@ import { getCollection } from 'astro:content';
 import type { CollectionEntry } from 'astro:content';
 import { getLangFromUrl, useTranslations } from '../../i18n/utils';
 import { getRelatedItems } from '../../utils/getRelatedItems';
-import { getBlogPostUrl } from '../../utils/urls';
 
 const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
@@ -14,17 +13,25 @@ interface Props {
   color?: string; // optional custom accent
   allTags?: CollectionEntry<'tags'>[];
   allProjects?: CollectionEntry<'projects'>[];
-  allBlog?: CollectionEntry<'blog'>[];
 }
-const { label, color, allTags: propTags, allProjects: propProjects, allBlog: propBlog } = Astro.props;
+const { label, color, allTags: propTags, allProjects: propProjects } = Astro.props;
 
 // Attempt to resolve ID from the label if not provided
 const allTags = propTags ?? await getCollection('tags');
 let resolvedId = Astro.props.id;
 let resolvedColor = color;
 
+const getTagName = (name: unknown): string => {
+  if (typeof name === 'string') return name;
+  if (name && typeof name === 'object') {
+    const rec = name as Record<string, string>;
+    return rec[lang] || rec['fr'] || '';
+  }
+  return '';
+};
+
 if (!resolvedId) {
-  const foundTag = allTags.find(tagStr => tagStr.data.name.toLowerCase() === label.toLowerCase() || tagStr.id.toLowerCase() === label.toLowerCase());
+  const foundTag = allTags.find(tagStr => getTagName(tagStr.data.name).toLowerCase() === label.toLowerCase() || tagStr.id.toLowerCase() === label.toLowerCase());
   if (foundTag) {
     resolvedId = foundTag.id;
     if (!resolvedColor && foundTag.data.color) resolvedColor = foundTag.data.color;
@@ -36,8 +43,7 @@ if (!resolvedId) {
 let relatedItems: any[] = [];
 if (resolvedId) {
   const allProjects = propProjects ?? await getCollection('projects');
-  const allBlog = propBlog ?? await getCollection('blog');
-  relatedItems = getRelatedItems(resolvedId, label, lang, allProjects, allBlog);
+  relatedItems = getRelatedItems(resolvedId, label, lang, allProjects);
 }
 
 const hasRelated = relatedItems.length > 0;
@@ -62,8 +68,8 @@ const tagHref = resolvedId ? `/${lang}/tags/${resolvedId}` : '#';
           <ul class="related-list">
             {relatedItems.map(item => (
               <li>
-                <a href={item.type === 'project' ? `/${lang}/#projects` : getBlogPostUrl(lang, item.id)}>
-                  <span class="item-type">{item.type === 'project' ? t('tooltip.project') : t('tooltip.article')}</span>
+                <a href={item.data.liveUrl || item.data.githubUrl || `/${lang}/tags/${resolvedId}`}>
+                  <span class="item-type">{t('tooltip.project')}</span>
                   <span class="item-title">{item.data.title}</span>
                 </a>
               </li>

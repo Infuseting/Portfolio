@@ -5,9 +5,6 @@ import { Icon } from 'astro-icon/components';
 
 const lang = getLangFromUrl(Astro.url);
 const currentPath = Astro.url.pathname;
-const altLang = lang === 'fr' ? 'en' : 'fr';
-// For the switcher, we just replace the language prefix
-const targetPath = currentPath.replace(`/${lang}/`, `/${altLang}/`);
 ---
 
 <div class="lang-picker">

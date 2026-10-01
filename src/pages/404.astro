@@ -10,8 +10,8 @@ const t = useTranslations(lang);
 ---
 
 <BaseLayout
-  title={lang === 'en' ? 'Page Not Found' : 'Page Introuvable'}
-  description={lang === 'en' ? "The page you're looking for doesn't exist or has been moved." : "La page que vous recherchez n'existe pas ou a été déplacée."}
+  title={t('404.title')}
+  description={t('404.description')}
   robots="noindex, follow"
 >
   <Header />
@@ -21,24 +21,10 @@ const t = useTranslations(lang);
         404
       </h1>
       <p id="error-msg" style="font-size: var(--text-xl); color: var(--color-fg-muted); margin: 0; max-width: 40ch;">
-        {lang === 'en' ? "Oops! The page you're looking for has vanished into cyberspace." : "Oops ! La page que vous cherchez a disparu dans le cyberespace."}
+        {t('404.message')}
       </p>
 
-      <script>
-        document.addEventListener('astro:page-load', () => {
-          const pathname = window.location.pathname;
-          const errorMsg = document.getElementById('error-msg');
-          
-          if (pathname.includes('/blog/') || pathname.includes('/projects/')) {
-            const lang = pathname.startsWith('/en/') ? 'en' : 'fr';
-            if (errorMsg) {
-              errorMsg.textContent = lang === 'en' 
-                ? "The translation for this article does not exist." 
-                : "La traduction de cet article n'existe pas.";
-            }
-          }
-        });
-      </script>
+
       <div style="margin-top: var(--space-4);">
         <Button href={`/${lang}/`} variant="primary" size="lg">
           {t('button.back_home')} →
