@@ -1,17 +1,5 @@
 import { defineCollection, z } from 'astro:content';
-import { glob, file } from 'astro/loaders';
-
-// ── Tags Collection ──────────────────────────────────────────────────────────
-const tags = defineCollection({
-  loader: file('src/data/tags.json'),
-  schema: z.object({
-    id: z.string(),
-    name: z.union([z.string(), z.record(z.string(), z.string())]),
-    icon: z.string(),
-    color: z.string().optional(),
-    category: z.union([z.string(), z.record(z.string(), z.string())]),
-  }),
-});
+import { glob } from 'astro/loaders';
 
 // ── Projects Collection ──────────────────────────────────────────────────────
 const projects = defineCollection({
@@ -31,4 +19,4 @@ const projects = defineCollection({
   }),
 });
 
-export const collections = { tags, projects };
+export const collections = { projects };

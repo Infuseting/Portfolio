@@ -13,7 +13,6 @@ export const ui = {
     'nav.activity': 'Activité',
     'nav.contact': 'Contact',
     'nav.projects': 'Projets',
-    'nav.tags': 'Tags',
     'nav.aria_label': 'Navigation principale',
     'nav.menu': 'Menu',
     'a11y.skip': 'Aller au contenu',
@@ -80,11 +79,6 @@ export const ui = {
     'stack.heading': 'Mon stack',
     'stack.title': 'Technologies',
     
-    // Tooltip
-    'tooltip.project': 'Projet',
-    'tooltip.empty': 'Pas de référence pour le moment.',
-    'tooltip.more': 'Voir +',
-    
     // Contact
     'contact.badge': 'Contact',
     'contact.title': 'Travaillons ensemble',
@@ -93,12 +87,6 @@ export const ui = {
     'contact.linkedin': 'LinkedIn',
     'contact.github': 'GitHub',
 
-    // Tags page
-    'tag.title': 'Tag',
-    'tag.meta_description': 'Tous les projets liés à {{tag}}',
-    'tag.section_label': 'Recherche par technologie',
-    'tag.subtitle': 'Tous les projets associés à cette technologie.',
-    'tag.empty': 'Aucun projet trouvé pour ce tag.',
     // Projects badges
     'project.wip': 'En cours',
     'project.featured': 'À la une',
@@ -116,7 +104,6 @@ export const ui = {
     'nav.activity': 'Activity',
     'nav.contact': 'Contact',
     'nav.projects': 'Projects',
-    'nav.tags': 'Tags',
     'nav.aria_label': 'Main navigation',
     'nav.menu': 'Menu',
     'a11y.skip': 'Skip to content',
@@ -183,11 +170,6 @@ export const ui = {
     'stack.heading': 'My stack',
     'stack.title': 'Technologies',
     
-    // Tooltip
-    'tooltip.project': 'Project',
-    'tooltip.empty': 'No reference for now.',
-    'tooltip.more': 'See +',
-    
     // Contact
     'contact.badge': 'Contact',
     'contact.title': "Let's connect",
@@ -196,12 +178,6 @@ export const ui = {
     'contact.linkedin': 'LinkedIn',
     'contact.github': 'GitHub',
 
-    // Tags page
-    'tag.title': 'Tag',
-    'tag.meta_description': 'All projects related to {{tag}}',
-    'tag.section_label': 'Search by technology',
-    'tag.subtitle': 'All projects linked to this technology.',
-    'tag.empty': 'No project found for this tag.',
     // Projects badges
     'project.wip': 'In progress',
     'project.featured': 'Featured',
