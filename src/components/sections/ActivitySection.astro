@@ -1,29 +1,11 @@
 ---
 import SectionLabel from '../ui/SectionLabel.astro';
-import { getUnifiedGitActivity } from '../../lib/api/activity';
-import { getLeetCodeStats } from '../../lib/api/leetcode';
 import { GitActivityCard } from './metrics/git-activity-card';
 import { LeetCodeCard } from './metrics/leetcode-card';
 import { getLangFromUrl, useTranslations } from '../../i18n/utils';
 
 const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
-const currentYear = new Date().getFullYear();
-
-const [gitData, leetcodeStats, gitPrev1, gitPrev2] = await Promise.all([
-  getUnifiedGitActivity(currentYear),
-  getLeetCodeStats(),
-  getUnifiedGitActivity(currentYear - 1),
-  getUnifiedGitActivity(currentYear - 2),
-]);
-
-const yearCache: Record<number, any> = {
-  [currentYear]: gitData,
-  [currentYear - 1]: gitPrev1,
-  [currentYear - 2]: gitPrev2,
-};
-
-console.log(`[ActivitySection] Lang: ${lang} | Git 2026: ${gitData.totalContributions} | All-time: ${gitData.allTimeTotal} | Languages: ${gitData.languages.length} | LeetCode Solved: ${leetcodeStats.totalSolved}`);
 ---
 
 <section class="activity-section section" id="activity" aria-label={t('activity.section_label')}>
@@ -36,8 +18,8 @@ console.log(`[ActivitySection] Lang: ${lang} | Git 2026: ${gitData.totalContribu
     </header>
 
     <div class="activity-grid">
-      <LeetCodeCard client:load stats={leetcodeStats} lang={lang} />
-      <GitActivityCard client:load initialData={gitData} yearCache={yearCache} lang={lang} />
+      <LeetCodeCard client:load lang={lang} />
+      <GitActivityCard client:load lang={lang} />
     </div>
   </div>
 </section>

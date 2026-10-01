@@ -35,7 +35,13 @@ const LINGUIST_COLORS: Record<string, string> = {
   Other: "#64748b",
 };
 
+let languagesCache: LanguageStat[] | null = null;
+
 export async function getUnifiedLanguages(): Promise<LanguageStat[]> {
+  if (languagesCache) {
+    return languagesCache;
+  }
+
   const [ghMap, gtMap] = await Promise.all([
     getGitHubLanguages(),
     getGiteaLanguages(),
@@ -109,6 +115,7 @@ export async function getUnifiedLanguages(): Promise<LanguageStat[]> {
     });
   }
 
+  languagesCache = mainLanguages;
   return mainLanguages;
 }
 
