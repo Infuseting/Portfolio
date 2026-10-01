@@ -4,6 +4,7 @@ import type { GitActivitySummary, ContributionDay } from "@/lib/api/types";
 import { AnimatedNumber } from "@/components/motion/animated-number";
 import { GitCommit } from "lucide-react";
 import { useTranslations } from "@/i18n/utils";
+import { useCachedQuery } from "@/lib/cache/use-cached-query";
 
 interface GitActivityCardProps {
   initialData?: GitActivitySummary | null;
@@ -153,7 +154,7 @@ export function GitActivityCardSkeleton() {
   );
 }
 
-export function GitActivityCard({ initialData, yearCache: preloadedYearCache, lang = "fr" }: GitActivityCardProps) {
+export function GitActivityCard({ initialData, lang = "fr" }: GitActivityCardProps) {
   const cardRef = useRef<HTMLDivElement>(null);
   const isInView = useInView(cardRef, { once: true, amount: 0.15 });
   const shouldReduceMotion = useReducedMotion();
@@ -162,12 +163,21 @@ export function GitActivityCard({ initialData, yearCache: preloadedYearCache, la
   const [hasMounted, setHasMounted] = useState<boolean>(false);
   const [currentYear] = useState<number>(() => new Date().getFullYear());
   const [selectedYear, setSelectedYear] = useState<number>(() => initialData?.year || new Date().getFullYear());
-  const [yearCache, setYearCache] = useState<Record<number, GitActivitySummary>>(() => {
-    if (preloadedYearCache) return preloadedYearCache;
-    if (initialData) return { [initialData.year]: initialData };
-    return {};
+
+  const { data: currentData, isLoading } = useCachedQuery<GitActivitySummary>({
+    key: `portfolio_git_activity_${selectedYear}`,
+    ttlMs: 1000 * 60 * 60 * 4, // 4 heures de TTL dans React / localStorage
+    minLoadingMs: 800, // 800ms minimum pour voir le skeleton élégamment
+    initialData: selectedYear === initialData?.year ? initialData : null,
+    fetcher: async (signal) => {
+      let res = await fetch(`/api/activity/${selectedYear}.json`, { signal });
+      if (!res.ok) {
+        res = await fetch(`/api/activity.json?year=${selectedYear}`, { signal });
+      }
+      if (!res.ok) throw new Error(`Git activity API failed (${res.status})`);
+      return res.json();
+    },
   });
-  const [isLoading, setIsLoading] = useState<boolean>(!initialData);
 
   const [hoveredDay, setHoveredDay] = useState<ContributionDay | null>(null);
   const [hoveredLang, setHoveredLang] = useState<{
@@ -182,43 +192,6 @@ export function GitActivityCard({ initialData, yearCache: preloadedYearCache, la
     setHasMounted(true);
   }, []);
 
-  useEffect(() => {
-    if (initialData) {
-      setYearCache((prev) => ({ ...prev, [initialData.year]: initialData }));
-      setIsLoading(false);
-      return;
-    }
-
-    let isMounted = true;
-    const fetchActivity = async () => {
-      try {
-        let res = await fetch(`/api/activity/${currentYear}.json`);
-        if (!res.ok) {
-          res = await fetch(`/api/activity.json?year=${currentYear}`);
-        }
-        if (res.ok) {
-          const data = await res.json();
-          if (isMounted) {
-            setYearCache((prev) => ({ ...prev, [currentYear]: data }));
-            setIsLoading(false);
-          }
-        } else {
-          console.warn("[GitActivityCard] Fetch failed with status", res.status);
-          if (isMounted) setIsLoading(false);
-        }
-      } catch (err) {
-        console.error("Failed to load initial git activity", err);
-        if (isMounted) setIsLoading(false);
-      }
-    };
-
-    fetchActivity();
-    return () => {
-      isMounted = false;
-    };
-  }, [initialData, currentYear]);
-
-  const currentData = yearCache[selectedYear] || null;
   const isContentReady = !isLoading && currentData !== null;
   const isAnimateActive = isContentReady && (isInView || hasMounted);
 
@@ -229,26 +202,9 @@ export function GitActivityCard({ initialData, yearCache: preloadedYearCache, la
   const todayDate = new Date();
   const todayStr = todayDate.toISOString().split("T")[0];
 
-  const handleYearChange = async (year: number) => {
+  const handleYearChange = (year: number) => {
     if (year === selectedYear) return;
     setSelectedYear(year);
-
-    if (yearCache[year]) {
-      return;
-    }
-
-    try {
-      let res = await fetch(`/api/activity/${year}.json`);
-      if (!res.ok) {
-        res = await fetch(`/api/activity.json?year=${year}`);
-      }
-      if (res.ok) {
-        const data = await res.json();
-        setYearCache((prev) => ({ ...prev, [year]: data }));
-      }
-    } catch (e) {
-      console.error("Failed to load year activity", e);
-    }
   };
 
   const weeks: Array<ContributionDay[]> = [];

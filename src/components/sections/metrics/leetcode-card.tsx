@@ -4,6 +4,7 @@ import type { LeetCodeStats } from "@/lib/api/types";
 import { AnimatedNumber } from "@/components/motion/animated-number";
 import { Code2, ArrowUpRight } from "lucide-react";
 import { useTranslations } from "@/i18n/utils";
+import { useCachedQuery } from "@/lib/cache/use-cached-query";
 
 interface LeetCodeCardProps {
   stats?: LeetCodeStats | null;
@@ -112,50 +113,27 @@ export function LeetCodeCardSkeleton() {
 }
 
 export function LeetCodeCard({ stats: initialStats, lang = "fr" }: LeetCodeCardProps) {
-  const [stats, setStats] = useState<LeetCodeStats | null>(initialStats ?? null);
-  const [isLoading, setIsLoading] = useState<boolean>(!initialStats);
   const [hasMounted, setHasMounted] = useState<boolean>(false);
   const cardRef = useRef<HTMLDivElement>(null);
   const isInView = useInView(cardRef, { once: true, amount: 0.15 });
   const shouldReduceMotion = useReducedMotion();
   const t = useTranslations(lang);
 
+  const { data: stats, isLoading } = useCachedQuery<LeetCodeStats>({
+    key: "portfolio_leetcode_stats",
+    ttlMs: 1000 * 60 * 60 * 4, // 4 heures de TTL dans React / localStorage
+    minLoadingMs: 800, // 800ms minimum pour voir le skeleton élégamment
+    initialData: initialStats,
+    fetcher: async (signal) => {
+      const res = await fetch("/api/leetcode.json", { signal });
+      if (!res.ok) throw new Error(`LeetCode API failed (${res.status})`);
+      return res.json();
+    },
+  });
+
   useEffect(() => {
     setHasMounted(true);
   }, []);
-
-  useEffect(() => {
-    if (initialStats) {
-      setStats(initialStats);
-      setIsLoading(false);
-      return;
-    }
-
-    let isMounted = true;
-    const fetchStats = async () => {
-      try {
-        const res = await fetch("/api/leetcode.json");
-        if (res.ok) {
-          const data = await res.json();
-          if (isMounted) {
-            setStats(data);
-            setIsLoading(false);
-          }
-        } else {
-          console.warn("[LeetCodeCard] /api/leetcode.json returned status", res.status);
-          if (isMounted) setIsLoading(false);
-        }
-      } catch (err) {
-        console.error("Failed to load LeetCode stats", err);
-        if (isMounted) setIsLoading(false);
-      }
-    };
-
-    fetchStats();
-    return () => {
-      isMounted = false;
-    };
-  }, [initialStats]);
 
   const isContentReady = !isLoading && stats !== null;
   const isAnimateActive = isContentReady && (isInView || hasMounted);
