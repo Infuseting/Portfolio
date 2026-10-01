@@ -22,7 +22,21 @@ export default defineConfig({
       redirectToDefaultLocale: false,
     }
   },
-  integrations: [sitemap(), mdx(), icon(), react()],
+  integrations: [
+    sitemap({
+      filter: (page) => page !== 'https://infuseting.fr/',
+      i18n: {
+        defaultLocale: 'fr',
+        locales: {
+          fr: 'fr-FR',
+          en: 'en-US',
+        },
+      },
+    }),
+    mdx(),
+    icon(),
+    react(),
+  ],
   image: {
     // Use sharp for image optimization
     service: { entrypoint: 'astro/assets/services/sharp' },
