@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { motion } from "motion/react";
+import { useState, useRef } from "react";
+import { motion, useInView, useReducedMotion } from "motion/react";
 import type { GitActivitySummary, ContributionDay } from "@/lib/api/types";
 import { AnimatedNumber } from "@/components/motion/animated-number";
 import { GitCommit } from "lucide-react";
@@ -18,6 +18,9 @@ function formatBytes(bytes: number): string {
 }
 
 export function GitActivityCard({ initialData, yearCache: preloadedYearCache, lang = "fr" }: GitActivityCardProps) {
+  const cardRef = useRef<HTMLDivElement>(null);
+  const isInView = useInView(cardRef, { once: true, amount: 0.2 });
+  const shouldReduceMotion = useReducedMotion();
   const t = useTranslations(lang);
   const [yearCache, setYearCache] = useState<Record<number, GitActivitySummary>>(
     preloadedYearCache || { [initialData.year]: initialData }
@@ -100,7 +103,19 @@ export function GitActivityCard({ initialData, yearCache: preloadedYearCache, la
   });
 
   return (
-    <div className="metrics-card">
+    <motion.div
+      ref={cardRef}
+      className="metrics-card"
+      initial={shouldReduceMotion ? { opacity: 1, y: 0 } : { opacity: 0, y: 24 }}
+      animate={isInView ? { opacity: 1, y: 0 } : shouldReduceMotion ? { opacity: 1, y: 0 } : { opacity: 0, y: 24 }}
+      transition={{
+        type: "spring",
+        stiffness: 350,
+        damping: 28,
+        mass: 0.8,
+        delay: 0.08,
+      }}
+    >
       <div>
         {/* Header */}
         <div className="metrics-card__header">
@@ -116,15 +131,18 @@ export function GitActivityCard({ initialData, yearCache: preloadedYearCache, la
           {/* Year Selector */}
           <div className="metrics-card__year-selector">
             {sortedYears.map((year) => (
-              <button
+              <motion.button
                 key={year}
                 type="button"
                 onClick={() => handleYearChange(year)}
                 className={`metrics-card__year-btn ${selectedYear === year ? "metrics-card__year-btn--active" : ""}`}
                 aria-label={`Année ${year}`}
+                whileHover={shouldReduceMotion ? {} : { scale: 1.05 }}
+                whileTap={shouldReduceMotion ? {} : { scale: 0.95 }}
+                transition={{ type: "spring", stiffness: 500, damping: 30, mass: 0.5 }}
               >
                 {year}
-              </button>
+              </motion.button>
             ))}
           </div>
         </div>
@@ -137,10 +155,10 @@ export function GitActivityCard({ initialData, yearCache: preloadedYearCache, la
             </span>
             <div>
               <span className="metrics-tile__value">
-                <AnimatedNumber value={currentData.allTimeTotal} stiffness={85} damping={18} />
+                <AnimatedNumber value={currentData.allTimeTotal} start={isInView} stiffness={85} damping={18} />
               </span>
               <span className="metrics-tile__subtext">
-                <AnimatedNumber value={currentData.totalContributions} /> {t("metrics.git.in_year")} {selectedYear}
+                <AnimatedNumber value={currentData.totalContributions} start={isInView} /> {t("metrics.git.in_year")} {selectedYear}
               </span>
             </div>
           </div>
@@ -150,10 +168,10 @@ export function GitActivityCard({ initialData, yearCache: preloadedYearCache, la
               {t("metrics.git.avg_per_week")}
             </span>
             <span className="metrics-tile__value">
-              <AnimatedNumber value={currentData.averagePerWeek} decimals={1} stiffness={85} damping={18} />
+              <AnimatedNumber value={currentData.averagePerWeek} decimals={1} start={isInView} stiffness={85} damping={18} />
             </span>
             <span className="metrics-tile__subtext">
-              ~<AnimatedNumber value={currentData.averagePerMonth} /> {t("metrics.git.per_month")}
+              ~<AnimatedNumber value={currentData.averagePerMonth} start={isInView} /> {t("metrics.git.per_month")}
             </span>
           </div>
 
@@ -162,13 +180,13 @@ export function GitActivityCard({ initialData, yearCache: preloadedYearCache, la
               {t("metrics.git.active_streak")}
             </span>
             <span className="metrics-tile__value">
-              <AnimatedNumber value={currentData.currentStreak} stiffness={90} damping={18} />{" "}
+              <AnimatedNumber value={currentData.currentStreak} start={isInView} stiffness={90} damping={18} />{" "}
               <span style={{ fontSize: "11px", fontWeight: "normal", color: "var(--color-fg-muted)" }}>
                 {t("metrics.days")}
               </span>
             </span>
             <span className="metrics-tile__subtext">
-              {t("metrics.git.max")}: <AnimatedNumber value={currentData.longestStreak} /> {t("metrics.days")}
+              {t("metrics.git.max")}: <AnimatedNumber value={currentData.longestStreak} start={isInView} /> {t("metrics.days")}
             </span>
           </div>
 
@@ -177,19 +195,24 @@ export function GitActivityCard({ initialData, yearCache: preloadedYearCache, la
               {t("metrics.git.active_days")}
             </span>
             <span className="metrics-tile__value">
-              <AnimatedNumber value={currentData.activeDays} stiffness={85} damping={18} />{" "}
+              <AnimatedNumber value={currentData.activeDays} start={isInView} stiffness={85} damping={18} />{" "}
               <span style={{ fontSize: "11px", fontWeight: "normal", color: "var(--color-fg-muted)" }}>
                 {t("metrics.days")}
               </span>
             </span>
             <span className="metrics-tile__subtext">
-              {t("metrics.git.peak")}: <AnimatedNumber value={currentData.maxDayContributions} /> / {t("metrics.day")}
+              {t("metrics.git.peak")}: <AnimatedNumber value={currentData.maxDayContributions} start={isInView} /> / {t("metrics.day")}
             </span>
           </div>
         </div>
 
         {/* Heatmap */}
-        <div className="heatmap-wrap">
+        <motion.div
+          className="heatmap-wrap"
+          initial={shouldReduceMotion ? { opacity: 1 } : { opacity: 0 }}
+          animate={isInView ? { opacity: 1 } : shouldReduceMotion ? { opacity: 1 } : { opacity: 0 }}
+          transition={{ duration: 0.45, delay: 0.15 }}
+        >
           <div className="heatmap__header">
             <span>
               {t("metrics.git.contributions")} ({selectedYear})
@@ -225,7 +248,7 @@ export function GitActivityCard({ initialData, yearCache: preloadedYearCache, la
               </div>
             ))}
           </div>
-        </div>
+        </motion.div>
 
         {/* Languages Bar with bounded tooltip */}
         {languages.length > 0 && (
@@ -255,12 +278,17 @@ export function GitActivityCard({ initialData, yearCache: preloadedYearCache, la
             <div className="languages-bar__track">
               <motion.div
                 initial={{ clipPath: "inset(0 100% 0 0)" }}
-                animate={{ clipPath: "inset(0 0% 0 0)" }}
-                transition={{
-                  duration: 0.85,
-                  ease: [0.16, 1, 0.3, 1],
-                  delay: 0.1,
-                }}
+                animate={isInView ? { clipPath: "inset(0 0% 0 0)" } : { clipPath: "inset(0 100% 0 0)" }}
+                transition={
+                  shouldReduceMotion
+                    ? { duration: 0 }
+                    : {
+                        type: "spring",
+                        stiffness: 100,
+                        damping: 20,
+                        delay: 0.25,
+                      }
+                }
                 className="languages-bar__inner"
               >
                 {segmentsWithPos.map((item) => {
@@ -307,6 +335,6 @@ export function GitActivityCard({ initialData, yearCache: preloadedYearCache, la
           <span>{t("metrics.git.more")}</span>
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 }

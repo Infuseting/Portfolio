@@ -109,16 +109,31 @@
 
 /* ── UTILITY CLASSES ─────────────────────────────────────── */
 .animate-fade-in {
-  animation: fade-in var(--transition-slow) ease forwards;
+  animation: fade-in var(--transition-slow) cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
 .animate-fade-in-up {
-  animation: fade-in-up 0.6s ease forwards;
+  animation: fade-in-up 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards;
   opacity: 0; /* start hidden */
 }
 
 .animate-underline-expand {
   animation: underline-expand 0.4s var(--transition-brutal) forwards;
+}
+
+/* ── SCROLL REVEALS (Spring Physics) ─────────────────────── */
+.reveal-on-scroll {
+  opacity: 0;
+  transform: translateY(24px);
+  transition:
+    opacity 0.75s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.75s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: opacity, transform;
+}
+
+.reveal-on-scroll.is-revealed {
+  opacity: 1;
+  transform: translateY(0);
 }
 
 /* Respect reduced motion */
@@ -130,6 +145,11 @@
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
+  }
+  .reveal-on-scroll {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
   }
   ::view-transition-old(root),
   ::view-transition-new(root) {

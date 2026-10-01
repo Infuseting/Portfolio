@@ -280,4 +280,57 @@ const t = useTranslations(lang);
       font-size: clamp(var(--text-3xl), 15vw, var(--text-5xl));
     }
   }
+
+  /* ── Hero Loading Spring Animations (motion-spring-physics) ── */
+  @keyframes hero-spring-up {
+    0% {
+      opacity: 0;
+      transform: translateY(24px);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes hero-spring-scale {
+    0% {
+      opacity: 0;
+      transform: scale(0.95) translateY(16px);
+    }
+    100% {
+      opacity: 1;
+      transform: scale(1) translateY(0);
+    }
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .hero__badge {
+      animation: hero-spring-up 0.7s cubic-bezier(0.16, 1, 0.3, 1) 0.05s both;
+    }
+
+    .hero__name {
+      animation: hero-spring-up 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.15s both;
+    }
+
+    .hero__title {
+      animation: hero-spring-up 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.25s both;
+    }
+
+    .hero__description {
+      animation: hero-spring-up 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.35s both;
+    }
+
+    .hero__ctas {
+      animation: hero-spring-up 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.45s both;
+    }
+
+    .hero__photo-frame {
+      animation: hero-spring-scale 0.9s cubic-bezier(0.16, 1, 0.3, 1) 0.25s both;
+    }
+
+    .hero__scroll {
+      animation: hero-spring-up 1s cubic-bezier(0.16, 1, 0.3, 1) 0.6s both;
+    }
+  }
 </style>
