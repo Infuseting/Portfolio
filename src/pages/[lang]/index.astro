@@ -11,10 +11,25 @@ import Header from '../../components/layout/Header.astro';
 import Footer from '../../components/layout/Footer.astro';
 import ActivitySection from '../../components/sections/ActivitySection.astro';
 import Hero from '../../components/sections/Hero.astro';
+import ProjectsSection from '../../components/sections/ProjectsSection.astro';
+import JourneySection from '../../components/sections/JourneySection.astro';
+import InternshipSection from '../../components/sections/InternshipSection.astro';
 import Contact from '../../components/sections/Contact.astro';
+import { getCollection, getEntry } from 'astro:content';
 import { useTranslations } from '../../i18n/utils';
 const { lang } = Astro.params as { lang: 'fr' | 'en' };
 const t = useTranslations(lang);
+
+const projects = (await getCollection('projects'))
+  .filter((entry) => entry.id.startsWith(`${lang}/`))
+  .sort((a, b) => a.data.order - b.data.order);
+const journey = (await getCollection('journey'))
+  .filter((entry) => entry.id.startsWith(`${lang}/`));
+const certifications = (await getCollection('certifications'))
+  .filter((entry) => entry.id.startsWith(`${lang}/`) && (!entry.data.example || import.meta.env.DEV))
+  .sort((a, b) => a.data.order - b.data.order);
+const internship = await getEntry('internship', `${lang}/brief`);
+if (!internship) throw new Error(`Missing internship brief for ${lang}`);
 ---
 
 <BaseLayout
@@ -24,6 +39,9 @@ const t = useTranslations(lang);
   <Header />
   <main id="main-content" style="padding-top: var(--header-h);">
     <Hero />
+    <ProjectsSection projects={projects} />
+    <JourneySection entries={journey} certifications={certifications} />
+    <InternshipSection entry={internship} />
     <ActivitySection />
     <Contact />
   </main>

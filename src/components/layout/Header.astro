@@ -6,7 +6,8 @@ const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
 
 const navLinks = [
-  { href: `/${lang}/#hero`,     label: t('nav.about') },
+  { href: `/${lang}/#projects`, label: t('nav.projects') },
+  { href: `/${lang}/#journey`,  label: t('nav.journey') },
   { href: `/${lang}/#activity`, label: t('nav.activity') },
   { href: `/${lang}/#contact`,  label: t('nav.contact') },
 ];
@@ -72,7 +73,7 @@ const currentPath = Astro.url.pathname;
       ))}
       <li>
         <a href="/cv.pdf" download="CV_Arthur_SERRET.pdf" class="header__mobile-link">
-          Télécharger le CV ↓
+          {t('footer.cv')}
         </a>
       </li>
     </ul>

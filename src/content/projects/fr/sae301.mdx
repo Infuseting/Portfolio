@@ -1,0 +1,39 @@
+---
+title: "SAE 301"
+description: "Application web full-stack réalisée en équipe, de la modélisation SQL jusqu'à l'interface utilisateur."
+tags: ["PHP", "SQL", "Travail en équipe"]
+year: 2026
+featured: false
+order: 21
+githubUrl: "https://github.com/infuseting/SAE301"
+role: "Développement full-stack"
+context: "Projet universitaire en équipe"
+proof:
+  - value: "Full-stack"
+    label: "Interface à la donnée"
+  - value: "Équipe"
+    label: "Organisation Git"
+status: "archived"
+---
+
+## Un projet complet
+
+La SAE 301 couvre le cycle d'une application web : conception de la donnée, logique métier côté serveur et intégration d'une interface exploitable par l'utilisateur.
+
+## Responsabilités travaillées
+
+- Modélisation et utilisation d'une base SQL.
+- Développement de fonctionnalités côté PHP.
+- Intégration frontend et échanges avec le serveur.
+- Organisation du travail collectif avec Git.
+- Premières mesures de protection contre les injections SQL et les attaques XSS.
+
+## Architecture
+
+```mermaid
+flowchart LR
+  A[Interface web] --> B[Application PHP]
+  B --> C[(Base SQL)]
+  C --> B
+  B --> A
+```

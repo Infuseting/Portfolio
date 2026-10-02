@@ -1,0 +1,42 @@
+---
+title: "YCallMe"
+description: "Native Android application for call management and protection against unwanted solicitations."
+tags: ["Kotlin", "Android", "Mobile"]
+year: 2026
+featured: false
+order: 20
+githubUrl: "https://github.com/infuseting/YCallMe"
+role: "Android design and development"
+context: "Personal mobile project"
+proof:
+  - value: "Kotlin"
+    label: "Native Android"
+  - value: "Async"
+    label: "Call processing"
+status: "live"
+---
+
+## The need
+
+YCallMe explores a clearer way to manage calls by separating known contacts, numbers that need verification and potentially unwanted calls.
+
+## What I built
+
+- A native Android application written in Kotlin.
+- An interface designed to expose a call's status at a glance.
+- Asynchronous processing to preserve a responsive mobile experience.
+- An architecture that can accommodate additional detection sources.
+
+## What this project demonstrates
+
+This project lets me work on mobile architecture, Android system constraints and the presentation of data that must be understood within seconds.
+
+```mermaid
+flowchart LR
+  A[Incoming call] --> B{Known number?}
+  B -->|Yes| C[Show contact]
+  B -->|No| D[Check reports]
+  D --> E{Risk detected?}
+  E -->|Yes| F[Spam warning]
+  E -->|No| G[Unknown call]
+```

@@ -470,15 +470,6 @@
    SKELETON LOADING STATES (Component Skeleton Contract & Zero-CLS)
    ============================================================ */
 
-@keyframes skeleton-shimmer {
-  0% {
-    transform: translateX(-100%);
-  }
-  100% {
-    transform: translateX(100%);
-  }
-}
-
 .metrics-card--skeleton {
   pointer-events: none;
   user-select: none;
@@ -487,11 +478,10 @@
   background-color: var(--color-surface);
 }
 
-.metrics-card--skeleton::after {
-  content: "";
+.metrics-card__shimmer {
   position: absolute;
   inset: 0;
-  transform: translateX(-100%);
+  display: block;
   background-image: linear-gradient(
     90deg,
     transparent 0%,
@@ -500,16 +490,12 @@
     oklch(0.94 0.01 80 / 0.5) 75%,
     transparent 100%
   );
-  animation: skeleton-shimmer 1.8s infinite ease-in-out;
   pointer-events: none;
   z-index: 10;
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .metrics-card--skeleton::after {
-    animation: none;
-    background-image: none;
-  }
+  .metrics-card__shimmer { display: none; }
 }
 
 .skeleton-box {

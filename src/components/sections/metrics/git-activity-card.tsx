@@ -1,7 +1,8 @@
-import { useState, useRef, useEffect, useMemo, memo } from "react";
+import { useState, useRef, useMemo, memo } from "react";
 import { motion, useInView, useReducedMotion } from "motion/react";
 import type { GitActivitySummary, ContributionDay, LanguageStat } from "@/lib/api/types";
 import { AnimatedNumber } from "@/components/motion/animated-number";
+import { SkeletonShimmer } from "@/components/motion/skeleton-shimmer";
 import { GitCommit } from "lucide-react";
 import { useTranslations } from "@/i18n/utils";
 import { useCachedQuery } from "@/lib/cache/use-cached-query";
@@ -357,17 +358,17 @@ export function GitActivityCardSkeleton() {
       className="metrics-card metrics-card--skeleton"
     >
       <GitActivityCardSkeletonContent />
+      <SkeletonShimmer />
     </div>
   );
 }
 
 export function GitActivityCard({ initialData, lang = "fr" }: GitActivityCardProps) {
   const cardRef = useRef<HTMLDivElement>(null);
-  const isInView = useInView(cardRef, { once: true, amount: 0.15 });
+  const isInView = useInView(cardRef, { once: true, amount: 0.2, margin: '0px 0px -64px 0px' });
   const shouldReduceMotion = useReducedMotion();
   const t = useTranslations(lang);
 
-  const [hasMounted, setHasMounted] = useState<boolean>(false);
   const [currentYear] = useState<number>(() => new Date().getFullYear());
   const [selectedYear, setSelectedYear] = useState<number>(() => initialData?.year || new Date().getFullYear());
 
@@ -386,12 +387,8 @@ export function GitActivityCard({ initialData, lang = "fr" }: GitActivityCardPro
     },
   });
 
-  useEffect(() => {
-    setHasMounted(true);
-  }, []);
-
   const isContentReady = !isLoading && currentData !== null;
-  const isAnimateActive = isContentReady && (isInView || hasMounted);
+  const isAnimateActive = isContentReady && (isInView || shouldReduceMotion === true);
 
   const sortedYears = useMemo(() => {
     return [
@@ -405,27 +402,18 @@ export function GitActivityCard({ initialData, lang = "fr" }: GitActivityCardPro
   };
 
   return (
-    <motion.div
+    <div
       ref={cardRef}
       className={`metrics-card ${!isContentReady ? "metrics-card--skeleton" : ""}`}
-      initial={shouldReduceMotion ? { opacity: 1, y: 0 } : { opacity: 0, y: 16 }}
-      animate={isInView || hasMounted ? { opacity: 1, y: 0 } : shouldReduceMotion ? { opacity: 1, y: 0 } : { opacity: 0, y: 16 }}
-      transition={{
-        type: "spring",
-        stiffness: 350,
-        damping: 28,
-        mass: 0.8,
-        delay: 0.08,
-      }}
     >
       {!isContentReady || !currentData ? (
-        <GitActivityCardSkeletonContent />
+        <>
+          <GitActivityCardSkeletonContent />
+          <SkeletonShimmer active={isInView} />
+        </>
       ) : (
-        <motion.div
+        <div
           key="git-content"
-          initial={shouldReduceMotion ? { opacity: 1 } : { opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.35, ease: "easeOut" }}
           style={{ display: "flex", flexDirection: "column", justifyContent: "space-between", height: "100%", width: "100%" }}
         >
           <div>
@@ -553,9 +541,9 @@ export function GitActivityCard({ initialData, lang = "fr" }: GitActivityCardPro
               <span>{t("metrics.git.more")}</span>
             </div>
           </div>
-        </motion.div>
+        </div>
       )}
-    </motion.div>
+    </div>
   );
 }
 

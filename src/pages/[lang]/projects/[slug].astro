@@ -1,0 +1,369 @@
+---
+import { getCollection, render, type CollectionEntry } from 'astro:content';
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import Header from '../../../components/layout/Header.astro';
+import Footer from '../../../components/layout/Footer.astro';
+import MermaidRenderer from '../../../components/content/MermaidRenderer.astro';
+import ProjectMedia from '../../../components/content/ProjectMedia.astro';
+import { useTranslations } from '../../../i18n/utils';
+
+export async function getStaticPaths() {
+  const projects = await getCollection('projects');
+
+  return projects.map((project) => {
+    const parts = project.id.split('/');
+    const lang = parts[0];
+    const slug = (parts.at(-1) ?? '').replace(/\.(md|mdx)$/, '');
+    return {
+      params: { lang, slug },
+      props: { project },
+    };
+  });
+}
+
+interface Props {
+  project: CollectionEntry<'projects'>;
+}
+
+const { project } = Astro.props as Props;
+const { lang } = Astro.params as { lang: 'fr' | 'en' };
+const t = useTranslations(lang);
+const { Content } = await render(project);
+
+const statusLabel = {
+  live: t('projects.status.live'),
+  wip: t('projects.status.wip'),
+  archived: t('projects.status.archived'),
+};
+---
+
+<BaseLayout
+  title={project.data.title}
+  description={project.data.description}
+  ogImage={project.data.coverImage?.src ?? '/og-image.png'}
+  ogImageWidth={project.data.coverImage?.width}
+  ogImageHeight={project.data.coverImage?.height}
+  ogImageType={project.data.coverImage?.format === 'jpg' ? 'image/jpeg' : `image/${project.data.coverImage?.format ?? 'png'}`}
+>
+  <Header />
+  <main class="project-page" id="main-content">
+    <div class="container">
+      <a class="project-page__back" href={`/${lang}/#projects`}>
+        <span aria-hidden="true">←</span> {t('projects.back')}
+      </a>
+
+      <header class:list={['project-page__header', { 'project-page__header--text-only': !project.data.coverImage }]}>
+        <div class="project-page__intro">
+          <div class="project-page__meta">
+            <span>{project.data.context}</span>
+            <span>{project.data.year}</span>
+            <span>{statusLabel[project.data.status]}</span>
+          </div>
+          <h1>{project.data.title}</h1>
+          <p class="project-page__role">{project.data.role}</p>
+          <p class="project-page__description">{project.data.description}</p>
+
+          <div class="project-page__links">
+            {project.data.githubUrl && (
+              <a href={project.data.githubUrl} target="_blank" rel="noopener noreferrer">
+                {t('projects.source')} <span aria-hidden="true">↗</span>
+              </a>
+            )}
+            {project.data.liveUrl && (
+              <a href={project.data.liveUrl} target="_blank" rel="noopener noreferrer">
+                {t('projects.live')} <span aria-hidden="true">↗</span>
+              </a>
+            )}
+          </div>
+        </div>
+
+        {project.data.coverImage && project.data.coverAlt && <figure class="project-page__cover">
+          <div class="project-page__cover-bar" aria-hidden="true"><span></span><span></span><span></span></div>
+          <ProjectMedia
+            src={project.data.coverImage}
+            alt={project.data.coverAlt}
+            presentation={project.data.coverPresentation}
+            widths={[768, 1200, 1600]}
+            sizes="(max-width: 900px) 100vw, 54vw"
+          />
+          {project.data.coverCaption && <figcaption>{project.data.coverCaption}</figcaption>}
+        </figure>}
+      </header>
+
+      <div class="project-page__facts">
+        {project.data.proof.map((proof) => (
+          <div>
+            <span>{proof.label}</span>
+            <strong>{proof.value}</strong>
+          </div>
+        ))}
+        <div>
+          <span>{t('projects.technologies')}</span>
+          <strong>{project.data.tags.join(' / ')}</strong>
+        </div>
+      </div>
+
+      <article class="project-content">
+        <Content />
+      </article>
+
+      {project.data.gallery.length > 0 && <section class="project-gallery" aria-label={t('projects.gallery')}>
+        {project.data.gallery.map((item) => <figure>
+          <ProjectMedia
+            src={item.image}
+            alt={item.alt}
+            presentation={item.presentation}
+            widths={[640, 960, 1440]}
+            sizes="(max-width: 900px) 100vw, 76vw"
+          />
+          <figcaption>{item.caption}</figcaption>
+        </figure>)}
+      </section>}
+    </div>
+    <MermaidRenderer />
+  </main>
+  <Footer />
+</BaseLayout>
+
+<style>
+  .project-page {
+    padding-top: calc(var(--header-h) + var(--space-12));
+  }
+
+  .project-page__back {
+    display: inline-flex;
+    gap: var(--space-2);
+    align-items: center;
+    color: var(--color-fg-muted);
+    font-family: var(--font-mono);
+    font-size: var(--text-sm);
+  }
+
+  .project-page__back:hover { color: var(--color-accent); }
+
+  .project-page__header {
+    display: grid;
+    grid-template-columns: minmax(19rem, 0.8fr) minmax(0, 1.2fr);
+    gap: var(--space-12);
+    align-items: center;
+    padding-block: var(--space-12) var(--space-16);
+  }
+
+  .project-page__header--text-only { grid-template-columns: minmax(0, 52rem); }
+
+  .project-page__intro,
+  .project-page__cover { min-width: 0; }
+
+  .project-page__meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-3);
+    padding-bottom: var(--space-3);
+    border-bottom: var(--border-width) solid var(--color-border);
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    color: var(--color-fg-muted);
+  }
+
+  .project-page__meta span:not(:last-child)::after {
+    content: ' /';
+    color: var(--color-accent);
+  }
+
+  .project-page h1 {
+    margin-top: var(--space-6);
+    font-size: clamp(var(--text-4xl), 4vw, var(--text-7xl));
+    line-height: 0.95;
+    overflow-wrap: normal;
+  }
+
+  .project-page__role {
+    margin: var(--space-5) 0 0;
+    color: var(--color-accent);
+    font-family: var(--font-display);
+    font-size: var(--text-xl);
+    font-weight: var(--weight-black);
+    line-height: var(--leading-snug);
+  }
+
+  .project-page__description {
+    margin-top: var(--space-4);
+    font-size: var(--text-lg);
+  }
+
+  .project-page__links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-3);
+    margin-top: var(--space-6);
+  }
+
+  .project-page__links a {
+    padding: var(--space-3) var(--space-4);
+    border: var(--border-width) solid var(--color-border);
+    color: var(--color-fg);
+    font-family: var(--font-display);
+    font-weight: var(--weight-bold);
+    box-shadow: 3px 3px 0 var(--color-border);
+  }
+
+  .project-page__links a:hover {
+    color: var(--color-bg);
+    background: var(--color-fg);
+  }
+
+  .project-page__cover {
+    border: var(--border-width-thick) solid var(--color-border);
+    box-shadow: var(--shadow-brutal-lg);
+    background: var(--color-surface);
+  }
+
+  .project-page__cover-bar {
+    display: flex;
+    gap: var(--space-2);
+    padding: var(--space-3);
+    border-bottom: var(--border-width) solid var(--color-border);
+    background: var(--color-bg-alt);
+  }
+
+  .project-page__cover-bar span {
+    width: 0.7rem;
+    height: 0.7rem;
+    border: 1px solid var(--color-border);
+  }
+
+  .project-page__cover-bar span:first-child { background: var(--color-accent); }
+
+  .project-page__cover figcaption,
+  .project-gallery figcaption {
+    padding: var(--space-3) var(--space-4);
+    border-top: var(--border-width) solid var(--color-border);
+    color: var(--color-fg-muted);
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+  }
+
+  .project-gallery {
+    display: grid;
+    gap: var(--space-10);
+    width: min(100%, 62rem);
+    margin: calc(var(--space-16) * -1) auto var(--space-24);
+  }
+
+  .project-gallery figure {
+    min-width: 0;
+    border: var(--border-width-thick) solid var(--color-border);
+    background: var(--color-bg-alt);
+  }
+
+  .project-page__facts {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    border-block: var(--border-width-thick) solid var(--color-border);
+  }
+
+  .project-page__facts div {
+    min-width: 0;
+    padding: var(--space-5);
+  }
+
+  .project-page__facts div + div {
+    border-left: var(--border-width) solid var(--color-border);
+  }
+
+  .project-page__facts span,
+  .project-page__facts strong {
+    display: block;
+  }
+
+  .project-page__facts span {
+    margin-bottom: var(--space-2);
+    color: var(--color-fg-muted);
+    font-size: var(--text-xs);
+  }
+
+  .project-page__facts strong {
+    font-family: var(--font-display);
+    overflow-wrap: anywhere;
+  }
+
+  .project-content {
+    width: min(100%, 52rem);
+    margin: var(--space-16) auto var(--space-24);
+  }
+
+  .project-content :global(h2) {
+    margin-top: var(--space-16);
+    padding-bottom: var(--space-3);
+    border-bottom: var(--border-width-thick) solid var(--color-border);
+    font-size: clamp(var(--text-3xl), 5vw, var(--text-5xl));
+  }
+
+  .project-content :global(h3) {
+    margin-top: var(--space-10);
+  }
+
+  .project-content :global(p),
+  .project-content :global(ul),
+  .project-content :global(ol) {
+    margin-top: var(--space-5);
+    font-size: var(--text-lg);
+  }
+
+  .project-content :global(ul),
+  .project-content :global(ol) {
+    padding-left: var(--space-6);
+    color: var(--color-fg-muted);
+  }
+
+  .project-content :global(li + li) {
+    margin-top: var(--space-2);
+  }
+
+  .project-content :global(blockquote) {
+    margin-top: var(--space-8);
+    padding: var(--space-5) var(--space-6);
+    border-left: 6px solid var(--color-accent);
+    background: var(--color-bg-alt);
+  }
+
+  @media (max-width: 900px) {
+    .project-page__header {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .project-page__cover {
+      order: -1;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .project-page {
+      padding-top: calc(var(--header-h) + var(--space-8));
+    }
+
+    .project-page__header {
+      gap: var(--space-8);
+      padding-block: var(--space-8) var(--space-12);
+    }
+
+    .project-page__cover {
+      box-shadow: 4px 4px 0 var(--color-border);
+    }
+
+    .project-page__facts {
+      grid-template-columns: 1fr;
+    }
+
+    .project-page__facts div + div {
+      border-left: 0;
+      border-top: 1px solid var(--color-border-soft);
+    }
+
+    .project-content {
+      margin-block: var(--space-12) var(--space-16);
+    }
+
+    .project-gallery { margin-block: calc(var(--space-8) * -1) var(--space-16); }
+  }
+</style>

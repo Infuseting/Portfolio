@@ -1,0 +1,52 @@
+---
+title: "Loc'Evasion 14"
+description: "Website and vehicle catalogue tools for a rental company, with a gateway to business data and a dedicated admin area."
+tags: ["Next.js", "TypeScript", "PostgreSQL", "Redis"]
+year: 2026
+featured: true
+order: 3
+coverImage: "../../../assets/projects/locevasion-vehicle.jpg"
+coverAlt: "Minibus shown in Loc'Evasion 14's visual material"
+coverPresentation: "photo"
+coverCaption: "Photograph from the public Loc'Evasion 14 website"
+gallery:
+  - image: "../../../assets/projects/locevasion-map.jpg"
+    alt: "Map of shuttle routes between Caen and several airports"
+    caption: "Map used by the project website"
+    presentation: "photo"
+role: "Website and API layer development"
+context: "Web project for a vehicle rental company"
+proof:
+  - value: "Next.js"
+    label: "Website and API"
+  - value: "Admin catalogue"
+    label: "Business tool"
+status: "wip"
+---
+
+## Connecting a public website to business data
+
+Loc'Evasion 14 presents its rental and shuttle services online. The project also includes an editable vehicle catalogue and a server layer that communicates with the existing business API.
+
+## What the project covers
+
+- Public pages for services, agencies and routes.
+- A vehicle catalogue with image and publication state management.
+- Authentication for administration tools.
+- A server-side API gateway with caching and coordinated access to external data.
+
+## Simplified flow
+
+```mermaid
+flowchart LR
+  A[Visitor] --> B[Next.js site]
+  B --> C[Public catalogue]
+  D[Administrator] --> E[Admin area]
+  E --> F[(PostgreSQL)]
+  E --> G[Business API adapter]
+  G --> H[Hitech]
+```
+
+## Focus
+
+The website must not invent available vehicles when the business service fails. Catalogue states and technical errors therefore stay distinct so the journey remains understandable.

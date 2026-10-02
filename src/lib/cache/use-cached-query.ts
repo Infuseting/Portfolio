@@ -67,14 +67,10 @@ export function useCachedQuery<T>({
   minLoadingMs = 800, // 800ms minimum pour voir le skeleton sans flash
   initialData = null,
 }: UseCachedQueryOptions<T>) {
-  const [data, setData] = useState<T | null>(() => {
-    if (initialData) return initialData;
-    return getCachedItem<T>(key, ttlMs);
-  });
-  const [isLoading, setIsLoading] = useState<boolean>(() => {
-    if (initialData) return false;
-    return getCachedItem<T>(key, ttlMs) === null;
-  });
+  // The first client render must match the server render. Read localStorage only
+  // after hydration, otherwise a cached result replaces the SSR skeleton early.
+  const [data, setData] = useState<T | null>(initialData);
+  const [isLoading, setIsLoading] = useState<boolean>(initialData === null);
 
   useEffect(() => {
     if (initialData) {

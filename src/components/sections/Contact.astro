@@ -8,7 +8,7 @@ const t = useTranslations(lang);
 
 <section class="contact section" id="contact" aria-label="Contact">
   <div class="container">
-    <div class="contact__inner reveal-on-scroll">
+    <div class="contact__inner">
       <SectionLabel label={t('contact.badge')} />
 
       <h2 class="contact__title">
@@ -195,7 +195,7 @@ const t = useTranslations(lang);
   /* Decorative background text */
   .contact__deco {
     position: absolute;
-    right: -2rem;
+    right: 0;
     top: 50%;
     transform: translateY(-50%);
     font-family: var(--font-display);

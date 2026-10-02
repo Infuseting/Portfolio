@@ -1,0 +1,213 @@
+---
+import { render, type CollectionEntry } from 'astro:content';
+import { Image, Picture } from 'astro:assets';
+import { getLangFromUrl, useTranslations } from '../../i18n/utils';
+
+interface Props {
+  entries: CollectionEntry<'certifications'>[];
+}
+
+const { entries } = Astro.props;
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+const locale = lang === 'fr' ? 'fr-FR' : 'en-GB';
+const formatMonth = (value: string) => new Intl.DateTimeFormat(locale, {
+  month: 'short',
+  year: 'numeric',
+  timeZone: 'UTC',
+}).format(new Date(`${value}-01T00:00:00Z`));
+const cards = await Promise.all(entries.map(async (entry) => {
+  const visual = entry.data.image;
+  const widths = visual
+    ? [...new Set([96, 192, visual.width].filter((width) => width <= visual.width))].sort((a, b) => a - b)
+    : [];
+  return { entry, visual, widths, Content: (await render(entry)).Content };
+}));
+---
+
+<section class="certifications" aria-labelledby="certifications-title">
+  <h3 id="certifications-title">{t('journey.certifications')}</h3>
+  <ol class="certifications__list">
+    {cards.map(({ entry, visual, widths, Content }) => (
+        <li class:list={['certification-card', { 'certification-card--example': entry.data.example }]}>
+          <article>
+            <div class="certification-card__topline">
+              <span>{entry.data.issuer}</span>
+              {entry.data.example ? (
+                <strong class="certification-card__example">{t('journey.certification_example')}</strong>
+              ) : entry.data.issued && (
+                <time datetime={entry.data.issued}>{formatMonth(entry.data.issued)}</time>
+              )}
+            </div>
+            <div class="certification-card__main">
+              {visual && entry.data.imageAlt && (
+                <div class="certification-card__image">
+                  {visual.format === 'gif' || visual.format === 'svg' ? (
+                    <Image src={visual} alt={entry.data.imageAlt} widths={widths} sizes="96px" loading="lazy" />
+                  ) : (
+                    <Picture
+                      src={visual}
+                      alt={entry.data.imageAlt}
+                      formats={['avif', 'webp']}
+                      fallbackFormat={visual.format === 'png' ? 'png' : 'jpeg'}
+                      widths={widths}
+                      sizes="96px"
+                      loading="lazy"
+                    />
+                  )}
+                </div>
+              )}
+              <div class="certification-card__details">
+                <h4>{entry.data.title}</h4>
+                <div class="certification-card__body"><Content /></div>
+              </div>
+            </div>
+            {(entry.data.credentialId || entry.data.expires || entry.data.verificationUrl) && (
+              <div class="certification-card__footer">
+                {entry.data.credentialId && <span>{t('journey.credential_id')} {entry.data.credentialId}</span>}
+                {entry.data.expires && (
+                  <span>{t('journey.expires')} <time datetime={entry.data.expires}>{formatMonth(entry.data.expires)}</time></span>
+                )}
+                {entry.data.verificationUrl && (
+                  <a href={entry.data.verificationUrl} rel="noreferrer">
+                    {t('journey.verify')} <span aria-hidden="true">↗</span>
+                  </a>
+                )}
+              </div>
+            )}
+          </article>
+        </li>
+    ))}
+  </ol>
+</section>
+
+<style>
+  .certifications {
+    margin-top: var(--space-12);
+  }
+
+  .certifications h3 {
+    padding-bottom: var(--space-3);
+    border-bottom: var(--border-width-thick) solid var(--color-border);
+    font-size: var(--text-xl);
+  }
+
+  .certifications__list {
+    display: grid;
+    gap: var(--space-4);
+    padding-top: var(--space-6);
+    list-style: none;
+  }
+
+  .certification-card {
+    min-width: 0;
+    border: var(--border-width) solid var(--color-border);
+    background: var(--color-bg);
+  }
+
+  .certification-card--example {
+    border-style: dashed;
+  }
+
+  .certification-card article {
+    padding: var(--space-5);
+  }
+
+  .certification-card__topline,
+  .certification-card__footer {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: var(--space-2) var(--space-4);
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+  }
+
+  .certification-card__topline {
+    padding-bottom: var(--space-3);
+    border-bottom: 1px solid var(--color-border-soft);
+    color: var(--color-fg-muted);
+  }
+
+  .certification-card__topline span {
+    color: var(--color-accent);
+    font-weight: var(--weight-bold);
+  }
+
+  .certification-card__example {
+    padding: var(--space-1) var(--space-2);
+    background: var(--color-fg);
+    color: var(--color-bg);
+    font-weight: var(--weight-bold);
+  }
+
+  .certification-card__main {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-4);
+    padding-block: var(--space-4);
+    min-width: 0;
+  }
+
+  .certification-card__image {
+    flex: 0 0 4.5rem;
+    width: 4.5rem;
+    aspect-ratio: 1;
+    overflow: hidden;
+  }
+
+  .certification-card__image :global(picture),
+  .certification-card__image :global(img) {
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+
+  .certification-card__image :global(img) {
+    object-fit: contain;
+  }
+
+  .certification-card__details {
+    min-width: 0;
+  }
+
+  .certification-card h4 {
+    font-size: var(--text-lg);
+    overflow-wrap: anywhere;
+  }
+
+  .certification-card__body :global(p) {
+    margin: var(--space-2) 0 0;
+    font-size: var(--text-sm);
+  }
+
+  .certification-card__footer {
+    padding-top: var(--space-3);
+    border-top: 1px solid var(--color-border-soft);
+    color: var(--color-fg-muted);
+    overflow-wrap: anywhere;
+  }
+
+  .certification-card__footer a {
+    color: var(--color-fg);
+    font-weight: var(--weight-bold);
+    text-decoration: underline;
+    text-underline-offset: 0.2em;
+  }
+
+  .certification-card__footer a:hover {
+    color: var(--color-accent);
+  }
+
+  @media (max-width: 950px) {
+    .certifications__list {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (max-width: 620px) {
+    .certifications__list {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

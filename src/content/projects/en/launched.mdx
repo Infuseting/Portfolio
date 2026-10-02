@@ -1,0 +1,45 @@
+---
+title: "Launched"
+description: "Minecraft launcher for choosing a server, syncing a session and starting the game from a desktop interface."
+tags: ["Tauri", "Rust", "React", "Minecraft"]
+year: 2026
+featured: true
+order: 1
+githubUrl: "https://github.com/Infuseting/launched"
+coverImage: "../../../assets/projects/launched-logo.png"
+coverAlt: "Pixel art logo of Launched, the Minecraft launcher"
+coverPresentation: "logo"
+coverCaption: "Project identity · application screenshot to come"
+role: "Launcher and interface development"
+context: "Personal Minecraft launcher"
+proof:
+  - value: "Tauri + React"
+    label: "Desktop application"
+  - value: "Server sessions"
+    label: "Main journey"
+status: "wip"
+---
+
+## The problem
+
+Joining a Minecraft server requires an account, a game version, the right resources and updates. Launched brings that journey into one dedicated desktop application.
+
+## The technical response
+
+- A React interface packaged with Tauri.
+- Minecraft session and server selection.
+- File synchronization before launching the game.
+- Account and per-session settings management.
+
+## Main flow
+
+```mermaid
+flowchart LR
+  A[Choose a session] --> B[Player account]
+  B --> C[Sync files]
+  C --> D[Launch Minecraft]
+```
+
+## Focus
+
+The launcher coordinates a web interface with native operations. The journey must remain understandable while synchronization is running, even when a server or download responds slowly.

@@ -1,0 +1,312 @@
+---
+import { render, type CollectionEntry } from 'astro:content';
+import SectionLabel from '../ui/SectionLabel.astro';
+import Certifications from './Certifications.astro';
+import { getLangFromUrl, useTranslations } from '../../i18n/utils';
+
+interface Props {
+  entries: CollectionEntry<'journey'>[];
+  certifications: CollectionEntry<'certifications'>[];
+}
+
+const { entries, certifications } = Astro.props;
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+
+const ordered = [...entries].sort((a, b) => a.data.order - b.data.order);
+const experienceItems = await Promise.all(
+  ordered.filter((entry) => entry.data.type === 'experience').map(async (entry) => ({
+    entry,
+    Content: (await render(entry)).Content,
+  })),
+);
+const educationItems = await Promise.all(
+  ordered.filter((entry) => entry.data.type === 'education').map(async (entry) => ({
+    entry,
+    Content: (await render(entry)).Content,
+  })),
+);
+---
+
+<section class="journey section" id="journey" aria-labelledby="journey-title">
+  <div class="container">
+    <header class="journey__header">
+      <SectionLabel label={t('journey.section_label')} />
+      <h2 id="journey-title">{t('journey.title')}</h2>
+    </header>
+
+    <div class="journey__layout">
+      <div class="journey__experience">
+        <h3>{t('journey.experience')}</h3>
+        <ol class="experience-list">
+          {experienceItems.map(({ entry, Content }) => (
+            <li class="experience-item">
+              <div class="experience-item__period">
+                <span>{entry.data.period}</span>
+                {entry.data.current && <strong>{t('journey.current')}</strong>}
+              </div>
+              <article class="experience-item__content">
+                <p class="experience-item__organization">{entry.data.organization}</p>
+                <h4>{entry.data.title}</h4>
+                {(entry.data.location || entry.data.tags.length > 0) && (
+                  <div class="experience-item__meta">
+                    {entry.data.location && <span>{entry.data.location}</span>}
+                    {entry.data.tags.map((tag) => <span>{tag}</span>)}
+                  </div>
+                )}
+                <div class="experience-item__body"><Content /></div>
+              </article>
+            </li>
+          ))}
+        </ol>
+      </div>
+
+      <aside
+        class="journey__education"
+        aria-label={certifications.length > 0 ? t('journey.education_and_certifications') : t('journey.education')}
+      >
+        <h3 id="education-title">{t('journey.education')}</h3>
+        <div class="education-stack">
+          {educationItems.map(({ entry, Content }, index) => (
+            <article class="education-file" style={`--file-index: ${index}`}>
+              <div class="education-file__topline">
+                <span>{entry.data.period}</span>
+                <span aria-hidden="true">{String(index + 1).padStart(2, '0')}</span>
+              </div>
+              {entry.data.credential && <p class="education-file__credential">{entry.data.credential}</p>}
+              <h4>{entry.data.title}</h4>
+              <p class="education-file__school">{entry.data.organization}</p>
+              {entry.data.location && <p class="education-file__location">{entry.data.location}</p>}
+              <div class="education-file__body"><Content /></div>
+              <ul aria-label={t('journey.subjects')}>
+                {entry.data.tags.map((tag) => <li>{tag}</li>)}
+              </ul>
+              {entry.data.current && <span class="education-file__stamp">{t('journey.in_progress')}</span>}
+            </article>
+          ))}
+        </div>
+        {certifications.length > 0 && <Certifications entries={certifications} />}
+      </aside>
+    </div>
+  </div>
+</section>
+
+<style>
+  .journey {
+    background: var(--color-bg-alt);
+    border-bottom: var(--border-width) solid var(--color-border);
+  }
+
+  .journey__header {
+    margin-bottom: var(--space-12);
+  }
+
+  .journey__header h2 {
+    max-width: 12ch;
+    margin-top: var(--space-3);
+    font-size: clamp(var(--text-5xl), 7vw, var(--text-8xl));
+    line-height: 0.92;
+  }
+
+  .journey__layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1.45fr) minmax(19rem, 0.55fr);
+    gap: var(--space-16);
+    align-items: start;
+  }
+
+  .journey h3 {
+    padding-bottom: var(--space-3);
+    border-bottom: var(--border-width-thick) solid var(--color-border);
+    font-size: var(--text-xl);
+  }
+
+  .experience-list {
+    list-style: none;
+  }
+
+  .experience-item {
+    display: grid;
+    grid-template-columns: 9rem minmax(0, 1fr);
+    gap: var(--space-8);
+    padding-block: var(--space-8);
+    border-bottom: var(--border-width) solid var(--color-border-soft);
+  }
+
+  .experience-item__period {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    color: var(--color-fg-muted);
+  }
+
+  .experience-item__period strong {
+    width: fit-content;
+    padding: var(--space-1) var(--space-2);
+    color: var(--color-bg);
+    background: var(--color-accent);
+    font-weight: var(--weight-bold);
+  }
+
+  .experience-item__organization {
+    margin: 0 0 var(--space-1);
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    color: var(--color-accent);
+  }
+
+  .experience-item h4 {
+    font-size: var(--text-2xl);
+  }
+
+  .experience-item__meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    margin-top: var(--space-3);
+  }
+
+  .experience-item__meta span {
+    padding: var(--space-1) var(--space-2);
+    border: 1px solid var(--color-border-soft);
+    font-size: var(--text-xs);
+    color: var(--color-fg-muted);
+  }
+
+  .experience-item__body {
+    margin-top: var(--space-4);
+  }
+
+  .experience-item__body :global(p) {
+    margin: 0;
+    font-size: var(--text-sm);
+  }
+
+  .education-stack {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-6);
+    padding-top: var(--space-8);
+  }
+
+  .education-file {
+    position: relative;
+    padding: var(--space-6);
+    border: var(--border-width-thick) solid var(--color-border);
+    background: var(--color-bg);
+    box-shadow: calc(5px + var(--file-index) * 2px) calc(5px + var(--file-index) * 2px) 0 var(--color-border);
+    transform: rotate(calc((var(--file-index) - 0.5) * 0.65deg));
+  }
+
+  .education-file__topline {
+    display: flex;
+    justify-content: space-between;
+    padding-bottom: var(--space-2);
+    border-bottom: 1px solid var(--color-border-soft);
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+  }
+
+  .education-file__credential {
+    margin: var(--space-5) 0 var(--space-1);
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    color: var(--color-accent);
+  }
+
+  .education-file h4 {
+    font-size: var(--text-2xl);
+  }
+
+  .education-file__school {
+    margin: var(--space-2) 0 0;
+    color: var(--color-fg);
+    font-weight: var(--weight-bold);
+  }
+
+  .education-file__location {
+    margin: 0;
+    font-size: var(--text-sm);
+  }
+
+  .education-file__body {
+    margin-top: var(--space-4);
+  }
+
+  .education-file__body :global(p) {
+    margin: 0;
+    font-size: var(--text-sm);
+  }
+
+  .education-file ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    margin-top: var(--space-5);
+    list-style: none;
+  }
+
+  .education-file li {
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    color: var(--color-fg-muted);
+  }
+
+  .education-file li:not(:last-child)::after {
+    content: ' /';
+    color: var(--color-accent);
+  }
+
+  .education-file__stamp {
+    position: absolute;
+    right: var(--space-4);
+    bottom: var(--space-4);
+    padding: var(--space-1) var(--space-2);
+    border: var(--border-width) solid var(--color-accent);
+    color: var(--color-accent);
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    font-weight: var(--weight-bold);
+    transform: rotate(-4deg);
+  }
+
+  @media (max-width: 950px) {
+    .journey__layout {
+      grid-template-columns: 1fr;
+    }
+
+    .education-stack {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (max-width: 620px) {
+    .journey__header h2 {
+      max-width: none;
+      font-size: clamp(2.25rem, 9vw, 3.5rem);
+      overflow-wrap: normal;
+    }
+
+    .experience-item {
+      grid-template-columns: 1fr;
+      gap: var(--space-4);
+    }
+
+    .experience-item__period {
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .education-stack {
+      grid-template-columns: 1fr;
+    }
+
+    .education-file {
+      transform: none;
+    }
+  }
+</style>

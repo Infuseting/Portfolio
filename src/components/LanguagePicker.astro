@@ -118,7 +118,6 @@ const currentPath = Astro.url.pathname;
   }
   .lang-menu.show {
     display: block;
-    animation: fadeInDown 0.2s ease;
   }
   .lang-menu a {
     display: block;
@@ -136,8 +135,4 @@ const currentPath = Astro.url.pathname;
     font-weight: var(--weight-bold);
   }
 
-  @keyframes fadeInDown {
-    from { opacity: 0; transform: translateY(-5px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
 </style>

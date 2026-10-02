@@ -1,0 +1,44 @@
+---
+title: "Kinect"
+description: "CRM Windows portable pour organiser les contacts, rendez-vous et documents dans une base locale chiffrée."
+tags: ["React", "JavaFX", "Java", "SQLCipher"]
+year: 2026
+featured: true
+order: 2
+coverImage: "../../../assets/projects/kinect-logo.png"
+coverAlt: "Logo turquoise de l'application Kinect"
+coverPresentation: "logo"
+coverCaption: "Identité visuelle du CRM · aucune donnée client n'est affichée"
+role: "Développement de l'interface et du socle desktop"
+context: "Application métier Windows"
+proof:
+  - value: "Windows portable"
+    label: "Distribution"
+  - value: "SQLCipher"
+    label: "Données locales chiffrées"
+status: "live"
+---
+
+## Un outil métier qui doit rester fiable
+
+Kinect regroupe les fiches de personnes, les rendez-vous et les documents dans une application utilisable sur Windows sans installation classique. Le sujet va au-delà de l'interface : les données locales doivent rester disponibles et protégées lors des mises à jour, des sauvegardes et de l'édition des documents.
+
+## Ce que j'ai construit
+
+- Une interface React intégrée dans une application JavaFX.
+- Une persistance locale chiffrée avec SQLCipher.
+- Des workflows pour les fiches, les documents et les rendez-vous.
+- Une distribution portable et des contrôles avant éjection du support.
+
+## Architecture simplifiée
+
+```mermaid
+flowchart LR
+  A[Interface React] <--> B[Runtime JavaFX]
+  B <--> C[(Base SQLCipher)]
+  B --> D[Documents et sauvegardes]
+```
+
+## Le point important
+
+Sur un CRM, un écran réussi ne suffit pas : une édition interrompue ou une copie incomplète peut coûter des données. Le projet m'a amené à traiter les erreurs, les sauvegardes et les états de récupération comme des parcours utilisateur à part entière.

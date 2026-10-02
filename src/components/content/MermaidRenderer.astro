@@ -1,0 +1,172 @@
+<script>
+  import { animate, inView } from 'motion';
+  import { startLoadingScanline } from '../../lib/motion/loading-scan';
+
+  let stopDiagramMotion: Array<() => void> = [];
+
+  function animateRenderedDiagram(figure: HTMLElement) {
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    const nodes = [...figure.querySelectorAll<SVGGElement>('svg g.node')];
+    const edges = [...figure.querySelectorAll<SVGPathElement>('svg path.flowchart-link')];
+    if (nodes.length === 0) return;
+
+    nodes.forEach((node) => { node.style.opacity = '0'; });
+    const paths = edges.map((edge) => {
+      const length = edge.getTotalLength();
+      edge.style.strokeDasharray = `${length} ${length}`;
+      edge.style.strokeDashoffset = String(length);
+      return { edge, length };
+    });
+
+    const stop = inView(figure, () => {
+      nodes.forEach((node, index) => {
+        const animation = animate(node, { opacity: [0, 1] }, {
+          duration: 0.38,
+          delay: Math.min(index * 0.12, 0.72),
+          ease: [0.22, 1, 0.36, 1],
+        });
+        stopDiagramMotion.push(() => animation.stop());
+      });
+      paths.forEach(({ edge, length }, index) => {
+        const animation = animate(edge, { strokeDashoffset: [length, 0] }, {
+          duration: 0.65,
+          delay: Math.min(index * 0.12, 0.72) + 0.08,
+          ease: [0.22, 1, 0.36, 1],
+        });
+        stopDiagramMotion.push(() => animation.stop());
+      });
+    }, { amount: 0.12, margin: '0px 0px -48px 0px' });
+    stopDiagramMotion.push(stop);
+  }
+
+  async function renderMermaidDiagrams(): Promise<void> {
+    const blocks = Array.from(document.querySelectorAll<HTMLElement>(
+      'pre[data-language="mermaid"] > code, pre > code.language-mermaid',
+    ));
+    if (blocks.length === 0) return;
+
+    const diagrams = blocks.map((code, index) => {
+      const pre = code.parentElement;
+      if (!pre) return null;
+
+      const figure = document.createElement('figure');
+      figure.className = 'content-diagram';
+      figure.setAttribute('aria-label', `${document.documentElement.lang === 'en' ? 'Diagram' : 'Diagramme'} ${index + 1}`);
+      figure.setAttribute('aria-busy', 'true');
+      figure.setAttribute('data-rendering', '');
+
+      const bar = document.createElement('span');
+      bar.className = 'content-diagram__loading-bar';
+      bar.setAttribute('aria-hidden', 'true');
+      figure.appendChild(bar);
+
+      const loading = document.createElement('span');
+      loading.className = 'content-diagram__loading';
+      loading.setAttribute('role', 'status');
+      loading.textContent = document.documentElement.lang === 'en' ? 'Rendering diagram…' : 'Préparation du schéma…';
+      figure.appendChild(loading);
+
+      const target = document.createElement('div');
+      target.className = 'mermaid';
+      target.textContent = code.textContent ?? '';
+      figure.appendChild(target);
+      pre.replaceWith(figure);
+      const stopScan = startLoadingScanline(bar);
+      return { pre, figure, target, loading, stopScan };
+    }).filter(Boolean);
+
+    if (diagrams.length === 0) return;
+
+    try {
+      const { default: mermaid } = await import('mermaid');
+      mermaid.initialize({
+        startOnLoad: false,
+        securityLevel: 'strict',
+        theme: 'base',
+        themeVariables: {
+          background: '#f5f0ea',
+          primaryColor: '#dfeff0',
+          primaryTextColor: '#0d0d0d',
+          primaryBorderColor: '#0d0d0d',
+          lineColor: '#007a87',
+          secondaryColor: '#ede8df',
+          tertiaryColor: '#ffffff',
+          fontFamily: 'Inter, system-ui, sans-serif',
+        },
+        flowchart: { curve: 'stepAfter', htmlLabels: false },
+      });
+      await mermaid.run({ nodes: diagrams.map((diagram) => diagram!.target) });
+      diagrams.forEach((diagram) => {
+        diagram!.stopScan();
+        diagram!.figure.removeAttribute('data-rendering');
+        diagram!.figure.setAttribute('aria-busy', 'false');
+        diagram!.loading.remove();
+        animateRenderedDiagram(diagram!.figure);
+      });
+    } catch (error) {
+      console.error('Unable to render Mermaid diagram', error);
+      diagrams.forEach((diagram) => {
+        diagram!.stopScan();
+        diagram!.figure.replaceWith(diagram!.pre);
+      });
+    }
+  }
+
+  renderMermaidDiagrams();
+  document.addEventListener('astro:page-load', renderMermaidDiagrams);
+  document.addEventListener('astro:before-swap', () => {
+    stopDiagramMotion.forEach((stop) => stop());
+    stopDiagramMotion = [];
+  });
+</script>
+
+<style is:global>
+  .content-diagram {
+    position: relative;
+    margin-block: var(--space-10);
+    padding: var(--space-6);
+    overflow-x: auto;
+    border: var(--border-width-thick) solid var(--color-border);
+    background: var(--color-bg);
+    box-shadow: var(--shadow-brutal);
+  }
+
+  .content-diagram .mermaid {
+    min-width: 36rem;
+  }
+
+  .content-diagram__loading {
+    display: block;
+    margin-bottom: var(--space-4);
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    color: var(--color-accent);
+  }
+
+  .content-diagram__loading-bar {
+    position: absolute;
+    inset: 0 auto auto 0;
+    width: 36%;
+    height: 3px;
+    background: var(--color-accent);
+    pointer-events: none;
+    opacity: 0;
+  }
+
+  .content-diagram[data-rendering] .content-diagram__loading-bar { opacity: 1; }
+
+  .content-diagram svg {
+    width: 100%;
+    height: auto;
+    max-width: 100%;
+  }
+
+  @media (max-width: 640px) {
+    .content-diagram {
+      margin-inline: calc(var(--container-pad) * -1);
+      padding: var(--space-4);
+      border-inline: 0;
+      box-shadow: none;
+    }
+  }
+</style>

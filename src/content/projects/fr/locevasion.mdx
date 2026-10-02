@@ -1,0 +1,52 @@
+---
+title: "Loc'Evasion 14"
+description: "Site web et outils de catalogue pour un loueur de véhicules, avec une passerelle vers les données métier et une administration dédiée."
+tags: ["Next.js", "TypeScript", "PostgreSQL", "Redis"]
+year: 2026
+featured: true
+order: 3
+coverImage: "../../../assets/projects/locevasion-vehicle.jpg"
+coverAlt: "Minibus présenté dans les visuels de Loc'Evasion 14"
+coverPresentation: "photo"
+coverCaption: "Photographie issue du site public de Loc'Evasion 14"
+gallery:
+  - image: "../../../assets/projects/locevasion-map.jpg"
+    alt: "Carte des trajets de navette entre Caen et plusieurs aéroports"
+    caption: "Carte utilisée dans le site web du projet"
+    presentation: "photo"
+role: "Développement du site et de la couche API"
+context: "Projet web pour un loueur de véhicules"
+proof:
+  - value: "Next.js"
+    label: "Site et API"
+  - value: "Catalogue admin"
+    label: "Outil métier"
+status: "wip"
+---
+
+## Relier un site public à des données métier
+
+Loc'Evasion 14 présente ses services de location et de navette sur le web. Le projet comprend aussi un catalogue de véhicules administrable et une couche serveur qui dialogue avec l'API métier existante.
+
+## Ce que couvre le projet
+
+- Des pages publiques pour les offres, les agences et les trajets.
+- Un catalogue de véhicules avec gestion des images et des états de publication.
+- Une authentification pour les outils d'administration.
+- Une passerelle API côté serveur, avec cache et coordination des accès aux données externes.
+
+## Flux simplifié
+
+```mermaid
+flowchart LR
+  A[Visiteur] --> B[Site Next.js]
+  B --> C[Catalogue public]
+  D[Administrateur] --> E[Administration]
+  E --> F[(PostgreSQL)]
+  E --> G[Adaptateur API métier]
+  G --> H[Hitech]
+```
+
+## Point d'attention
+
+Les données visibles sur le site ne doivent pas être inventées lorsqu'un service métier ne répond pas. Le catalogue et les erreurs techniques ont donc des états distincts pour garder le parcours compréhensible.
