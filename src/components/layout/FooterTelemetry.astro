@@ -1,5 +1,6 @@
 ---
-// FooterTelemetry.astro | Unified Neo-Brutalist Vercel Web Analytics & Speed Insights badge
+// FooterTelemetry.astro | Real Vercel Web Analytics stats (views & visitors) + Speed Insights (Core Web Vitals)
+import { getVercelAnalyticsStats } from '../../lib/api/vercel';
 import { useTranslations } from '../../i18n/utils';
 
 interface Props {
@@ -8,14 +9,25 @@ interface Props {
 
 const { lang } = Astro.props;
 const t = useTranslations(lang);
+
+const stats = await getVercelAnalyticsStats();
+
+function formatMetricNumber(n: number): string {
+  if (n >= 1000000) return `${(n / 1000000).toFixed(1)}M`;
+  if (n >= 1000) return `${(n / 1000).toFixed(1)}k`;
+  return String(n);
+}
+
+const initialViews = stats.configured ? formatMetricNumber(stats.pageviews) : '--';
+const initialVisitors = stats.configured ? formatMetricNumber(stats.visitors) : '--';
 ---
 
 <div class="telemetry-bar" role="region" aria-label={t('footer.telemetry.title')}>
   <div class="telemetry-pill">
-    <!-- Vercel Web Analytics Segment -->
+    <!-- Vercel Web Analytics Segment (Real numbers) -->
     <div
       class="telemetry-pill__segment telemetry-pill__segment--analytics"
-      title={t('footer.telemetry.analytics_tooltip')}
+      title={t('footer.telemetry.analytics_data_tooltip')}
       tabindex="0"
     >
       <svg
@@ -29,8 +41,18 @@ const t = useTranslations(lang);
         <path d="M57.5 0L115 100H0L57.5 0z" />
       </svg>
       <span class="telemetry-pill__label">{t('footer.telemetry.analytics')}</span>
-      <span class="telemetry-pill__dot is-active" aria-hidden="true"></span>
-      <span class="telemetry-pill__val">{t('footer.telemetry.analytics_active')}</span>
+
+      <div class="telemetry-pill__counts">
+        <span class="count-item">
+          <strong class="count-item__val" id="val-views">{initialViews}</strong>
+          <span class="count-item__unit">{t('footer.telemetry.views')}</span>
+        </span>
+        <span class="count-sep" aria-hidden="true">·</span>
+        <span class="count-item">
+          <strong class="count-item__val" id="val-visitors">{initialVisitors}</strong>
+          <span class="count-item__unit">{t('footer.telemetry.visitors')}</span>
+        </span>
+      </div>
     </div>
 
     <span class="telemetry-pill__divider" aria-hidden="true"></span>
@@ -105,6 +127,32 @@ const t = useTranslations(lang);
 
   type Rating = 'good' | 'needs-improvement' | 'poor';
 
+  function formatCount(n: number): string {
+    if (n >= 1000000) return `${(n / 1000000).toFixed(1)}M`;
+    if (n >= 1000) return `${(n / 1000).toFixed(1)}k`;
+    return String(n);
+  }
+
+  async function fetchFreshAnalytics() {
+    try {
+      const res = await fetch('/api/analytics.json');
+      if (!res.ok) return;
+      const data = await res.json();
+      if (data && data.configured) {
+        const viewsEl = document.getElementById('val-views');
+        const visitorsEl = document.getElementById('val-visitors');
+        if (viewsEl && typeof data.pageviews === 'number') {
+          viewsEl.textContent = formatCount(data.pageviews);
+        }
+        if (visitorsEl && typeof data.visitors === 'number') {
+          visitorsEl.textContent = formatCount(data.visitors);
+        }
+      }
+    } catch {
+      // Keep build-time rendered values
+    }
+  }
+
   function updateMetricUI(id: string, text: string, rating: Rating | 'pending') {
     const valEl = document.getElementById(`val-${id}`);
     const dotEl = document.getElementById(`dot-${id}`);
@@ -136,6 +184,8 @@ const t = useTranslations(lang);
   }
 
   function initTelemetry() {
+    fetchFreshAnalytics();
+
     onLCP((metric) => {
       const valSec = (metric.value / 1000).toFixed(2);
       updateMetricUI('lcp', `${valSec}s`, metric.rating);
@@ -227,20 +277,33 @@ const t = useTranslations(lang);
     color: var(--color-fg);
   }
 
-  .telemetry-pill__dot {
-    width: 5px;
-    height: 5px;
-    border-radius: 50%;
-    flex-shrink: 0;
+  .telemetry-pill__counts {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
   }
 
-  .telemetry-pill__dot.is-active {
-    background-color: #10b981;
+  .count-item {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 0.2rem;
   }
 
-  .telemetry-pill__val {
+  .count-item__val {
     font-size: 11px;
+    font-weight: var(--weight-bold);
+    color: var(--color-fg);
+  }
+
+  .count-item__unit {
+    font-size: 10px;
     color: var(--color-fg-muted);
+  }
+
+  .count-sep {
+    color: var(--color-border-soft);
+    font-size: 10px;
+    user-select: none;
   }
 
   .telemetry-pill__divider {

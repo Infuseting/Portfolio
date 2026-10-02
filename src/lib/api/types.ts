@@ -47,3 +47,9 @@ export interface LanguageStat {
   percentage: number; // 0 - 100%
   details?: string; // Détails des langages mineurs (ex: pour "Autres")
 }
+
+export interface VercelAnalyticsStats {
+  configured: boolean;
+  pageviews: number;
+  visitors: number;
+}
