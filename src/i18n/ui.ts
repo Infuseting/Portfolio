@@ -30,7 +30,7 @@ export const ui = {
     // Site & Meta
     'site.tagline': 'Software Engineer · Alternant',
     'site.locale': 'fr_FR',
-    'site.meta_description': "Arthur SERRET — Software Engineer en alternance (Sopra Steria & ENSICAEN). À la recherche d'un stage à l'étranger (min. 9 semaines) avant 2029.",
+    'site.meta_description': "Arthur SERRET | Software Engineer en alternance (Sopra Steria & ENSICAEN). À la recherche d'un stage à l'étranger (min. 9 semaines) avant 2029.",
 
     // Hero
     'hero.badge': "Étudiant en alternance · Recherche stage à l'étranger (≥ 9 sem.) avant 2029",
@@ -44,11 +44,11 @@ export const ui = {
     'activity.section_label': 'Activité & Algorithmes',
     'activity.title': 'Contributions & Algorithmes',
 
-    // Metrics — Communs
+    // Metrics | Communs
     'metrics.days': 'jours',
     'metrics.day': 'jour',
 
-    // Metrics — Git Activity Card
+    // Metrics | Git Activity Card
     'metrics.git.total_global': 'Total global',
     'metrics.git.avg_per_week': 'Moy. / semaine',
     'metrics.git.active_streak': 'Streak actif',
@@ -63,7 +63,7 @@ export const ui = {
     'metrics.git.less': 'Moins',
     'metrics.git.more': 'Plus',
 
-    // Metrics — LeetCode Card
+    // Metrics | LeetCode Card
     'metrics.leetcode.global_rank': 'Rang mondial',
     'metrics.leetcode.solved': 'résolus',
     'metrics.leetcode.acceptance_rate': 'Taux de succès',
@@ -121,7 +121,7 @@ export const ui = {
     // Site & Meta
     'site.tagline': 'Software Engineer · Apprentice',
     'site.locale': 'en_GB',
-    'site.meta_description': 'Arthur SERRET — Apprentice Software Engineer (Sopra Steria & ENSICAEN). Seeking an international internship (9+ weeks) before 2029.',
+    'site.meta_description': 'Arthur SERRET | Apprentice Software Engineer (Sopra Steria & ENSICAEN). Seeking an international internship (9+ weeks) before 2029.',
 
     // Hero
     'hero.badge': 'Apprentice Student · Seeking Abroad Internship (9+ wks) before 2029',
@@ -135,11 +135,11 @@ export const ui = {
     'activity.section_label': 'Activity & Algorithms',
     'activity.title': 'Contributions & Algorithms',
 
-    // Metrics — Common
+    // Metrics | Common
     'metrics.days': 'days',
     'metrics.day': 'day',
 
-    // Metrics — Git Activity Card
+    // Metrics | Git Activity Card
     'metrics.git.total_global': 'All-time total',
     'metrics.git.avg_per_week': 'Avg / week',
     'metrics.git.active_streak': 'Streak',
@@ -154,7 +154,7 @@ export const ui = {
     'metrics.git.less': 'Less',
     'metrics.git.more': 'More',
 
-    // Metrics — LeetCode Card
+    // Metrics | LeetCode Card
     'metrics.leetcode.global_rank': 'Global rank',
     'metrics.leetcode.solved': 'solved',
     'metrics.leetcode.acceptance_rate': 'Acceptance rate',

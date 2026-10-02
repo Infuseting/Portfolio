@@ -1,5 +1,5 @@
 ---
-// BaseLayout.astro — HTML shell with SEO, theme, and ClientRouter
+// BaseLayout.astro | HTML shell with SEO, theme, and ClientRouter
 import { ClientRouter } from 'astro:transitions';
 import '../styles/global.css';
 
@@ -32,8 +32,8 @@ const altUrl = Astro.url.href.includes(`/${lang}/`)
   : Astro.url.href;
 
 const fullTitle = title === 'Arthur SERRET'
-  ? `Arthur SERRET — ${t_layout('site.tagline')}`
-  : `${title} — Arthur SERRET`;
+  ? `Arthur SERRET | ${t_layout('site.tagline')}`
+  : `${title} | Arthur SERRET`;
 
 const siteUrl = Astro.site?.origin ?? 'https://infuseting.fr';
 ---
@@ -130,7 +130,7 @@ const siteUrl = Astro.site?.origin ?? 'https://infuseting.fr';
           "@type": "WebSite",
           "@id": `${siteUrl}/#website`,
           "url": siteUrl,
-          "name": "Arthur SERRET — Portfolio",
+          "name": "Arthur SERRET | Portfolio",
           "description": description,
           "publisher": {
             "@id": `${siteUrl}/#person`

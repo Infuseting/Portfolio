@@ -1,5 +1,5 @@
 /* ============================================================
-   DESIGN TOKENS — Portfolio Arthur SERRET
+   DESIGN TOKENS | Portfolio Arthur SERRET
    All CSS custom properties. Import this first in global.css.
    ============================================================ */
 
@@ -66,7 +66,7 @@
   --border-width:       2px;
   --border-width-thick: 3px;
   --radius-none:        0px;
-  --radius-sm:          2px;   /* minimal — brutaliste */
+  --radius-sm:          2px;   /* minimal | brutaliste */
   --radius-md:          4px;
   --shadow-brutal:      4px 4px 0 var(--color-border);
   --shadow-brutal-lg:   6px 6px 0 var(--color-border);
@@ -89,7 +89,7 @@
   --header-h:      4rem;
 }
 
-/* ── COLORS — LIGHT MODE (default) ──────────────────────── */
+/* ── COLORS | LIGHT MODE (default) ──────────────────────── */
 :root {
   --color-bg:           #f5f0ea;
   --color-bg-alt:       #ede8df;
