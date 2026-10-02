@@ -16,15 +16,30 @@ export async function getVercelAnalyticsStats(): Promise<VercelAnalyticsStats> {
 
   try {
     const now = Date.now();
-    const sixtyDaysAgo = now - 60 * 24 * 60 * 60 * 1000;
+    const thirtyDaysAgo = now - 30 * 24 * 60 * 60 * 1000;
+
+    let resolvedTeamId = teamId;
+    if (!resolvedTeamId) {
+      try {
+        const projRes = await fetch(`https://api.vercel.com/v9/projects/${projectId}`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        if (projRes.ok) {
+          const projData = await projRes.json();
+          if (projData.accountId && projData.accountId.startsWith("team_")) {
+            resolvedTeamId = projData.accountId;
+          }
+        }
+      } catch {}
+    }
 
     const url = new URL("https://api.vercel.com/v1/query/web-analytics/visits/aggregate");
     url.searchParams.set("projectId", projectId);
     url.searchParams.set("by", "day");
-    url.searchParams.set("since", String(sixtyDaysAgo));
+    url.searchParams.set("since", String(thirtyDaysAgo));
     url.searchParams.set("until", String(now));
-    if (teamId) {
-      url.searchParams.set("teamId", teamId);
+    if (resolvedTeamId) {
+      url.searchParams.set("teamId", resolvedTeamId);
     }
 
     const res = await fetch(url.toString(), {
