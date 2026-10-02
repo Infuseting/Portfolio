@@ -1,6 +1,8 @@
 ---
-// BaseLayout.astro — HTML shell with SEO, theme, and ClientRouter
+// BaseLayout.astro | HTML shell with SEO, theme, and ClientRouter
 import { ClientRouter } from 'astro:transitions';
+import Analytics from '@vercel/analytics/astro';
+import SpeedInsights from '@vercel/speed-insights/astro';
 import '../styles/global.css';
 
 interface Props {
@@ -32,8 +34,8 @@ const altUrl = Astro.url.href.includes(`/${lang}/`)
   : Astro.url.href;
 
 const fullTitle = title === 'Arthur SERRET'
-  ? `Arthur SERRET — ${t_layout('site.tagline')}`
-  : `${title} — Arthur SERRET`;
+  ? `Arthur SERRET | ${t_layout('site.tagline')}`
+  : `${title} | Arthur SERRET`;
 
 const siteUrl = Astro.site?.origin ?? 'https://infuseting.fr';
 ---
@@ -130,7 +132,7 @@ const siteUrl = Astro.site?.origin ?? 'https://infuseting.fr';
           "@type": "WebSite",
           "@id": `${siteUrl}/#website`,
           "url": siteUrl,
-          "name": "Arthur SERRET — Portfolio",
+          "name": "Arthur SERRET | Portfolio",
           "description": description,
           "publisher": {
             "@id": `${siteUrl}/#person`
@@ -162,6 +164,8 @@ const siteUrl = Astro.site?.origin ?? 'https://infuseting.fr';
   <body>
     <a href="#main-content" class="skip-to-content">{t_layout('a11y.skip')}</a>
     <slot />
+    <Analytics />
+    <SpeedInsights />
 
     <script>
       function initScrollReveals() {

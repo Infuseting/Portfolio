@@ -6,12 +6,13 @@ The macro technical shape: the stack, how the pieces fit, and the decisions behi
 
 - Astro (`astro`): The main framework for building fast, content-focused static websites.
 - TypeScript (`typescript`): Strongly typed JavaScript.
-- GSAP (`gsap`): For dynamic micro-animations.
+- GSAP (`gsap`) & Motion (`motion`): For dynamic micro-animations.
+- Vercel Telemetry (`@vercel/analytics`, `@vercel/speed-insights`, `web-vitals`): Cookieless real-time traffic and Core Web Vitals monitoring.
 
 ## Structure
 
 - `src/pages/[lang]/`: Astro file-based routing entry points with dynamic i18n support.
-- `src/components/`: Reusable UI components.
+- `src/components/`: Reusable UI components (including `layout/FooterTelemetry.astro`).
 - `src/layouts/`: Page layout wrappers.
 - `src/content/`: Markdown and MDX content collections, organized by language (`{blog,projects}/{lang}/`).
 - `src/i18n/`: Translation dictionary (`ui.ts`) and utility functions.
@@ -30,8 +31,8 @@ flowchart LR
 
 ## Key decisions
 
-- Using Astro to ship zero-JS by default, opting into GSAP only for necessary animations.
-- Containerized deployment using Docker and Nginx (`Dockerfile`, `nginx.conf`) with strong Content-Security-Policy headers.
+- Using Astro to ship zero-JS by default, opting into GSAP/Motion only for necessary animations.
+- Containerized deployment using Docker and Nginx (`Dockerfile`, `nginx.conf`) with strong Content-Security-Policy headers allowing Vercel telemetry scripts and endpoints.
 - Unified bilingual system (fr/en) through `[lang]` dynamic paths and isolated translation dictionaries (`ui.ts`).
 
 ## Gotchas

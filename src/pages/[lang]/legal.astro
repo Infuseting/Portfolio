@@ -1,0 +1,165 @@
+---
+export function getStaticPaths() {
+  return [
+    { params: { lang: 'fr' } },
+    { params: { lang: 'en' } },
+  ];
+}
+
+import LegalLayout from '../../layouts/LegalLayout.astro';
+import { useTranslations } from '../../i18n/utils';
+
+const { lang } = Astro.params as { lang: 'fr' | 'en' };
+const t = useTranslations(lang);
+
+const tocFr = [
+  { id: 'editeur', label: '1. Éditeur du site' },
+  { id: 'hebergeur', label: '2. Hébergeur' },
+  { id: 'propriete', label: '3. Propriété intellectuelle' },
+  { id: 'liens', label: '4. Liens externes' },
+  { id: 'droit-applicable', label: '5. Droit applicable' },
+];
+
+const tocEn = [
+  { id: 'editeur', label: '1. Website Publisher' },
+  { id: 'hebergeur', label: '2. Hosting Provider' },
+  { id: 'propriete', label: '3. Intellectual Property' },
+  { id: 'liens', label: '4. External Links' },
+  { id: 'droit-applicable', label: '5. Applicable Law' },
+];
+
+const toc = lang === 'fr' ? tocFr : tocEn;
+---
+
+<LegalLayout
+  title={t('legal.page_title')}
+  description={t('legal.page_desc')}
+  toc={toc}
+  lang={lang}
+>
+  {lang === 'fr' ? (
+    <>
+      <section id="editeur">
+        <h2>1. Éditeur du site</h2>
+        <p>
+          Le présent site accessible à l'adresse <strong>https://infuseting.fr</strong> est édité par :
+        </p>
+        <div class="legal-card">
+          <h4>Arthur SERRET</h4>
+          <p><strong>Statut :</strong> Particulier – Édition de site web à titre non professionnel (Article 6, III-2 de la Loi n° 2004-575 du 21 juin 2004 pour la Confiance dans l'Économie Numérique - LCEN).</p>
+          <p><strong>Directeur de la publication :</strong> Arthur SERRET</p>
+          <p><strong>Contact électronique :</strong> <a href="mailto:serretarthur@gmail.com">serretarthur@gmail.com</a></p>
+        </div>
+        <div class="legal-callout">
+          <p>
+            Conformément aux dispositions de l'article 6, III-2 de la LCEN, l'éditeur a choisi de préserver son anonymat pour ses coordonnées postales et téléphoniques personnelles. Ces éléments d'identification ont été transmis de manière complète et exacte à l'hébergeur du site, tenu au secret professionnel et garant de la transmission des informations sur réquisition judiciaire.
+          </p>
+        </div>
+      </section>
+
+      <section id="hebergeur">
+        <h2>2. Hébergeur du site</h2>
+        <p>
+          L'infrastructure technique, la diffusion du site web et la gestion du nom de domaine sont assurées par :
+        </p>
+        <div class="legal-card">
+          <h4>Vercel Inc.</h4>
+          <p><strong>Adresse postale :</strong> 440 N Barranca Ave #4133, Covina, CA 91723, États-Unis</p>
+          <p><strong>Site web :</strong> <a href="https://vercel.com" target="_blank" rel="noopener noreferrer">https://vercel.com</a></p>
+          <p><strong>Contact :</strong> privacy@vercel.com</p>
+        </div>
+      </section>
+
+      <section id="propriete">
+        <h2>3. Propriété intellectuelle</h2>
+        <p>
+          L'ensemble des éléments constituant ce site (textes, graphismes, maquettes, structure générale, logos personnels et photographies) relève de la législation française et internationale sur le droit d'auteur et la propriété intellectuelle.
+        </p>
+        <ul>
+          <li><strong>Code source :</strong> Le code source du portfolio est hébergé publiquement à des fins de démonstration technique sur GitHub. Sauf mention contraire, sa réutilisation commerciale sans accord écrit préalable est interdite.</li>
+          <li><strong>Ressources typographiques :</strong> Les polices de caractères <em>Syne</em>, <em>Inter</em> et <em>JetBrains Mono</em> sont distribuées sous licence libre SIL Open Font License (OFL).</li>
+          <li><strong>Icônes :</strong> Les icônes vectorielles sont issues de bibliothèques open source (Iconify, Simple Icons, Lucide) et demeurent la propriété de leurs concepteurs respectifs.</li>
+        </ul>
+      </section>
+
+      <section id="liens">
+        <h2>4. Liens hypertextes et responsabilités</h2>
+        <p>
+          Le site contient des liens hypertextes pointant vers des sites internet tiers (notamment GitHub, LinkedIn, LeetCode et divers projets présentés). Ces liens sont fournis à titre informatif.
+        </p>
+        <p>
+          L'éditeur n'exerce aucun contrôle sur le contenu, l'évolution ou la conformité juridique des sites tiers et ne saurait être tenu responsable du contenu de ces ressources externes ou des éventuels dommages résultant de leur consultation.
+        </p>
+      </section>
+
+      <section id="droit-applicable">
+        <h2>5. Droit applicable et juridiction</h2>
+        <p>
+          Les présentes mentions légales sont soumises au droit français. En cas de litige relatif à l'interprétation ou à l'exécution de ces mentions, et à défaut de règlement amiable, les tribunaux compétents du ressort de la juridiction française seront seuls compétents.
+        </p>
+      </section>
+    </>
+  ) : (
+    <>
+      <section id="editeur">
+        <h2>1. Website Publisher</h2>
+        <p>
+          The website accessible at <strong>https://infuseting.fr</strong> is published by:
+        </p>
+        <div class="legal-card">
+          <h4>Arthur SERRET</h4>
+          <p><strong>Legal status:</strong> Individual – Non-professional personal publication (in accordance with Article 6, III-2 of French Law No. 2004-575 of June 21, 2004 on Trust in the Digital Economy - LCEN).</p>
+          <p><strong>Publication Director:</strong> Arthur SERRET</p>
+          <p><strong>Email contact:</strong> <a href="mailto:serretarthur@gmail.com">serretarthur@gmail.com</a></p>
+        </div>
+        <div class="legal-callout">
+          <p>
+            In accordance with Article 6, III-2 of the LCEN, personal postal address and phone number are kept private from public display. Complete and verified identity details have been formally registered with the hosting provider, who is subject to professional confidentiality and obligated to disclose identity exclusively upon official judicial request.
+          </p>
+        </div>
+      </section>
+
+      <section id="hebergeur">
+        <h2>2. Hosting Provider</h2>
+        <p>
+          The technical hosting infrastructure and global content delivery network are provided by:
+        </p>
+        <div class="legal-card">
+          <h4>Vercel Inc.</h4>
+          <p><strong>Mailing address:</strong> 440 N Barranca Ave #4133, Covina, CA 91723, United States</p>
+          <p><strong>Website:</strong> <a href="https://vercel.com" target="_blank" rel="noopener noreferrer">https://vercel.com</a></p>
+          <p><strong>Contact:</strong> privacy@vercel.com</p>
+        </div>
+      </section>
+
+      <section id="propriete">
+        <h2>3. Intellectual Property</h2>
+        <p>
+          All components constituting this website (textual contents, interface design, personal branding, graphics, and architectural layout) are protected under French and international intellectual property and copyright laws.
+        </p>
+        <ul>
+          <li><strong>Source Code:</strong> The portfolio source code is publicly accessible for technical demonstration on GitHub. Commercial redistribution without prior explicit permission is prohibited.</li>
+          <li><strong>Typography:</strong> Typefaces <em>Syne</em>, <em>Inter</em>, and <em>JetBrains Mono</em> are distributed under the SIL Open Font License (OFL).</li>
+          <li><strong>Icons:</strong> Vector icons are sourced from open-source libraries (Iconify, Simple Icons, Lucide) and remain the property of their respective creators.</li>
+        </ul>
+      </section>
+
+      <section id="liens">
+        <h2>4. External Hyperlinks & Disclaimer</h2>
+        <p>
+          This website includes hyperlinks directing to third-party services (such as GitHub, LinkedIn, LeetCode, and referenced showcase projects). These links are provided for informational and portfolio reference purposes.
+        </p>
+        <p>
+          The publisher exercises no control over the content, updates, or privacy practices of external platforms and disclaims any liability for third-party websites or services.
+        </p>
+      </section>
+
+      <section id="droit-applicable">
+        <h2>5. Governing Law and Jurisdiction</h2>
+        <p>
+          These legal notices are governed by and construed in accordance with French law. Any dispute arising from the use of this website shall be submitted to the exclusive jurisdiction of the competent French courts.
+        </p>
+      </section>
+    </>
+  )}
+</LegalLayout>

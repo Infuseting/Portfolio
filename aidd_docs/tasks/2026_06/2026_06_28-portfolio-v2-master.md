@@ -1,6 +1,6 @@
 ﻿---
 name: master_plan
-objective: "Portfolio V2.0.0 — Arthur SERRET — fully built, tested, and deployable via Docker."
+objective: "Portfolio V2.0.0 | Arthur SERRET | fully built, tested, and deployable via Docker."
 status: in-progress
 ---
 
@@ -8,7 +8,7 @@ status: in-progress
 
 ## Overview
 
-- **Goal**: Build infuseting.fr portfolio from greenfield to Docker-deployable — Astro 5, TypeScript strict, brutaliste moderne, Lighthouse 100, SEO-perfect.
+- **Goal**: Build infuseting.fr portfolio from greenfield to Docker-deployable | Astro 5, TypeScript strict, brutaliste moderne, Lighthouse 100, SEO-perfect.
 - **Risk Score**: 3/10
 - **Branch**: `feat/portfolio-v2`
 

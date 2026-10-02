@@ -1,5 +1,6 @@
 ---
 import { getLangFromUrl, useTranslations } from '../../i18n/utils';
+import FooterTelemetry from './FooterTelemetry.astro';
 const year = new Date().getFullYear();
 
 const lang = getLangFromUrl(Astro.url);
@@ -58,8 +59,19 @@ const socials = [
     </div>
   </div>
 
+  <div class="container">
+    <FooterTelemetry lang={lang} />
+  </div>
+
   <div class="footer__bottom container">
     <p>© {year} Arthur SERRET. {t('footer.rights')}</p>
+    <nav class="footer__legal" aria-label="Liens légaux et accessibilité">
+      <a href={`/${lang}/legal`}>{t('footer.legal')}</a>
+      <span class="footer__sep" aria-hidden="true">·</span>
+      <a href={`/${lang}/privacy`}>{t('footer.privacy')}</a>
+      <span class="footer__sep" aria-hidden="true">·</span>
+      <a href={`/${lang}/accessibility`}>{t('footer.accessibility')}</a>
+    </nav>
     <p class="footer__built">{t('footer.built')} <a href="https://astro.build" target="_blank" rel="noopener noreferrer">Astro</a></p>
   </div>
 </footer>
@@ -207,4 +219,29 @@ const socials = [
   }
 
   .footer__built a:hover { color: var(--color-accent); }
+
+  .footer__legal {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    flex-wrap: wrap;
+  }
+
+  .footer__legal a {
+    font-size: var(--text-xs);
+    color: var(--color-fg-subtle);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    transition: color var(--transition-fast);
+  }
+
+  .footer__legal a:hover {
+    color: var(--color-accent);
+  }
+
+  .footer__sep {
+    font-size: var(--text-xs);
+    color: var(--color-fg-subtle);
+    user-select: none;
+  }
 </style>

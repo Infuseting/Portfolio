@@ -30,7 +30,7 @@ export const ui = {
     // Site & Meta
     'site.tagline': 'Software Engineer · Alternant',
     'site.locale': 'fr_FR',
-    'site.meta_description': "Arthur SERRET — Software Engineer en alternance (Sopra Steria & ENSICAEN). À la recherche d'un stage à l'étranger (min. 9 semaines) avant 2029.",
+    'site.meta_description': "Arthur SERRET | Software Engineer en alternance (Sopra Steria & ENSICAEN). À la recherche d'un stage à l'étranger (min. 9 semaines) avant 2029.",
 
     // Hero
     'hero.badge': "Étudiant en alternance · Recherche stage à l'étranger (≥ 9 sem.) avant 2029",
@@ -44,11 +44,11 @@ export const ui = {
     'activity.section_label': 'Activité & Algorithmes',
     'activity.title': 'Contributions & Algorithmes',
 
-    // Metrics — Communs
+    // Metrics | Communs
     'metrics.days': 'jours',
     'metrics.day': 'jour',
 
-    // Metrics — Git Activity Card
+    // Metrics | Git Activity Card
     'metrics.git.total_global': 'Total global',
     'metrics.git.avg_per_week': 'Moy. / semaine',
     'metrics.git.active_streak': 'Streak actif',
@@ -63,7 +63,7 @@ export const ui = {
     'metrics.git.less': 'Moins',
     'metrics.git.more': 'Plus',
 
-    // Metrics — LeetCode Card
+    // Metrics | LeetCode Card
     'metrics.leetcode.global_rank': 'Rang mondial',
     'metrics.leetcode.solved': 'résolus',
     'metrics.leetcode.acceptance_rate': 'Taux de succès',
@@ -96,6 +96,39 @@ export const ui = {
     'footer.rights': 'Tous droits réservés.',
     'footer.built': 'Construit avec',
     'footer.socials_label': 'Réseaux sociaux',
+    'footer.legal': 'Mentions légales',
+    'footer.privacy': 'Confidentialité',
+    'footer.accessibility': 'Accessibilité : partiellement conforme',
+    'footer.telemetry.title': 'Télémétrie en direct',
+    'footer.telemetry.analytics': 'Web Analytics',
+    'footer.telemetry.analytics_active': 'Actif · Cookieless',
+    'footer.telemetry.analytics_tooltip': 'Vercel Web Analytics : Télémétrie anonymisée sans cookies conforme RGPD',
+    'footer.telemetry.speed_insights': 'Speed Insights',
+    'footer.telemetry.views': 'vues',
+    'footer.telemetry.visitors': 'visiteurs',
+    'footer.telemetry.analytics_data_tooltip': 'Statistiques Vercel Web Analytics (pages vues et visiteurs uniques)',
+    'footer.telemetry.ttfb_title': 'Time to First Byte (Temps de réponse serveur)',
+    'footer.telemetry.lcp_title': 'Largest Contentful Paint (Temps de chargement principal)',
+    'footer.telemetry.cls_title': 'Cumulative Layout Shift (Stabilité visuelle)',
+    'footer.telemetry.inp_title': 'Interaction to Next Paint (Réactivité aux interactions)',
+    'footer.telemetry.good': 'Bon',
+    'footer.telemetry.needs_improvement': 'Améliorable',
+    'footer.telemetry.poor': 'Médiocre',
+    'footer.telemetry.measuring': 'Mesure...',
+    'footer.telemetry.waiting_interaction': 'En attente d’interaction',
+
+    // Legal & Compliance
+    'legal.breadcrumb_home': 'Accueil',
+    'legal.last_updated': 'Dernière mise à jour :',
+    'legal.date': 'Octobre 2026',
+    'legal.table_of_contents': 'Sommaire de la page',
+    'legal.back_to_top': 'Haut de page ↑',
+    'legal.page_title': 'Mentions Légales',
+    'legal.page_desc': 'Mentions légales obligatoires régissant le site infuseting.fr conformément à la loi LCEN.',
+    'privacy.page_title': 'Politique de Confidentialité',
+    'privacy.page_desc': 'Protection des données personnelles et respect de la vie privée (RGPD & directive ePrivacy).',
+    'accessibility.page_title': "Déclaration d'Accessibilité",
+    'accessibility.page_desc': "Déclaration de conformité aux normes d'accessibilité numérique (European Accessibility Act & RGAA).",
   },
   en: {
     // Navigation
@@ -121,7 +154,7 @@ export const ui = {
     // Site & Meta
     'site.tagline': 'Software Engineer · Apprentice',
     'site.locale': 'en_GB',
-    'site.meta_description': 'Arthur SERRET — Apprentice Software Engineer (Sopra Steria & ENSICAEN). Seeking an international internship (9+ weeks) before 2029.',
+    'site.meta_description': 'Arthur SERRET | Apprentice Software Engineer (Sopra Steria & ENSICAEN). Seeking an international internship (9+ weeks) before 2029.',
 
     // Hero
     'hero.badge': 'Apprentice Student · Seeking Abroad Internship (9+ wks) before 2029',
@@ -135,11 +168,11 @@ export const ui = {
     'activity.section_label': 'Activity & Algorithms',
     'activity.title': 'Contributions & Algorithms',
 
-    // Metrics — Common
+    // Metrics | Common
     'metrics.days': 'days',
     'metrics.day': 'day',
 
-    // Metrics — Git Activity Card
+    // Metrics | Git Activity Card
     'metrics.git.total_global': 'All-time total',
     'metrics.git.avg_per_week': 'Avg / week',
     'metrics.git.active_streak': 'Streak',
@@ -154,7 +187,7 @@ export const ui = {
     'metrics.git.less': 'Less',
     'metrics.git.more': 'More',
 
-    // Metrics — LeetCode Card
+    // Metrics | LeetCode Card
     'metrics.leetcode.global_rank': 'Global rank',
     'metrics.leetcode.solved': 'solved',
     'metrics.leetcode.acceptance_rate': 'Acceptance rate',
@@ -187,5 +220,38 @@ export const ui = {
     'footer.rights': 'All rights reserved.',
     'footer.built': 'Built with',
     'footer.socials_label': 'Social media',
+    'footer.legal': 'Legal Notice',
+    'footer.privacy': 'Privacy Policy',
+    'footer.accessibility': 'Accessibility: partially compliant',
+    'footer.telemetry.title': 'Live Telemetry',
+    'footer.telemetry.analytics': 'Web Analytics',
+    'footer.telemetry.analytics_active': 'Active · Cookieless',
+    'footer.telemetry.analytics_tooltip': 'Vercel Web Analytics: Anonymized cookieless telemetry complying with GDPR',
+    'footer.telemetry.speed_insights': 'Speed Insights',
+    'footer.telemetry.views': 'views',
+    'footer.telemetry.visitors': 'visitors',
+    'footer.telemetry.analytics_data_tooltip': 'Vercel Web Analytics stats (page views and unique visitors)',
+    'footer.telemetry.ttfb_title': 'Time to First Byte (Server response latency)',
+    'footer.telemetry.lcp_title': 'Largest Contentful Paint (Main content render latency)',
+    'footer.telemetry.cls_title': 'Cumulative Layout Shift (Visual stability)',
+    'footer.telemetry.inp_title': 'Interaction to Next Paint (UI responsiveness)',
+    'footer.telemetry.good': 'Good',
+    'footer.telemetry.needs_improvement': 'Needs improvement',
+    'footer.telemetry.poor': 'Poor',
+    'footer.telemetry.measuring': 'Measuring...',
+    'footer.telemetry.waiting_interaction': 'Waiting for interaction',
+
+    // Legal & Compliance
+    'legal.breadcrumb_home': 'Home',
+    'legal.last_updated': 'Last updated:',
+    'legal.date': 'October 2026',
+    'legal.table_of_contents': 'Table of contents',
+    'legal.back_to_top': 'Back to top ↑',
+    'legal.page_title': 'Legal Notice',
+    'legal.page_desc': 'Mandatory legal notices governing infuseting.fr in compliance with French LCEN regulations.',
+    'privacy.page_title': 'Privacy Policy',
+    'privacy.page_desc': 'Personal data protection and privacy policy (GDPR & ePrivacy directive).',
+    'accessibility.page_title': 'Accessibility Statement',
+    'accessibility.page_desc': 'Digital accessibility compliance statement (European Accessibility Act & WCAG).',
   },
 } as const;

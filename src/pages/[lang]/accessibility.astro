@@ -1,0 +1,193 @@
+---
+export function getStaticPaths() {
+  return [
+    { params: { lang: 'fr' } },
+    { params: { lang: 'en' } },
+  ];
+}
+
+import LegalLayout from '../../layouts/LegalLayout.astro';
+import { useTranslations } from '../../i18n/utils';
+
+const { lang } = Astro.params as { lang: 'fr' | 'en' };
+const t = useTranslations(lang);
+
+const tocFr = [
+  { id: 'engagement', label: '1. Engagement' },
+  { id: 'statut', label: '2. État de conformité' },
+  { id: 'mesures', label: '3. Mesures d’accessibilité' },
+  { id: 'technologies', label: '4. Technologies utilisées' },
+  { id: 'contact', label: '5. Retour d’information' },
+  { id: 'recours', label: '6. Voies de recours' },
+];
+
+const tocEn = [
+  { id: 'engagement', label: '1. Commitment' },
+  { id: 'statut', label: '2. Compliance Status' },
+  { id: 'mesures', label: '3. Accessibility Measures' },
+  { id: 'technologies', label: '4. Technologies' },
+  { id: 'contact', label: '5. Feedback & Contact' },
+  { id: 'recours', label: '6. Enforcement Procedure' },
+];
+
+const toc = lang === 'fr' ? tocFr : tocEn;
+---
+
+<LegalLayout
+  title={t('accessibility.page_title')}
+  description={t('accessibility.page_desc')}
+  toc={toc}
+  lang={lang}
+>
+  {lang === 'fr' ? (
+    <>
+      <section id="engagement">
+        <h2>1. Engagement en faveur de l'accessibilité</h2>
+        <p>
+          Arthur SERRET s'engage à rendre le site internet <strong>https://infuseting.fr</strong> accessible à tous les utilisateurs, quelles que soient leurs capacités physiques, sensorielles ou cognitives, conformément aux exigences de la directive européenne 2019/882 (<em>European Accessibility Act - EAA</em>), de la norme européenne <strong>EN 301 549</strong> et des recommandations du <strong>RGAA 4.1</strong> (Référentiel Général d’Amélioration de l’Accessibilité).
+        </p>
+      </section>
+
+      <section id="statut">
+        <h2>2. État de conformité</h2>
+        <div class="legal-callout">
+          <p>
+            <strong>Statut légal : Partiellement conforme</strong> avec le RGAA 4.1 et les Web Content Accessibility Guidelines (WCAG 2.2 Niveau AA), en raison des points d'amélioration continue décrits ci-après.
+          </p>
+        </div>
+      </section>
+
+      <section id="mesures">
+        <h2>3. Mesures d'accessibilité mises en œuvre</h2>
+        <p>
+          L'architecture et l'expérience utilisateur intègrent nativement les critères d'accessibilité numérique :
+        </p>
+        <ul>
+          <li><strong>Structure HTML5 sémantique :</strong> Utilisation rigoureuse des repères structurels (<code>&lt;header&gt;</code>, <code>&lt;main&gt;</code>, <code>&lt;footer&gt;</code>, <code>&lt;nav&gt;</code>, <code>&lt;section&gt;</code>) et hiérarchie logique des titres (h1 à h4).</li>
+          <li><strong>Lien d'évitement rapide :</strong> Un lien « Aller au contenu principal » (<em>Skip to content</em>) est accessible dès la première tabulation pour les utilisateurs naviguant au clavier.</li>
+          <li><strong>Navigation intégrale au clavier :</strong> Tous les éléments interactifs (boutons, sélecteur de langue, liens) sont focalisables avec des indicateurs de focus visibles et contrastés.</li>
+          <li><strong>Gestion du mouvement réduit :</strong> Prise en compte immédiate de la directive CSS <code>prefers-reduced-motion: reduce</code> désactivant les animations GSAP et transitions superflues.</li>
+          <li><strong>Accessibilité des graphismes & contrastes :</strong> Textes alternatifs et balises descriptives sur les icônes SVG, et respect des ratios de contraste WCAG AA (minimum 4.5:1).</li>
+          <li><strong>Conception adaptative et zoom :</strong> Mise en page fluide et lisible sans perte de contenu ni de fonctionnalité jusqu'à un zoom navigateur de 200%.</li>
+        </ul>
+      </section>
+
+      <section id="technologies">
+        <h2>4. Technologies et environnement de test</h2>
+        <p>
+          L'accessibilité du site repose sur les technologies web suivantes :
+        </p>
+        <ul>
+          <li>HTML5 sémantique et WAI-ARIA 1.2</li>
+          <li>CSS3 (Variables CSS, Flexbox, CSS Grid)</li>
+          <li>JavaScript / TypeScript (Astro 5+ & React 19)</li>
+        </ul>
+        <p>
+          Les vérifications ont été réalisées à l'aide de navigateurs récents (Chromium, Firefox, Safari) associés à des audits automatisés (Google Lighthouse, axe DevTools) et à des tests manuels de navigation au clavier exclusif.
+        </p>
+      </section>
+
+      <section id="contact">
+        <h2>5. Retour d'information et contact</h2>
+        <p>
+          Si vous ne parvenez pas à accéder à un contenu, un projet ou une fonctionnalité de ce site, vous pouvez m'en informer afin d'être orienté vers une alternative accessible ou d'obtenir le contenu sous une autre forme :
+        </p>
+        <div class="legal-card">
+          <h4>Arthur SERRET</h4>
+          <p><strong>Courriel de contact dédié :</strong> <a href="mailto:serretarthur@gmail.com">serretarthur@gmail.com</a></p>
+          <p><strong>Engagement de réponse :</strong> Nous nous efforçons de vous répondre sous 7 jours ouvrés.</p>
+        </div>
+      </section>
+
+      <section id="recours">
+        <h2>6. Voies de recours</h2>
+        <p>
+          Cette procédure est à utiliser si vous avez signalé à l'éditeur un défaut d'accessibilité qui vous empêche d'accéder à un contenu ou à un des services du site et que vous n'avez pas obtenu de réponse satisfaisante.
+        </p>
+        <p>
+          Vous pouvez saisir le <strong>Défenseur des droits</strong> selon les modalités suivantes :
+        </p>
+        <ul>
+          <li>Écrire un message au Défenseur des droits via le formulaire en ligne : <a href="https://formulaire.defenseurdesdroits.fr/" target="_blank" rel="noopener noreferrer">formulaire.defenseurdesdroits.fr</a></li>
+          <li>Contacter le délégué du Défenseur des droits dans votre région.</li>
+          <li>Envoyer un courrier par la poste (gratuit, ne pas mettre de timbre) à : <em>Défenseur des droits, Libre réponse 71120, 75342 Paris CEDEX 07</em>.</li>
+        </ul>
+      </section>
+    </>
+  ) : (
+    <>
+      <section id="engagement">
+        <h2>1. Accessibility Commitment</h2>
+        <p>
+          Arthur SERRET is committed to ensuring digital accessibility for people with disabilities on <strong>https://infuseting.fr</strong>, in compliance with the European Directive 2019/882 (<em>European Accessibility Act - EAA</em>), the European standard <strong>EN 301 549</strong>, and the <strong>WCAG 2.2 AA</strong> specifications.
+        </p>
+      </section>
+
+      <section id="statut">
+        <h2>2. Compliance Status</h2>
+        <div class="legal-callout">
+          <p>
+            <strong>Status: Partially compliant</strong> with WCAG 2.2 Level AA due to ongoing improvements and the specificities detailed below.
+          </p>
+        </div>
+      </section>
+
+      <section id="mesures">
+        <h2>3. Accessibility Measures Implemented</h2>
+        <p>
+          Our technical craft prioritizes accessible design across the platform:
+        </p>
+        <ul>
+          <li><strong>Semantic HTML5:</strong> Structured landmarks (<code>&lt;header&gt;</code>, <code>&lt;main&gt;</code>, <code>&lt;footer&gt;</code>, <code>&lt;nav&gt;</code>, <code>&lt;section&gt;</code>) and hierarchical heading order.</li>
+          <li><strong>Skip-to-Content:</strong> A keyboard-accessible skip link is positioned as the first focusable element on every page.</li>
+          <li><strong>Keyboard Operability:</strong> All interactive elements (links, language switcher dropdown, buttons) are fully navigable via standard keyboard inputs with visible focus rings.</li>
+          <li><strong>Reduced Motion Support:</strong> Immediate compliance with the <code>prefers-reduced-motion: reduce</code> media query, preventing animations and transitions.</li>
+          <li><strong>Accessible Graphics & Contrast:</strong> SVG icons include title/labels, and colors are validated against WCAG AA 4.5:1 minimum contrast ratios.</li>
+          <li><strong>Responsive Zoom:</strong> Seamless layout scaling up to 200% zoom without loss of interface components or content clipping.</li>
+        </ul>
+      </section>
+
+      <section id="technologies">
+        <h2>4. Technologies and Testing Baseline</h2>
+        <p>
+          This website's accessibility relies upon:
+        </p>
+        <ul>
+          <li>Semantic HTML5 and WAI-ARIA 1.2</li>
+          <li>CSS3 (Custom properties, Flexbox, Grid)</li>
+          <li>JavaScript / TypeScript (Astro 5+ & React 19)</li>
+        </ul>
+        <p>
+          Evaluation was performed across modern evergreen browsers (Chromium, Firefox, Safari) using automated accessibility linters (Lighthouse, axe DevTools) alongside manual keyboard navigation testing.
+        </p>
+      </section>
+
+      <section id="contact">
+        <h2>5. Feedback and Contact Information</h2>
+        <p>
+          Despite our efforts to achieve optimal accessibility, you may encounter unintended barriers. Please contact us to receive an accessible alternative or report any issue:
+        </p>
+        <div class="legal-card">
+          <h4>Arthur SERRET</h4>
+          <p><strong>Contact Email:</strong> <a href="mailto:serretarthur@gmail.com">serretarthur@gmail.com</a></p>
+          <p><strong>Response commitment:</strong> We strive to address inquiries within 7 business days.</p>
+        </div>
+      </section>
+
+      <section id="recours">
+        <h2>6. Enforcement Procedure</h2>
+        <p>
+          If you have notified the publisher of an accessibility defect that prevents you from accessing website content or services, and you did not receive a satisfactory remedy:
+        </p>
+        <p>
+          You are entitled to submit a formal complaint to the French Human Rights Defender (<strong>Défenseur des droits</strong>):
+        </p>
+        <ul>
+          <li>Online contact form: <a href="https://formulaire.defenseurdesdroits.fr/" target="_blank" rel="noopener noreferrer">formulaire.defenseurdesdroits.fr</a></li>
+          <li>Contact the regional representative of the Défenseur des droits in France.</li>
+          <li>Mail: <em>Défenseur des droits, Libre réponse 71120, 75342 Paris CEDEX 07, France</em>.</li>
+        </ul>
+      </section>
+    </>
+  )}
+</LegalLayout>

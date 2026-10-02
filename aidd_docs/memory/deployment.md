@@ -19,3 +19,4 @@ Where the project runs and how it ships: CI/CD, environments, and release.
 ## Monitoring
 
 - Nginx standard access and error logs.
+- Vercel Web Analytics & Speed Insights Core Web Vitals telemetry.

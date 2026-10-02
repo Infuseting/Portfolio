@@ -18,11 +18,13 @@ flowchart TD
 
 ## Areas
 
-- `src/pages/[lang]/`: File-based dynamic bilingual routes.
+- `src/pages/[lang]/`: File-based dynamic bilingual routes (Home, Legal Notice, Privacy Policy, Accessibility Statement).
+- `src/pages/api/`: JSON endpoints (`activity.json`, `leetcode.json`, `analytics.json`).
 - `src/components/`: Reusable Astro components.
-- `src/layouts/`: Shared layout components.
+- `src/layouts/`: Shared layout components (`BaseLayout`, `LegalLayout`).
 - `src/content/{blog,projects}/{lang}/`: Content collections defined in `content.config.ts`.
 - `src/i18n/`: Translation keys (`ui.ts`) and lang-resolution utilities.
+- `src/lib/api/`: API integrations (`github`, `gitea`, `leetcode`, `vercel`).
 - `src/utils/`: Shared utilities (`formatDate`, `getRelatedItems`, `urls.ts`).
 - `src/assets/`, `src/styles/`: Static assets and global styles.
 

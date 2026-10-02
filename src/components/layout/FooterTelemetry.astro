@@ -1,0 +1,382 @@
+---
+// FooterTelemetry.astro | Real Vercel Web Analytics stats (views & visitors) + Speed Insights (Core Web Vitals)
+import { getVercelAnalyticsStats } from '../../lib/api/vercel';
+import { useTranslations } from '../../i18n/utils';
+
+interface Props {
+  lang: 'fr' | 'en';
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+
+const stats = await getVercelAnalyticsStats();
+
+function formatMetricNumber(n: number): string {
+  if (n >= 1000000) return `${(n / 1000000).toFixed(1)}M`;
+  if (n >= 1000) return `${(n / 1000).toFixed(1)}k`;
+  return String(n);
+}
+
+const initialViews = stats.configured ? formatMetricNumber(stats.pageviews) : '--';
+const initialVisitors = stats.configured ? formatMetricNumber(stats.visitors) : '--';
+---
+
+<div class="telemetry-bar" role="region" aria-label={t('footer.telemetry.title')}>
+  <div class="telemetry-pill">
+    <!-- Vercel Web Analytics Segment (Real numbers) -->
+    <div
+      class="telemetry-pill__segment telemetry-pill__segment--analytics"
+      title={t('footer.telemetry.analytics_data_tooltip')}
+      tabindex="0"
+    >
+      <svg
+        class="telemetry-pill__logo"
+        viewBox="0 0 116 100"
+        fill="currentColor"
+        aria-hidden="true"
+        width="11"
+        height="10"
+      >
+        <path d="M57.5 0L115 100H0L57.5 0z" />
+      </svg>
+      <span class="telemetry-pill__label">{t('footer.telemetry.analytics')}</span>
+
+      <div class="telemetry-pill__counts">
+        <span class="count-item">
+          <strong class="count-item__val" id="val-views">{initialViews}</strong>
+          <span class="count-item__unit">{t('footer.telemetry.views')}</span>
+        </span>
+        <span class="count-sep" aria-hidden="true">·</span>
+        <span class="count-item">
+          <strong class="count-item__val" id="val-visitors">{initialVisitors}</strong>
+          <span class="count-item__unit">{t('footer.telemetry.visitors')}</span>
+        </span>
+      </div>
+    </div>
+
+    <span class="telemetry-pill__divider" aria-hidden="true"></span>
+
+    <!-- Vercel Speed Insights (Core Web Vitals) Segment -->
+    <div
+      class="telemetry-pill__segment telemetry-pill__segment--speed"
+      title={t('footer.telemetry.speed_insights')}
+      tabindex="0"
+    >
+      <svg
+        class="telemetry-pill__icon"
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2.5"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        width="12"
+        height="12"
+        aria-hidden="true"
+      >
+        <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" />
+      </svg>
+      <span class="telemetry-pill__label">{t('footer.telemetry.speed_insights')}</span>
+
+      <div class="telemetry-pill__vitals">
+        <!-- LCP -->
+        <span
+          class="vital-item"
+          id="vital-lcp"
+          title={t('footer.telemetry.lcp_title')}
+        >
+          <span class="vital-item__dot is-pending" id="dot-lcp" aria-hidden="true"></span>
+          <span class="vital-item__key">LCP</span>
+          <span class="vital-item__val" id="val-lcp">--</span>
+        </span>
+
+        <span class="vital-item__sep" aria-hidden="true">·</span>
+
+        <!-- CLS -->
+        <span
+          class="vital-item"
+          id="vital-cls"
+          title={t('footer.telemetry.cls_title')}
+        >
+          <span class="vital-item__dot is-pending" id="dot-cls" aria-hidden="true"></span>
+          <span class="vital-item__key">CLS</span>
+          <span class="vital-item__val" id="val-cls">0.00</span>
+        </span>
+
+        <span class="vital-item__sep" aria-hidden="true">·</span>
+
+        <!-- INP -->
+        <span
+          class="vital-item"
+          id="vital-inp"
+          title={`${t('footer.telemetry.inp_title')} (${t('footer.telemetry.waiting_interaction')})`}
+        >
+          <span class="vital-item__dot is-pending" id="dot-inp" aria-hidden="true"></span>
+          <span class="vital-item__key">INP</span>
+          <span class="vital-item__val" id="val-inp">—</span>
+        </span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  import { onCLS, onINP, onLCP } from 'web-vitals';
+
+  type Rating = 'good' | 'needs-improvement' | 'poor';
+
+  function formatCount(n: number): string {
+    if (n >= 1000000) return `${(n / 1000000).toFixed(1)}M`;
+    if (n >= 1000) return `${(n / 1000).toFixed(1)}k`;
+    return String(n);
+  }
+
+  async function fetchFreshAnalytics() {
+    try {
+      const res = await fetch('/api/analytics.json');
+      if (!res.ok) return;
+      const data = await res.json();
+      if (data && data.configured) {
+        const viewsEl = document.getElementById('val-views');
+        const visitorsEl = document.getElementById('val-visitors');
+        if (viewsEl && typeof data.pageviews === 'number') {
+          viewsEl.textContent = formatCount(data.pageviews);
+        }
+        if (visitorsEl && typeof data.visitors === 'number') {
+          visitorsEl.textContent = formatCount(data.visitors);
+        }
+      }
+    } catch {
+      // Keep build-time rendered values
+    }
+  }
+
+  function updateMetricUI(id: string, text: string, rating: Rating | 'pending') {
+    const valEl = document.getElementById(`val-${id}`);
+    const dotEl = document.getElementById(`dot-${id}`);
+    const itemEl = document.getElementById(`vital-${id}`);
+
+    if (valEl) {
+      valEl.textContent = text;
+    }
+
+    if (dotEl) {
+      dotEl.className = 'vital-item__dot';
+      if (rating === 'good') {
+        dotEl.classList.add('is-good');
+      } else if (rating === 'needs-improvement') {
+        dotEl.classList.add('is-needs-improvement');
+      } else if (rating === 'poor') {
+        dotEl.classList.add('is-poor');
+      } else {
+        dotEl.classList.add('is-pending');
+      }
+    }
+
+    if (itemEl) {
+      const currentTitle = itemEl.getAttribute('title') || '';
+      const baseTitle = currentTitle.split(' · ')[0];
+      const ratingLabel = rating === 'good' ? 'Bon' : rating === 'needs-improvement' ? 'Moyen' : 'Faible';
+      itemEl.setAttribute('title', `${baseTitle} · ${text} (${ratingLabel})`);
+    }
+  }
+
+  function initTelemetry() {
+    fetchFreshAnalytics();
+
+    onLCP((metric) => {
+      const valSec = (metric.value / 1000).toFixed(2);
+      updateMetricUI('lcp', `${valSec}s`, metric.rating);
+    });
+
+    onCLS((metric) => {
+      const val = metric.value.toFixed(2);
+      updateMetricUI('cls', val, metric.rating);
+    });
+
+    onINP((metric) => {
+      const val = Math.round(metric.value);
+      updateMetricUI('inp', `${val}ms`, metric.rating);
+    });
+  }
+
+  if (document.readyState === 'complete' || document.readyState === 'interactive') {
+    initTelemetry();
+  } else {
+    document.addEventListener('DOMContentLoaded', initTelemetry, { once: true });
+  }
+
+  document.addEventListener('astro:page-load', () => {
+    initTelemetry();
+  });
+</script>
+
+<style>
+  .telemetry-bar {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    margin-block: 0 var(--space-6);
+  }
+
+  .telemetry-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-3);
+    padding: 0.35rem 0.85rem;
+    background-color: var(--color-bg);
+    border: var(--border-width) solid var(--color-border);
+    border-radius: var(--radius-sm);
+    box-shadow: 2px 2px 0 var(--color-border);
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    line-height: 1;
+    color: var(--color-fg);
+    transition:
+      transform var(--transition-fast),
+      box-shadow var(--transition-fast);
+  }
+
+  .telemetry-pill:hover {
+    transform: translate(-1px, -1px);
+    box-shadow: 3px 3px 0 var(--color-border);
+  }
+
+  .telemetry-pill__segment {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    cursor: default;
+    outline: none;
+  }
+
+  .telemetry-pill__segment:focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 2px;
+  }
+
+  .telemetry-pill__logo {
+    color: var(--color-fg);
+    flex-shrink: 0;
+  }
+
+  .telemetry-pill__icon {
+    color: var(--color-accent);
+    flex-shrink: 0;
+  }
+
+  .telemetry-pill__label {
+    font-family: var(--font-display);
+    font-size: 10px;
+    font-weight: var(--weight-bold);
+    letter-spacing: var(--tracking-wider);
+    text-transform: uppercase;
+    color: var(--color-fg);
+  }
+
+  .telemetry-pill__counts {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+  }
+
+  .count-item {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 0.2rem;
+  }
+
+  .count-item__val {
+    font-size: 11px;
+    font-weight: var(--weight-bold);
+    color: var(--color-fg);
+  }
+
+  .count-item__unit {
+    font-size: 10px;
+    color: var(--color-fg-muted);
+  }
+
+  .count-sep {
+    color: var(--color-border-soft);
+    font-size: 10px;
+    user-select: none;
+  }
+
+  .telemetry-pill__divider {
+    display: inline-block;
+    width: 1px;
+    height: 14px;
+    background-color: var(--color-border-soft);
+    margin-inline: 0.25rem;
+  }
+
+  .telemetry-pill__vitals {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+  }
+
+  .vital-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+  }
+
+  .vital-item__dot {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .vital-item__dot.is-good {
+    background-color: #10b981;
+  }
+
+  .vital-item__dot.is-needs-improvement {
+    background-color: #f59e0b;
+  }
+
+  .vital-item__dot.is-poor {
+    background-color: #ef4444;
+  }
+
+  .vital-item__dot.is-pending {
+    background-color: var(--color-border-soft);
+  }
+
+  .vital-item__key {
+    font-size: 10px;
+    font-weight: var(--weight-bold);
+    color: var(--color-fg-subtle);
+  }
+
+  .vital-item__val {
+    font-size: 11px;
+    font-weight: var(--weight-bold);
+    color: var(--color-fg);
+  }
+
+  .vital-item__sep {
+    color: var(--color-border-soft);
+    font-size: 10px;
+    user-select: none;
+  }
+
+  @media (max-width: 640px) {
+    .telemetry-pill {
+      flex-direction: column;
+      align-items: center;
+      gap: var(--space-2);
+      padding: var(--space-2) var(--space-3);
+    }
+
+    .telemetry-pill__divider {
+      display: none;
+    }
+  }
+</style>
