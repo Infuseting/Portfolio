@@ -1,0 +1,256 @@
+---
+export function getStaticPaths() {
+  return [
+    { params: { lang: 'fr' } },
+    { params: { lang: 'en' } },
+  ];
+}
+
+import LegalLayout from '../../layouts/LegalLayout.astro';
+import { useTranslations } from '../../i18n/utils';
+
+const { lang } = Astro.params as { lang: 'fr' | 'en' };
+const t = useTranslations(lang);
+
+const tocFr = [
+  { id: 'introduction', label: '1. Engagement de confidentialité' },
+  { id: 'responsable', label: '2. Responsable du traitement' },
+  { id: 'donnees', label: '3. Données collectées & Finalités' },
+  { id: 'cookies', label: '4. Cookies & Mesure d’audience' },
+  { id: 'base-legale', label: '5. Base légale & Conservation' },
+  { id: 'droits', label: '6. Vos droits RGPD' },
+  { id: 'reclamation', label: '7. Réclamation (CNIL)' },
+];
+
+const tocEn = [
+  { id: 'introduction', label: '1. Privacy Commitment' },
+  { id: 'responsable', label: '2. Data Controller' },
+  { id: 'donnees', label: '3. Collected Data & Purposes' },
+  { id: 'cookies', label: '4. Cookies & Analytics' },
+  { id: 'base-legale', label: '5. Legal Basis & Retention' },
+  { id: 'droits', label: '6. Your GDPR Rights' },
+  { id: 'reclamation', label: '7. Supervisory Authority (CNIL)' },
+];
+
+const toc = lang === 'fr' ? tocFr : tocEn;
+---
+
+<LegalLayout
+  title={t('privacy.page_title')}
+  description={t('privacy.page_desc')}
+  toc={toc}
+  lang={lang}
+>
+  {lang === 'fr' ? (
+    <>
+      <section id="introduction">
+        <h2>1. Engagement de confidentialité</h2>
+        <p>
+          Le respect de votre vie privée et la protection de vos données à caractère personnel sont au cœur des principes de ce site. Le portfolio <strong>https://infuseting.fr</strong> applique une politique stricte de minimisation des données, conformément au Règlement Général sur la Protection des Données (RGPD - Règlement UE 2016/679) et à la directive ePrivacy.
+        </p>
+        <div class="legal-callout">
+          <p>
+            <strong>Principe fondamental :</strong> Ce site ne monétise aucune donnée, ne pratique aucun profilage commercial, et n'intègre aucun traceur publicitaire ou tiers invasif.
+          </p>
+        </div>
+      </section>
+
+      <section id="responsable">
+        <h2>2. Responsable du traitement</h2>
+        <p>
+          Le responsable du traitement des données personnelles collectées lors de vos interactions directes est :
+        </p>
+        <div class="legal-card">
+          <h4>Arthur SERRET</h4>
+          <p><strong>Qualité :</strong> Éditeur du site et responsable des traitements</p>
+          <p><strong>Contact électronique :</strong> <a href="mailto:serretarthur@gmail.com">serretarthur@gmail.com</a></p>
+        </div>
+      </section>
+
+      <section id="donnees">
+        <h2>3. Données collectées & Finalités</h2>
+        <p>
+          Ce site ne comporte aucun compte utilisateur, aucun espace d'inscription et aucun formulaire de paiement. Les seules données susceptibles d'être traitées sont :
+        </p>
+        <ul>
+          <li>
+            <strong>Correspondance électronique directe (mailto) :</strong> Lorsque vous envoyez un message à <em>serretarthur@gmail.com</em>, vos coordonnées (adresse courriel, nom, prénom ou pseudonyme) et le contenu de votre message sont traités uniquement pour vous répondre et assurer le suivi de nos échanges professionnels.
+          </li>
+          <li>
+            <strong>Données techniques de navigation :</strong> Lors de votre visite, des données techniques non nominatives sont transmises par votre navigateur (résolution d'écran, type d'appareil, pays de provenance) afin d'assurer l'affichage optimal du site.
+          </li>
+        </ul>
+      </section>
+
+      <section id="cookies">
+        <h2>4. Cookies & Mesure d’audience (Directive ePrivacy)</h2>
+        <p>
+          La politique en matière de traceurs répond aux critères les plus stricts de respect de la vie privée :
+        </p>
+        <ul>
+          <li><strong>Zéro cookie publicitaire :</strong> Aucun cookie publicitaire, pixel de suivi (Meta, TikTok, LinkedIn Ads) ou cookie de reciblage n'est déposé sur votre appareil.</li>
+          <li><strong>Zéro stockage persistant non sollicité :</strong> Aucun identifiant publicitaire ou traceur persistant n'est injecté dans votre navigateur.</li>
+          <li>
+            <strong>Vercel Web Analytics & Speed Insights :</strong> Le site utilise les outils de télémétrie de performance fournis par Vercel. Ces outils sont <em>cookieless</em> (sans cookies) : ils ne créent aucun cookie, ne suivent pas les utilisateurs d'un site à un autre, et anonymisent / hachent immédiatement les adresses IP dès la réception de la requête. Ils fournissent uniquement des métriques agrégées et anonymes (Core Web Vitals, temps de rendu, pages les plus consultées).
+          </li>
+        </ul>
+        <div class="legal-callout">
+          <p>
+            <strong>Exemption de bandeau cookie :</strong> Les solutions analytiques strictement anonymisées sans cookies ni traceurs inter-sites ne nécessitent pas de bandeau de consentement préalable selon les lignes directrices de la CNIL et du CEPD (EDPB), préservant ainsi une navigation fluide et non intrusive.
+          </p>
+        </div>
+      </section>
+
+      <section id="base-legale">
+        <h2>5. Base légale & Durée de conservation</h2>
+        <div class="legal-grid">
+          <div class="legal-card">
+            <h4>Correspondance email</h4>
+            <p><strong>Base légale :</strong> Mesures précontractuelles (Art. 6.1.b RGPD) ou consentement de l'expéditeur.</p>
+            <p><strong>Conservation :</strong> Durée de l'échange ou de l'opportunité professionnelle, puis suppression sous 2 ans maximum après le dernier contact.</p>
+          </div>
+          <div class="legal-card">
+            <h4>Métriques techniques anonymes</h4>
+            <p><strong>Base légale :</strong> Intérêt légitime (Art. 6.1.f RGPD) pour l'optimisation technique et la sécurité du service.</p>
+            <p><strong>Conservation :</strong> Données agrégées anonymisées conservées par Vercel selon leur politique standard.</p>
+          </div>
+        </div>
+      </section>
+
+      <section id="droits">
+        <h2>6. Vos droits relatifs à vos données (RGPD)</h2>
+        <p>
+          Conformément au RGPD (Articles 15 à 22), vous disposez des droits suivants à l'égard des données que vous m'avez transmises par courriel :
+        </p>
+        <ul>
+          <li><strong>Droit d'accès (Art. 15) :</strong> Obtenir la confirmation que des données vous concernant sont traitées et en obtenir copie.</li>
+          <li><strong>Droit de rectification (Art. 16) :</strong> Rectifier des informations inexactes ou incomplètes.</li>
+          <li><strong>Droit à l'effacement (Art. 17) :</strong> Demander l'effacement définitif de vos messages et coordonnées (« droit à l'oubli »).</li>
+          <li><strong>Droit à la limitation du traitement (Art. 18) :</strong> Suspendre temporairement l'utilisation de vos données.</li>
+          <li><strong>Droit d'opposition (Art. 21) :</strong> Vous opposer à tout moment au traitement de vos échanges.</li>
+        </ul>
+        <p>
+          Pour exercer ces droits, adressez simplement votre demande par email à <a href="mailto:serretarthur@gmail.com">serretarthur@gmail.com</a> avec pour objet « <em>Exercice de droits RGPD</em> ». Votre demande sera traitée sous 30 jours maximum.
+        </p>
+      </section>
+
+      <section id="reclamation">
+        <h2>7. Réclamation auprès de l'autorité de contrôle</h2>
+        <p>
+          Si vous estimez, après nous avoir contactés, que vos droits Informatique et Libertés ne sont pas respectés, vous avez le droit d'introduire une réclamation auprès de l'autorité de contrôle française compétente :
+        </p>
+        <div class="legal-card">
+          <h4>Commission Nationale de l'Informatique et des Libertés (CNIL)</h4>
+          <p><strong>Adresse :</strong> 3 Place de Fontenoy, TSA 80715, 75334 Paris Cedex 07</p>
+          <p><strong>Téléphone :</strong> 01 53 73 22 22</p>
+          <p><strong>Site web :</strong> <a href="https://www.cnil.fr" target="_blank" rel="noopener noreferrer">https://www.cnil.fr</a></p>
+        </div>
+      </section>
+    </>
+  ) : (
+    <>
+      <section id="introduction">
+        <h2>1. Privacy Commitment</h2>
+        <p>
+          Respecting your privacy and securing your personal data is a foundational value of this platform. The website <strong>https://infuseting.fr</strong> strictly adheres to the principle of data minimization in accordance with the European General Data Protection Regulation (GDPR - Regulation EU 2016/679) and the ePrivacy Directive.
+        </p>
+        <div class="legal-callout">
+          <p>
+            <strong>Core principle:</strong> This website does not monetize personal data, does not engage in behavioural ad profiling, and loads no invasive third-party marketing trackers.
+          </p>
+        </div>
+      </section>
+
+      <section id="responsable">
+        <h2>2. Data Controller</h2>
+        <p>
+          The data controller responsible for handling personal communications on this website is:
+        </p>
+        <div class="legal-card">
+          <h4>Arthur SERRET</h4>
+          <p><strong>Role:</strong> Website author and data controller</p>
+          <p><strong>Email contact:</strong> <a href="mailto:serretarthur@gmail.com">serretarthur@gmail.com</a></p>
+        </div>
+      </section>
+
+      <section id="donnees">
+        <h2>3. Collected Data & Purposes</h2>
+        <p>
+          This website does not require user accounts, signup funnels, or payment processing. The only data processed involves:
+        </p>
+        <ul>
+          <li>
+            <strong>Direct Email Inquiries (mailto):</strong> When reaching out to <em>serretarthur@gmail.com</em>, your contact details (email address, sender name, message content) are strictly used to respond to your inquiry and discuss potential professional or internship collaborations.
+          </li>
+          <li>
+            <strong>Technical Browsing Data:</strong> Non-personally identifiable telemetry transmitted by your browser (screen viewport, operating system family, country of origin) to ensure optimal rendering.
+          </li>
+        </ul>
+      </section>
+
+      <section id="cookies">
+        <h2>4. Cookies & Analytics (ePrivacy Directive)</h2>
+        <p>
+          Our cookie policy meets the highest privacy standards:
+        </p>
+        <ul>
+          <li><strong>Zero advertising cookies:</strong> No advertising trackers, social retargeting pixels (Meta Pixel, TikTok, LinkedIn Insight Tag) are embedded.</li>
+          <li><strong>Zero unwanted persistent client storage:</strong> No cross-site tracking IDs or persistent marketing identifiers are stored in your device.</li>
+          <li>
+            <strong>Vercel Web Analytics & Speed Insights:</strong> The site leverages cookieless performance telemetry provided by Vercel Inc. These services do not use cookies, do not track individuals across distinct properties, and hash/anonymize IP addresses instantly upon request receipt. They supply purely aggregated performance insights (Core Web Vitals, page rendering latency, anonymous traffic metrics).
+          </li>
+        </ul>
+        <div class="legal-callout">
+          <p>
+            <strong>Cookie banner exemption:</strong> Privacy-first, cookieless analytical tools measuring technical aggregated usage without cross-site profiling are exempt from intrusive consent banners under EDPB and CNIL regulatory guidance.
+          </p>
+        </div>
+      </section>
+
+      <section id="base-legale">
+        <h2>5. Legal Basis & Data Retention</h2>
+        <div class="legal-grid">
+          <div class="legal-card">
+            <h4>Email Correspondence</h4>
+            <p><strong>Legal Basis:</strong> Pre-contractual steps (Art. 6.1.b GDPR) or explicit user initiative / consent.</p>
+            <p><strong>Retention:</strong> Retained for the active duration of the exchange, up to a maximum of 2 years from last contact.</p>
+          </div>
+          <div class="legal-card">
+            <h4>Technical Telemetry</h4>
+            <p><strong>Legal Basis:</strong> Legitimate interest (Art. 6.1.f GDPR) for technical reliability, performance, and security.</p>
+            <p><strong>Retention:</strong> Aggregated, anonymized statistics retained according to Vercel standard telemetry retention.</p>
+          </div>
+        </div>
+      </section>
+
+      <section id="droits">
+        <h2>6. Your GDPR Rights</h2>
+        <p>
+          Under Articles 15 through 22 of the GDPR, you have the right to:
+        </p>
+        <ul>
+          <li><strong>Right of Access (Art. 15):</strong> Request confirmation and access to any personal correspondence retained.</li>
+          <li><strong>Right to Rectification (Art. 16):</strong> Correct inaccurate or obsolete contact details.</li>
+          <li><strong>Right to Erasure (Art. 17):</strong> Request irreversible deletion of your correspondence ("Right to be Forgotten").</li>
+          <li><strong>Right to Restriction (Art. 18):</strong> Restrict the processing of your data under statutory grounds.</li>
+          <li><strong>Right to Object (Art. 21):</strong> Object at any time to the continued storage of your communication.</li>
+        </ul>
+        <p>
+          To exercise your rights, please send an email to <a href="mailto:serretarthur@gmail.com">serretarthur@gmail.com</a> with the subject line "<em>GDPR Rights Request</em>". Requests are fulfilled within 30 days.
+        </p>
+      </section>
+
+      <section id="reclamation">
+        <h2>7. Supervisory Authority</h2>
+        <p>
+          If you believe your personal data rights have been infringed, you are entitled to file a complaint with the lead European supervisory authority (CNIL in France):
+        </p>
+        <div class="legal-card">
+          <h4>CNIL (Commission Nationale de l'Informatique et des Libertés)</h4>
+          <p><strong>Address:</strong> 3 Place de Fontenoy, TSA 80715, 75334 Paris Cedex 07, France</p>
+          <p><strong>Website:</strong> <a href="https://www.cnil.fr" target="_blank" rel="noopener noreferrer">https://www.cnil.fr</a></p>
+        </div>
+      </section>
+    </>
+  )}
+</LegalLayout>

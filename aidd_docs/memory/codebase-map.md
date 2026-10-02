@@ -18,9 +18,9 @@ flowchart TD
 
 ## Areas
 
-- `src/pages/[lang]/`: File-based dynamic bilingual routes.
+- `src/pages/[lang]/`: File-based dynamic bilingual routes (Home, Legal Notice, Privacy Policy, Accessibility Statement).
 - `src/components/`: Reusable Astro components.
-- `src/layouts/`: Shared layout components.
+- `src/layouts/`: Shared layout components (`BaseLayout`, `LegalLayout`).
 - `src/content/{blog,projects}/{lang}/`: Content collections defined in `content.config.ts`.
 - `src/i18n/`: Translation keys (`ui.ts`) and lang-resolution utilities.
 - `src/utils/`: Shared utilities (`formatDate`, `getRelatedItems`, `urls.ts`).

@@ -16,8 +16,10 @@ The macro page map, main sections only.
 ```mermaid
 flowchart LR
     Index["Home (/[lang]/)"]
-    Index --> Projects["Projects (/[lang]/#projects)"]
-    Index --> Blog["Blog (/[lang]/blog)"]
-    Index --> Tags["Tags (/[lang]/tags/[slug])"]
-    Blog --> Article["Article (/[lang]/blog/[slug])"]
+    Index --> Activity["Activity (/[lang]/#activity)"]
+    Index --> Contact["Contact (/[lang]/#contact)"]
+    Index --> Legal["Legal Notice (/[lang]/legal)"]
+    Index --> Privacy["Privacy Policy (/[lang]/privacy)"]
+    Index --> Accessibility["Accessibility Statement (/[lang]/accessibility)"]
 ```
+

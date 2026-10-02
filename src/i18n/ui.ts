@@ -96,6 +96,22 @@ export const ui = {
     'footer.rights': 'Tous droits réservés.',
     'footer.built': 'Construit avec',
     'footer.socials_label': 'Réseaux sociaux',
+    'footer.legal': 'Mentions légales',
+    'footer.privacy': 'Confidentialité',
+    'footer.accessibility': 'Accessibilité : partiellement conforme',
+
+    // Legal & Compliance
+    'legal.breadcrumb_home': 'Accueil',
+    'legal.last_updated': 'Dernière mise à jour :',
+    'legal.date': 'Octobre 2026',
+    'legal.table_of_contents': 'Sommaire de la page',
+    'legal.back_to_top': 'Haut de page ↑',
+    'legal.page_title': 'Mentions Légales',
+    'legal.page_desc': 'Mentions légales obligatoires régissant le site infuseting.fr conformément à la loi LCEN.',
+    'privacy.page_title': 'Politique de Confidentialité',
+    'privacy.page_desc': 'Protection des données personnelles et respect de la vie privée (RGPD & directive ePrivacy).',
+    'accessibility.page_title': "Déclaration d'Accessibilité",
+    'accessibility.page_desc': "Déclaration de conformité aux normes d'accessibilité numérique (European Accessibility Act & RGAA).",
   },
   en: {
     // Navigation
@@ -187,5 +203,21 @@ export const ui = {
     'footer.rights': 'All rights reserved.',
     'footer.built': 'Built with',
     'footer.socials_label': 'Social media',
+    'footer.legal': 'Legal Notice',
+    'footer.privacy': 'Privacy Policy',
+    'footer.accessibility': 'Accessibility: partially compliant',
+
+    // Legal & Compliance
+    'legal.breadcrumb_home': 'Home',
+    'legal.last_updated': 'Last updated:',
+    'legal.date': 'October 2026',
+    'legal.table_of_contents': 'Table of contents',
+    'legal.back_to_top': 'Back to top ↑',
+    'legal.page_title': 'Legal Notice',
+    'legal.page_desc': 'Mandatory legal notices governing infuseting.fr in compliance with French LCEN regulations.',
+    'privacy.page_title': 'Privacy Policy',
+    'privacy.page_desc': 'Personal data protection and privacy policy (GDPR & ePrivacy directive).',
+    'accessibility.page_title': 'Accessibility Statement',
+    'accessibility.page_desc': 'Digital accessibility compliance statement (European Accessibility Act & WCAG).',
   },
 } as const;
