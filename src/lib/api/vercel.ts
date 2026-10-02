@@ -15,8 +15,14 @@ export async function getVercelAnalyticsStats(): Promise<VercelAnalyticsStats> {
   }
 
   try {
+    const now = Date.now();
+    const sixtyDaysAgo = now - 60 * 24 * 60 * 60 * 1000;
+
     const url = new URL("https://api.vercel.com/v1/query/web-analytics/visits/aggregate");
     url.searchParams.set("projectId", projectId);
+    url.searchParams.set("by", "day");
+    url.searchParams.set("since", String(sixtyDaysAgo));
+    url.searchParams.set("until", String(now));
     if (teamId) {
       url.searchParams.set("teamId", teamId);
     }
