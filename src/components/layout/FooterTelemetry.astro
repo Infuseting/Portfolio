@@ -1,5 +1,5 @@
 ---
-// FooterTelemetry.astro | Live Core Web Vitals (Speed Insights) & Vercel Web Analytics indicator
+// FooterTelemetry.astro | Unified Neo-Brutalist Vercel Web Analytics & Speed Insights badge
 import { useTranslations } from '../../i18n/utils';
 
 interface Props {
@@ -10,119 +10,102 @@ const { lang } = Astro.props;
 const t = useTranslations(lang);
 ---
 
-<div class="footer__telemetry" role="region" aria-label={t('footer.telemetry.title')}>
-  <div class="telemetry__inner">
-    <!-- Vercel Web Analytics Status -->
+<div class="telemetry-bar" role="region" aria-label={t('footer.telemetry.title')}>
+  <div class="telemetry-pill">
+    <!-- Vercel Web Analytics Segment -->
     <div
-      class="telemetry__block telemetry__block--analytics"
+      class="telemetry-pill__segment telemetry-pill__segment--analytics"
       title={t('footer.telemetry.analytics_tooltip')}
       tabindex="0"
     >
-      <div class="telemetry__tag">
-        <svg
-          class="telemetry__logo"
-          viewBox="0 0 116 100"
-          fill="currentColor"
-          aria-hidden="true"
-          width="14"
-          height="12"
-        >
-          <path d="M57.5 0L115 100H0L57.5 0z" />
-        </svg>
-        <span class="telemetry__name">{t('footer.telemetry.analytics')}</span>
-      </div>
-      <div class="telemetry__status">
-        <span class="telemetry__pulse" aria-hidden="true"></span>
-        <span class="telemetry__badge-label">{t('footer.telemetry.analytics_active')}</span>
-      </div>
+      <svg
+        class="telemetry-pill__logo"
+        viewBox="0 0 116 100"
+        fill="currentColor"
+        aria-hidden="true"
+        width="11"
+        height="10"
+      >
+        <path d="M57.5 0L115 100H0L57.5 0z" />
+      </svg>
+      <span class="telemetry-pill__label">{t('footer.telemetry.analytics')}</span>
+      <span class="telemetry-pill__dot is-active" aria-hidden="true"></span>
+      <span class="telemetry-pill__val">{t('footer.telemetry.analytics_active')}</span>
     </div>
 
-    <span class="telemetry__divider" aria-hidden="true">/</span>
+    <span class="telemetry-pill__divider" aria-hidden="true"></span>
 
-    <!-- Vercel Speed Insights & Core Web Vitals -->
-    <div class="telemetry__block telemetry__block--vitals">
-      <div class="telemetry__tag">
-        <svg
-          class="telemetry__icon"
-          xmlns="http://www.w3.org/2000/svg"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          width="14"
-          height="14"
-          aria-hidden="true"
-        >
-          <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" />
-        </svg>
-        <span class="telemetry__name">{t('footer.telemetry.speed_insights')}</span>
-      </div>
+    <!-- Vercel Speed Insights (Core Web Vitals) Segment -->
+    <div
+      class="telemetry-pill__segment telemetry-pill__segment--speed"
+      title={t('footer.telemetry.speed_insights')}
+      tabindex="0"
+    >
+      <svg
+        class="telemetry-pill__icon"
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2.5"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        width="12"
+        height="12"
+        aria-hidden="true"
+      >
+        <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" />
+      </svg>
+      <span class="telemetry-pill__label">{t('footer.telemetry.speed_insights')}</span>
 
-      <div class="telemetry__vitals-list" role="list">
-        <!-- TTFB -->
-        <div
-          class="telemetry__vital"
-          id="vital-ttfb"
-          title={t('footer.telemetry.ttfb_title')}
-          role="listitem"
-          tabindex="0"
-        >
-          <span class="vital__dot is-pending" id="dot-ttfb" aria-hidden="true"></span>
-          <span class="vital__key">TTFB</span>
-          <span class="vital__val" id="val-ttfb">--</span>
-        </div>
-
+      <div class="telemetry-pill__vitals">
         <!-- LCP -->
-        <div
-          class="telemetry__vital"
+        <span
+          class="vital-item"
           id="vital-lcp"
           title={t('footer.telemetry.lcp_title')}
-          role="listitem"
-          tabindex="0"
         >
-          <span class="vital__dot is-pending" id="dot-lcp" aria-hidden="true"></span>
-          <span class="vital__key">LCP</span>
-          <span class="vital__val" id="val-lcp">--</span>
-        </div>
+          <span class="vital-item__dot is-pending" id="dot-lcp" aria-hidden="true"></span>
+          <span class="vital-item__key">LCP</span>
+          <span class="vital-item__val" id="val-lcp">--</span>
+        </span>
+
+        <span class="vital-item__sep" aria-hidden="true">·</span>
 
         <!-- CLS -->
-        <div
-          class="telemetry__vital"
+        <span
+          class="vital-item"
           id="vital-cls"
           title={t('footer.telemetry.cls_title')}
-          role="listitem"
-          tabindex="0"
         >
-          <span class="vital__dot is-pending" id="dot-cls" aria-hidden="true"></span>
-          <span class="vital__key">CLS</span>
-          <span class="vital__val" id="val-cls">0.000</span>
-        </div>
+          <span class="vital-item__dot is-pending" id="dot-cls" aria-hidden="true"></span>
+          <span class="vital-item__key">CLS</span>
+          <span class="vital-item__val" id="val-cls">0.00</span>
+        </span>
+
+        <span class="vital-item__sep" aria-hidden="true">·</span>
 
         <!-- INP -->
-        <div
-          class="telemetry__vital"
+        <span
+          class="vital-item"
           id="vital-inp"
           title={`${t('footer.telemetry.inp_title')} (${t('footer.telemetry.waiting_interaction')})`}
-          role="listitem"
-          tabindex="0"
         >
-          <span class="vital__dot is-pending" id="dot-inp" aria-hidden="true"></span>
-          <span class="vital__key">INP</span>
-          <span class="vital__val" id="val-inp">—</span>
-        </div>
+          <span class="vital-item__dot is-pending" id="dot-inp" aria-hidden="true"></span>
+          <span class="vital-item__key">INP</span>
+          <span class="vital-item__val" id="val-inp">—</span>
+        </span>
       </div>
     </div>
   </div>
 </div>
 
 <script>
-  import { onCLS, onINP, onLCP, onTTFB } from 'web-vitals';
+  import { onCLS, onINP, onLCP } from 'web-vitals';
 
   type Rating = 'good' | 'needs-improvement' | 'poor';
 
-  function updateVitalUI(id: string, text: string, rating: Rating | 'pending') {
+  function updateMetricUI(id: string, text: string, rating: Rating | 'pending') {
     const valEl = document.getElementById(`val-${id}`);
     const dotEl = document.getElementById(`dot-${id}`);
     const itemEl = document.getElementById(`vital-${id}`);
@@ -132,7 +115,7 @@ const t = useTranslations(lang);
     }
 
     if (dotEl) {
-      dotEl.className = 'vital__dot';
+      dotEl.className = 'vital-item__dot';
       if (rating === 'good') {
         dotEl.classList.add('is-good');
       } else if (rating === 'needs-improvement') {
@@ -147,49 +130,28 @@ const t = useTranslations(lang);
     if (itemEl) {
       const currentTitle = itemEl.getAttribute('title') || '';
       const baseTitle = currentTitle.split(' · ')[0];
-      const ratingLabel = rating === 'good' ? 'Bon / Good' : rating === 'needs-improvement' ? 'Moyen' : 'Médiocre';
+      const ratingLabel = rating === 'good' ? 'Bon' : rating === 'needs-improvement' ? 'Moyen' : 'Faible';
       itemEl.setAttribute('title', `${baseTitle} · ${text} (${ratingLabel})`);
     }
   }
 
-  function initInstantTTFB() {
-    try {
-      const navEntry = performance.getEntriesByType('navigation')[0] as PerformanceNavigationTiming | undefined;
-      if (navEntry && navEntry.responseStart > 0 && navEntry.requestStart > 0) {
-        const ttfb = Math.round(navEntry.responseStart - navEntry.requestStart);
-        const rating: Rating = ttfb <= 800 ? 'good' : ttfb <= 1800 ? 'needs-improvement' : 'poor';
-        updateVitalUI('ttfb', `${ttfb}ms`, rating);
-      }
-    } catch {
-      // Fallback handled by web-vitals onTTFB
-    }
-  }
-
   function initTelemetry() {
-    initInstantTTFB();
-
-    onTTFB((metric) => {
-      const val = Math.round(metric.value);
-      updateVitalUI('ttfb', `${val}ms`, metric.rating);
-    });
-
     onLCP((metric) => {
       const valSec = (metric.value / 1000).toFixed(2);
-      updateVitalUI('lcp', `${valSec}s`, metric.rating);
+      updateMetricUI('lcp', `${valSec}s`, metric.rating);
     });
 
     onCLS((metric) => {
-      const val = metric.value.toFixed(3);
-      updateVitalUI('cls', val, metric.rating);
+      const val = metric.value.toFixed(2);
+      updateMetricUI('cls', val, metric.rating);
     });
 
     onINP((metric) => {
       const val = Math.round(metric.value);
-      updateVitalUI('inp', `${val}ms`, metric.rating);
+      updateMetricUI('inp', `${val}ms`, metric.rating);
     });
   }
 
-  // Support both direct initial load and Astro View Transitions
   if (document.readyState === 'complete' || document.readyState === 'interactive') {
     initTelemetry();
   } else {
@@ -202,178 +164,156 @@ const t = useTranslations(lang);
 </script>
 
 <style>
-  .footer__telemetry {
-    width: 100%;
-    margin-block: var(--space-4) var(--space-2);
-    padding-block: var(--space-3);
-    border-top: 1px dashed var(--color-border-soft);
-    border-bottom: 1px dashed var(--color-border-soft);
-    font-family: var(--font-mono);
-    font-size: var(--text-xs);
-  }
-
-  .telemetry__inner {
+  .telemetry-bar {
     display: flex;
+    justify-content: center;
     align-items: center;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    gap: var(--space-4);
+    width: 100%;
+    margin-block: 0 var(--space-6);
   }
 
-  .telemetry__block {
+  .telemetry-pill {
     display: inline-flex;
     align-items: center;
     gap: var(--space-3);
-    flex-wrap: wrap;
+    padding: 0.35rem 0.85rem;
+    background-color: var(--color-bg);
+    border: var(--border-width) solid var(--color-border);
+    border-radius: var(--radius-sm);
+    box-shadow: 2px 2px 0 var(--color-border);
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    line-height: 1;
+    color: var(--color-fg);
+    transition:
+      transform var(--transition-fast),
+      box-shadow var(--transition-fast);
   }
 
-  .telemetry__tag {
+  .telemetry-pill:hover {
+    transform: translate(-1px, -1px);
+    box-shadow: 3px 3px 0 var(--color-border);
+  }
+
+  .telemetry-pill__segment {
     display: inline-flex;
     align-items: center;
-    gap: var(--space-2);
-    font-family: var(--font-display);
-    font-weight: var(--weight-bold);
-    letter-spacing: var(--tracking-wide);
-    text-transform: uppercase;
-    font-size: 11px;
-    color: var(--color-fg);
+    gap: 0.4rem;
+    cursor: default;
+    outline: none;
   }
 
-  .telemetry__logo {
+  .telemetry-pill__segment:focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 2px;
+  }
+
+  .telemetry-pill__logo {
     color: var(--color-fg);
     flex-shrink: 0;
   }
 
-  .telemetry__icon {
+  .telemetry-pill__icon {
     color: var(--color-accent);
     flex-shrink: 0;
   }
 
-  .telemetry__status {
-    display: inline-flex;
-    align-items: center;
-    gap: var(--space-2);
-    padding: 0.15rem 0.5rem;
-    background: var(--color-surface);
-    border: 1px solid var(--color-border-soft);
-    border-radius: var(--radius-sm);
+  .telemetry-pill__label {
+    font-family: var(--font-display);
+    font-size: 10px;
+    font-weight: var(--weight-bold);
+    letter-spacing: var(--tracking-wider);
+    text-transform: uppercase;
+    color: var(--color-fg);
   }
 
-  .telemetry__pulse {
-    width: 7px;
-    height: 7px;
-    border-radius: 50%;
-    background-color: #10b981;
-    box-shadow: 0 0 6px rgba(16, 185, 129, 0.6);
-    animation: pulse-telemetry 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-  }
-
-  @keyframes pulse-telemetry {
-    0%, 100% {
-      opacity: 1;
-      transform: scale(1);
-    }
-    50% {
-      opacity: 0.4;
-      transform: scale(0.85);
-    }
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .telemetry__pulse {
-      animation: none;
-    }
-  }
-
-  .telemetry__badge-label {
-    font-size: 11px;
-    color: var(--color-fg-muted);
-    font-weight: var(--weight-medium);
-  }
-
-  .telemetry__divider {
-    color: var(--color-border-soft);
-    user-select: none;
-  }
-
-  @media (max-width: 768px) {
-    .telemetry__divider {
-      display: none;
-    }
-    .telemetry__inner {
-      flex-direction: column;
-      align-items: flex-start;
-      gap: var(--space-3);
-    }
-  }
-
-  .telemetry__vitals-list {
-    display: inline-flex;
-    align-items: center;
-    gap: var(--space-2);
-    flex-wrap: wrap;
-    list-style: none;
-    padding: 0;
-    margin: 0;
-  }
-
-  .telemetry__vital {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.35rem;
-    padding: 0.15rem 0.5rem;
-    background: var(--color-surface);
-    border: 1px solid var(--color-border-soft);
-    border-radius: var(--radius-sm);
-    cursor: default;
-    transition:
-      border-color var(--transition-fast),
-      background-color var(--transition-fast);
-  }
-
-  .telemetry__vital:hover,
-  .telemetry__vital:focus-visible {
-    border-color: var(--color-border);
-    outline: none;
-  }
-
-  .vital__dot {
-    width: 6px;
-    height: 6px;
+  .telemetry-pill__dot {
+    width: 5px;
+    height: 5px;
     border-radius: 50%;
     flex-shrink: 0;
   }
 
-  .vital__dot.is-good {
+  .telemetry-pill__dot.is-active {
     background-color: #10b981;
-    box-shadow: 0 0 5px rgba(16, 185, 129, 0.7);
   }
 
-  .vital__dot.is-needs-improvement {
-    background-color: #f59e0b;
-    box-shadow: 0 0 5px rgba(245, 158, 11, 0.7);
-  }
-
-  .vital__dot.is-poor {
-    background-color: #ef4444;
-    box-shadow: 0 0 5px rgba(239, 68, 68, 0.7);
-  }
-
-  .vital__dot.is-pending {
-    background-color: var(--color-fg-subtle);
-    opacity: 0.5;
-  }
-
-  .vital__key {
-    font-weight: var(--weight-bold);
-    color: var(--color-fg-muted);
-    font-size: 10px;
-    letter-spacing: 0.05em;
-  }
-
-  .vital__val {
-    color: var(--color-fg);
-    font-weight: var(--weight-bold);
+  .telemetry-pill__val {
     font-size: 11px;
+    color: var(--color-fg-muted);
+  }
+
+  .telemetry-pill__divider {
+    display: inline-block;
+    width: 1px;
+    height: 14px;
+    background-color: var(--color-border-soft);
+    margin-inline: 0.25rem;
+  }
+
+  .telemetry-pill__vitals {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+  }
+
+  .vital-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+  }
+
+  .vital-item__dot {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .vital-item__dot.is-good {
+    background-color: #10b981;
+  }
+
+  .vital-item__dot.is-needs-improvement {
+    background-color: #f59e0b;
+  }
+
+  .vital-item__dot.is-poor {
+    background-color: #ef4444;
+  }
+
+  .vital-item__dot.is-pending {
+    background-color: var(--color-border-soft);
+  }
+
+  .vital-item__key {
+    font-size: 10px;
+    font-weight: var(--weight-bold);
+    color: var(--color-fg-subtle);
+  }
+
+  .vital-item__val {
+    font-size: 11px;
+    font-weight: var(--weight-bold);
+    color: var(--color-fg);
+  }
+
+  .vital-item__sep {
+    color: var(--color-border-soft);
+    font-size: 10px;
+    user-select: none;
+  }
+
+  @media (max-width: 640px) {
+    .telemetry-pill {
+      flex-direction: column;
+      align-items: center;
+      gap: var(--space-2);
+      padding: var(--space-2) var(--space-3);
+    }
+
+    .telemetry-pill__divider {
+      display: none;
+    }
   }
 </style>
