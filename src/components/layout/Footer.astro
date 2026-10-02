@@ -1,5 +1,6 @@
 ---
 import { getLangFromUrl, useTranslations } from '../../i18n/utils';
+import FooterTelemetry from './FooterTelemetry.astro';
 const year = new Date().getFullYear();
 
 const lang = getLangFromUrl(Astro.url);
@@ -56,6 +57,10 @@ const socials = [
         {t('footer.cv')}
       </a>
     </div>
+  </div>
+
+  <div class="container">
+    <FooterTelemetry lang={lang} />
   </div>
 
   <div class="footer__bottom container">

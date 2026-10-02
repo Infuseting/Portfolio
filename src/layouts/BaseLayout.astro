@@ -1,6 +1,8 @@
 ---
 // BaseLayout.astro | HTML shell with SEO, theme, and ClientRouter
 import { ClientRouter } from 'astro:transitions';
+import Analytics from '@vercel/analytics/astro';
+import SpeedInsights from '@vercel/speed-insights/astro';
 import '../styles/global.css';
 
 interface Props {
@@ -162,6 +164,8 @@ const siteUrl = Astro.site?.origin ?? 'https://infuseting.fr';
   <body>
     <a href="#main-content" class="skip-to-content">{t_layout('a11y.skip')}</a>
     <slot />
+    <Analytics />
+    <SpeedInsights />
 
     <script>
       function initScrollReveals() {

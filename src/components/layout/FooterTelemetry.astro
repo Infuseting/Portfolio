@@ -1,0 +1,379 @@
+---
+// FooterTelemetry.astro | Live Core Web Vitals (Speed Insights) & Vercel Web Analytics indicator
+import { useTranslations } from '../../i18n/utils';
+
+interface Props {
+  lang: 'fr' | 'en';
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+---
+
+<div class="footer__telemetry" role="region" aria-label={t('footer.telemetry.title')}>
+  <div class="telemetry__inner">
+    <!-- Vercel Web Analytics Status -->
+    <div
+      class="telemetry__block telemetry__block--analytics"
+      title={t('footer.telemetry.analytics_tooltip')}
+      tabindex="0"
+    >
+      <div class="telemetry__tag">
+        <svg
+          class="telemetry__logo"
+          viewBox="0 0 116 100"
+          fill="currentColor"
+          aria-hidden="true"
+          width="14"
+          height="12"
+        >
+          <path d="M57.5 0L115 100H0L57.5 0z" />
+        </svg>
+        <span class="telemetry__name">{t('footer.telemetry.analytics')}</span>
+      </div>
+      <div class="telemetry__status">
+        <span class="telemetry__pulse" aria-hidden="true"></span>
+        <span class="telemetry__badge-label">{t('footer.telemetry.analytics_active')}</span>
+      </div>
+    </div>
+
+    <span class="telemetry__divider" aria-hidden="true">/</span>
+
+    <!-- Vercel Speed Insights & Core Web Vitals -->
+    <div class="telemetry__block telemetry__block--vitals">
+      <div class="telemetry__tag">
+        <svg
+          class="telemetry__icon"
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          width="14"
+          height="14"
+          aria-hidden="true"
+        >
+          <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" />
+        </svg>
+        <span class="telemetry__name">{t('footer.telemetry.speed_insights')}</span>
+      </div>
+
+      <div class="telemetry__vitals-list" role="list">
+        <!-- TTFB -->
+        <div
+          class="telemetry__vital"
+          id="vital-ttfb"
+          title={t('footer.telemetry.ttfb_title')}
+          role="listitem"
+          tabindex="0"
+        >
+          <span class="vital__dot is-pending" id="dot-ttfb" aria-hidden="true"></span>
+          <span class="vital__key">TTFB</span>
+          <span class="vital__val" id="val-ttfb">--</span>
+        </div>
+
+        <!-- LCP -->
+        <div
+          class="telemetry__vital"
+          id="vital-lcp"
+          title={t('footer.telemetry.lcp_title')}
+          role="listitem"
+          tabindex="0"
+        >
+          <span class="vital__dot is-pending" id="dot-lcp" aria-hidden="true"></span>
+          <span class="vital__key">LCP</span>
+          <span class="vital__val" id="val-lcp">--</span>
+        </div>
+
+        <!-- CLS -->
+        <div
+          class="telemetry__vital"
+          id="vital-cls"
+          title={t('footer.telemetry.cls_title')}
+          role="listitem"
+          tabindex="0"
+        >
+          <span class="vital__dot is-pending" id="dot-cls" aria-hidden="true"></span>
+          <span class="vital__key">CLS</span>
+          <span class="vital__val" id="val-cls">0.000</span>
+        </div>
+
+        <!-- INP -->
+        <div
+          class="telemetry__vital"
+          id="vital-inp"
+          title={`${t('footer.telemetry.inp_title')} (${t('footer.telemetry.waiting_interaction')})`}
+          role="listitem"
+          tabindex="0"
+        >
+          <span class="vital__dot is-pending" id="dot-inp" aria-hidden="true"></span>
+          <span class="vital__key">INP</span>
+          <span class="vital__val" id="val-inp">—</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  import { onCLS, onINP, onLCP, onTTFB } from 'web-vitals';
+
+  type Rating = 'good' | 'needs-improvement' | 'poor';
+
+  function updateVitalUI(id: string, text: string, rating: Rating | 'pending') {
+    const valEl = document.getElementById(`val-${id}`);
+    const dotEl = document.getElementById(`dot-${id}`);
+    const itemEl = document.getElementById(`vital-${id}`);
+
+    if (valEl) {
+      valEl.textContent = text;
+    }
+
+    if (dotEl) {
+      dotEl.className = 'vital__dot';
+      if (rating === 'good') {
+        dotEl.classList.add('is-good');
+      } else if (rating === 'needs-improvement') {
+        dotEl.classList.add('is-needs-improvement');
+      } else if (rating === 'poor') {
+        dotEl.classList.add('is-poor');
+      } else {
+        dotEl.classList.add('is-pending');
+      }
+    }
+
+    if (itemEl) {
+      const currentTitle = itemEl.getAttribute('title') || '';
+      const baseTitle = currentTitle.split(' · ')[0];
+      const ratingLabel = rating === 'good' ? 'Bon / Good' : rating === 'needs-improvement' ? 'Moyen' : 'Médiocre';
+      itemEl.setAttribute('title', `${baseTitle} · ${text} (${ratingLabel})`);
+    }
+  }
+
+  function initInstantTTFB() {
+    try {
+      const navEntry = performance.getEntriesByType('navigation')[0] as PerformanceNavigationTiming | undefined;
+      if (navEntry && navEntry.responseStart > 0 && navEntry.requestStart > 0) {
+        const ttfb = Math.round(navEntry.responseStart - navEntry.requestStart);
+        const rating: Rating = ttfb <= 800 ? 'good' : ttfb <= 1800 ? 'needs-improvement' : 'poor';
+        updateVitalUI('ttfb', `${ttfb}ms`, rating);
+      }
+    } catch {
+      // Fallback handled by web-vitals onTTFB
+    }
+  }
+
+  function initTelemetry() {
+    initInstantTTFB();
+
+    onTTFB((metric) => {
+      const val = Math.round(metric.value);
+      updateVitalUI('ttfb', `${val}ms`, metric.rating);
+    });
+
+    onLCP((metric) => {
+      const valSec = (metric.value / 1000).toFixed(2);
+      updateVitalUI('lcp', `${valSec}s`, metric.rating);
+    });
+
+    onCLS((metric) => {
+      const val = metric.value.toFixed(3);
+      updateVitalUI('cls', val, metric.rating);
+    });
+
+    onINP((metric) => {
+      const val = Math.round(metric.value);
+      updateVitalUI('inp', `${val}ms`, metric.rating);
+    });
+  }
+
+  // Support both direct initial load and Astro View Transitions
+  if (document.readyState === 'complete' || document.readyState === 'interactive') {
+    initTelemetry();
+  } else {
+    document.addEventListener('DOMContentLoaded', initTelemetry, { once: true });
+  }
+
+  document.addEventListener('astro:page-load', () => {
+    initTelemetry();
+  });
+</script>
+
+<style>
+  .footer__telemetry {
+    width: 100%;
+    margin-block: var(--space-4) var(--space-2);
+    padding-block: var(--space-3);
+    border-top: 1px dashed var(--color-border-soft);
+    border-bottom: 1px dashed var(--color-border-soft);
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+  }
+
+  .telemetry__inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: var(--space-4);
+  }
+
+  .telemetry__block {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-3);
+    flex-wrap: wrap;
+  }
+
+  .telemetry__tag {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    font-family: var(--font-display);
+    font-weight: var(--weight-bold);
+    letter-spacing: var(--tracking-wide);
+    text-transform: uppercase;
+    font-size: 11px;
+    color: var(--color-fg);
+  }
+
+  .telemetry__logo {
+    color: var(--color-fg);
+    flex-shrink: 0;
+  }
+
+  .telemetry__icon {
+    color: var(--color-accent);
+    flex-shrink: 0;
+  }
+
+  .telemetry__status {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    padding: 0.15rem 0.5rem;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border-soft);
+    border-radius: var(--radius-sm);
+  }
+
+  .telemetry__pulse {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background-color: #10b981;
+    box-shadow: 0 0 6px rgba(16, 185, 129, 0.6);
+    animation: pulse-telemetry 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+
+  @keyframes pulse-telemetry {
+    0%, 100% {
+      opacity: 1;
+      transform: scale(1);
+    }
+    50% {
+      opacity: 0.4;
+      transform: scale(0.85);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .telemetry__pulse {
+      animation: none;
+    }
+  }
+
+  .telemetry__badge-label {
+    font-size: 11px;
+    color: var(--color-fg-muted);
+    font-weight: var(--weight-medium);
+  }
+
+  .telemetry__divider {
+    color: var(--color-border-soft);
+    user-select: none;
+  }
+
+  @media (max-width: 768px) {
+    .telemetry__divider {
+      display: none;
+    }
+    .telemetry__inner {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: var(--space-3);
+    }
+  }
+
+  .telemetry__vitals-list {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    flex-wrap: wrap;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .telemetry__vital {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.15rem 0.5rem;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border-soft);
+    border-radius: var(--radius-sm);
+    cursor: default;
+    transition:
+      border-color var(--transition-fast),
+      background-color var(--transition-fast);
+  }
+
+  .telemetry__vital:hover,
+  .telemetry__vital:focus-visible {
+    border-color: var(--color-border);
+    outline: none;
+  }
+
+  .vital__dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .vital__dot.is-good {
+    background-color: #10b981;
+    box-shadow: 0 0 5px rgba(16, 185, 129, 0.7);
+  }
+
+  .vital__dot.is-needs-improvement {
+    background-color: #f59e0b;
+    box-shadow: 0 0 5px rgba(245, 158, 11, 0.7);
+  }
+
+  .vital__dot.is-poor {
+    background-color: #ef4444;
+    box-shadow: 0 0 5px rgba(239, 68, 68, 0.7);
+  }
+
+  .vital__dot.is-pending {
+    background-color: var(--color-fg-subtle);
+    opacity: 0.5;
+  }
+
+  .vital__key {
+    font-weight: var(--weight-bold);
+    color: var(--color-fg-muted);
+    font-size: 10px;
+    letter-spacing: 0.05em;
+  }
+
+  .vital__val {
+    color: var(--color-fg);
+    font-weight: var(--weight-bold);
+    font-size: 11px;
+  }
+</style>
