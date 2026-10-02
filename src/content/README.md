@@ -42,9 +42,22 @@ Décrire le besoin avant la solution.
 
 `status` accepte `live`, `wip` ou `archived`. Les propriétés `liveUrl` et `githubUrl` sont facultatives. Pour un projet secondaire, `coverImage` et `coverAlt` peuvent être omis ensemble.
 
-Les images locales JPEG, PNG, WebP, AVIF ou TIFF passent par **Sharp**, déjà intégré à Astro. Le composant génère des tailles adaptées ainsi que des versions AVIF et WebP, avec un PNG ou JPEG de repli. Les GIF animés conservent leur animation. `coverPresentation` et `gallery[].presentation` acceptent `logo`, `screenshot` ou `photo` ; le mode `photo` remplit le cadre, les deux autres gardent l'image entière visible. Le SVG reste techniquement accepté pour un diagramme, mais les quatre grands projets utilisent des fichiers raster réels.
+Les images locales JPEG, PNG, WebP, AVIF ou TIFF passent par **Sharp**, déjà intégré à Astro. Le composant génère des tailles adaptées ainsi que des versions AVIF et WebP, avec un PNG ou JPEG de repli. Les GIF animés conservent leur animation. Les médias de projets remplissent toujours leur cadre en `cover`, y compris les logos et les captures ; `coverPresentation` et `gallery[].presentation` conservent uniquement une indication sémantique et de fond (`logo`, `screenshot` ou `photo`). Le SVG reste techniquement accepté pour un diagramme, mais les quatre grands projets utilisent des fichiers raster réels.
 
-Dans le corps MDX, on peut aussi insérer une image avec `![Texte alternatif](../../../assets/projects/vue.jpg)` ou importer `<Picture />` depuis `astro:assets` pour contrôler ses formats et tailles. Les légendes doivent dire clairement si l'image montre le produit, une identité visuelle ou une contribution personnelle.
+Pour placer un visuel au moment où il éclaire le récit — plutôt qu’en galerie à la fin — importer `ProjectStoryMedia` et l’image locale dans le MDX. Le composant conserve les conversions AVIF/WebP, les tailles responsives et une légende cohérente avec les cadres du portfolio.
+
+```mdx
+import ProjectStoryMedia from '../../../components/content/ProjectStoryMedia.astro';
+import dashboard from '../../../assets/projects/mon-projet/dashboard.png';
+
+<ProjectStoryMedia
+  src={dashboard}
+  alt="Tableau de bord du projet avec les éléments utiles visibles"
+  caption="Le tableau de bord utilisé pour configurer le projet."
+/>
+```
+
+Les légendes doivent dire clairement si l'image montre le produit, une identité visuelle ou une contribution personnelle.
 
 ## Ajouter un diagramme
 

@@ -89,15 +89,8 @@ const fallbackFormat: 'png' | 'jpeg' = src.format === 'png' ? 'png' : 'jpeg';
   }
 
   .project-media :global(img) {
-    object-fit: contain;
-  }
-
-  .project-media--logo :global(img) {
-    padding: clamp(1.5rem, 5vw, 3.5rem);
-  }
-
-  .project-media--photo :global(img) {
     object-fit: cover;
+    object-position: center;
   }
 
   .project-media__loading-bar {
@@ -112,7 +105,4 @@ const fallbackFormat: 'png' | 'jpeg' = src.format === 'png' ? 'png' : 'jpeg';
 
   .project-media[data-loading] .project-media__loading-bar { opacity: 1; }
 
-  @media (max-width: 480px) {
-    .project-media--logo :global(img) { padding: 1.5rem; }
-  }
 </style>

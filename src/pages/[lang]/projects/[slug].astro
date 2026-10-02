@@ -258,17 +258,20 @@ const statusLabel = {
 
   .project-page__facts {
     display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 15rem), 1fr));
+    gap: 1px;
     border-block: var(--border-width-thick) solid var(--color-border);
+    background: var(--color-border);
   }
 
   .project-page__facts div {
     min-width: 0;
     padding: var(--space-5);
+    background: var(--color-bg);
   }
 
-  .project-page__facts div + div {
-    border-left: var(--border-width) solid var(--color-border);
+  .project-page__facts div:last-child {
+    grid-column: 1 / -1;
   }
 
   .project-page__facts span,
@@ -349,15 +352,6 @@ const statusLabel = {
 
     .project-page__cover {
       box-shadow: 4px 4px 0 var(--color-border);
-    }
-
-    .project-page__facts {
-      grid-template-columns: 1fr;
-    }
-
-    .project-page__facts div + div {
-      border-left: 0;
-      border-top: 1px solid var(--color-border-soft);
     }
 
     .project-content {
