@@ -49,6 +49,7 @@ const journey = defineCollection({
     period:      z.string(),
     order:       z.number(),
     current:     z.boolean().default(false),
+    visible:     z.boolean().default(true),
     tags:        z.array(z.string()).default([]),
     credential:  z.string().optional(),
   }),

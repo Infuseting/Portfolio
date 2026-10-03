@@ -13,7 +13,9 @@ const { entries, certifications } = Astro.props;
 const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
 
-const ordered = [...entries].sort((a, b) => a.data.order - b.data.order);
+const ordered = entries
+  .filter((entry) => entry.data.visible)
+  .sort((a, b) => a.data.order - b.data.order);
 const experienceItems = await Promise.all(
   ordered.filter((entry) => entry.data.type === 'experience').map(async (entry) => ({
     entry,
