@@ -1,6 +1,7 @@
 import { getGitHubContributions, getGitHubLanguages } from "./github";
 import { getGiteaContributions, getGiteaLanguages } from "./gitea";
 import type { ContributionDay, GitActivitySummary, LanguageStat } from "./types";
+import { METRICS_SERVER_TTL_MS } from "../cache/metrics-cache-policy";
 
 const LINGUIST_COLORS: Record<string, string> = {
   TypeScript: "#3178c6",
@@ -35,12 +36,19 @@ const LINGUIST_COLORS: Record<string, string> = {
   Other: "#64748b",
 };
 
-let languagesCache: LanguageStat[] | null = null;
+interface TimedCacheEntry<T> {
+  data: T;
+  expiresAt: number;
+}
+
+let languagesCache: TimedCacheEntry<LanguageStat[]> | null = null;
 
 export async function getUnifiedLanguages(): Promise<LanguageStat[]> {
-  if (languagesCache) {
-    return languagesCache;
+  if (languagesCache && languagesCache.expiresAt > Date.now()) {
+    return languagesCache.data;
   }
+
+  languagesCache = null;
 
   const [ghMap, gtMap] = await Promise.all([
     getGitHubLanguages(),
@@ -115,7 +123,10 @@ export async function getUnifiedLanguages(): Promise<LanguageStat[]> {
     });
   }
 
-  languagesCache = mainLanguages;
+  languagesCache = {
+    data: mainLanguages,
+    expiresAt: Date.now() + METRICS_SERVER_TTL_MS,
+  };
   return mainLanguages;
 }
 
@@ -157,15 +168,18 @@ function computeActiveStreak(
   return streak;
 }
 
-const activityCache = new Map<number, GitActivitySummary>();
+const activityCache = new Map<number, TimedCacheEntry<GitActivitySummary>>();
 
 export async function getUnifiedGitActivity(targetYear?: number): Promise<GitActivitySummary> {
   const currentYear = new Date().getFullYear();
   const year = targetYear || currentYear;
 
-  if (activityCache.has(year)) {
-    return activityCache.get(year)!;
+  const cachedActivity = activityCache.get(year);
+  if (cachedActivity && cachedActivity.expiresAt > Date.now()) {
+    return cachedActivity.data;
   }
+
+  activityCache.delete(year);
 
   // Calcul dynamique des années en fonction de l'année actuelle (ex: 2026, 2025, 2024)
   const availableYears = [currentYear, currentYear - 1, currentYear - 2];
@@ -296,6 +310,9 @@ export async function getUnifiedGitActivity(targetYear?: number): Promise<GitAct
     languages,
   };
 
-  activityCache.set(year, result);
+  activityCache.set(year, {
+    data: result,
+    expiresAt: Date.now() + METRICS_SERVER_TTL_MS,
+  });
   return result;
 }

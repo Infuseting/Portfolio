@@ -73,43 +73,58 @@ export function useCachedQuery<T>({
   const [isLoading, setIsLoading] = useState<boolean>(initialData === null);
 
   useEffect(() => {
-    if (initialData) {
-      setData(initialData);
-      setIsLoading(false);
-      return;
-    }
-
-    const cached = getCachedItem<T>(key, ttlMs);
-    if (cached) {
-      setData(cached);
-      setIsLoading(false);
-      return;
-    }
-
-    setIsLoading(true);
     const controller = new AbortController();
     let isMounted = true;
+    let isFetching = false;
 
-    const timerPromise = new Promise((resolve) => setTimeout(resolve, minLoadingMs));
-    const fetchPromise = fetcher(controller.signal);
+    const fetchLatest = async (showLoading: boolean) => {
+      if (isFetching) return;
+      isFetching = true;
 
-    Promise.all([fetchPromise, timerPromise])
-      .then(([result]) => {
+      if (showLoading) setIsLoading(true);
+
+      const timerPromise = showLoading
+        ? new Promise((resolve) => setTimeout(resolve, minLoadingMs))
+        : Promise.resolve();
+
+      try {
+        const [result] = await Promise.all([fetcher(controller.signal), timerPromise]);
         if (isMounted) {
           setCachedItem(key, result);
           setData(result);
           setIsLoading(false);
         }
-      })
-      .catch((error) => {
-        if (error.name !== "AbortError" && isMounted) {
+      } catch (error) {
+        if (error instanceof Error && error.name !== "AbortError" && isMounted) {
           console.error(`[useCachedQuery] Error fetching ${key}:`, error);
           setIsLoading(false);
         }
-      });
+      } finally {
+        isFetching = false;
+      }
+    };
+
+    const cached = getCachedItem<T>(key, ttlMs);
+    if (cached) {
+      setData(cached);
+      setIsLoading(false);
+    } else {
+      const hasInitialData = initialData !== null;
+      if (hasInitialData) {
+        setData(initialData);
+        setIsLoading(false);
+      }
+
+      void fetchLatest(!hasInitialData);
+    }
+
+    const refreshInterval = window.setInterval(() => {
+      void fetchLatest(false);
+    }, ttlMs);
 
     return () => {
       isMounted = false;
+      window.clearInterval(refreshInterval);
       controller.abort();
     };
   }, [key, ttlMs, minLoadingMs, initialData]);
