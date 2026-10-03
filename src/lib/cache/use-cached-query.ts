@@ -105,18 +105,21 @@ export function useCachedQuery<T>({
     };
 
     const cached = getCachedItem<T>(key, ttlMs);
+    const hasInitialData = initialData !== null;
+
     if (cached) {
       setData(cached);
       setIsLoading(false);
     } else {
-      const hasInitialData = initialData !== null;
       if (hasInitialData) {
         setData(initialData);
         setIsLoading(false);
       }
-
-      void fetchLatest(!hasInitialData);
     }
+
+    // Revalidate as soon as the island hydrates. Cached or prerendered data stays
+    // visible while the request runs, so loading never blocks viewport animations.
+    void fetchLatest(!cached && !hasInitialData);
 
     const refreshInterval = window.setInterval(() => {
       void fetchLatest(false);
