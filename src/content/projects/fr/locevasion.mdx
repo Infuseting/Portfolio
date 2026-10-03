@@ -1,0 +1,59 @@
+---
+title: "Loc'Evasion 14"
+description: "Plateforme de réservation automobile reliée au logiciel métier de l'entreprise, conçue pour permettre aux clients de réserver même en dehors des horaires d'ouverture."
+tags: ["Next.js", "TypeScript", "PostgreSQL", "Redis"]
+year: 2026
+featured: true
+order: 3
+coverImage: "../../../assets/projects/locevasion/locevasion_home.png"
+coverAlt: "Page d'accueil du site Loc'Evasion 14 présentant la location de véhicules et le transport privé"
+coverPresentation: "screenshot"
+coverCaption: "Accueil de la nouvelle plateforme Loc'Evasion 14"
+gallery:
+  - image: "../../../assets/projects/locevasion/locevasion_vehicle.png"
+    alt: "Interface de recherche d'un véhicule avec choix du lieu, des dates et des filtres"
+    caption: "Recherche des véhicules disponibles pour une période donnée"
+    presentation: "screenshot"
+role: "Développement de la location en ligne, de l'infrastructure, des API et du paiement"
+context: "Transformation d'un site statique en plateforme de réservation disponible 24 h/24"
+proof:
+  - value: "24 h/24"
+    label: "Réservation accessible"
+  - value: "Automatisé"
+    label: "Parcours de bout en bout"
+status: "wip"
+---
+
+## Dépasser les limites d'un site statique
+
+L'ancien site de Loc'Evasion présentait l'entreprise et ses véhicules, mais ne permettait pas de réserver directement en ligne. Pour connaître les disponibilités et finaliser une location, le client devait obligatoirement appeler l'agence pendant ses horaires d'ouverture.
+
+L'objectif de la nouvelle plateforme est de supprimer cette contrainte en proposant un parcours accessible même lorsque l'entreprise est fermée, afin de ne plus perdre les demandes effectuées en dehors des horaires d'ouverture.
+
+## Une réservation entièrement automatisée
+
+Le client peut rechercher les véhicules disponibles pour une période donnée, sélectionner un modèle, choisir ses options, renseigner ses informations, puis procéder au paiement en ligne.
+
+L'ensemble du parcours est automatisé jusqu'à la confirmation de la réservation. Aucune validation manuelle de l'agence n'est nécessaire.
+
+## Une connexion directe au logiciel métier
+
+Le site ne maintient pas un catalogue indépendant. Les véhicules, les disponibilités, les tarifs et les réservations restent entièrement pilotés depuis le logiciel métier de l'entreprise.
+
+La plateforme interroge ces données pour présenter une disponibilité réelle au client. Une absence de résultat est traitée comme une indisponibilité, tandis qu'un problème technique reste clairement distingué afin de ne jamais afficher de véhicule fictif.
+
+## Mon rôle dans le projet
+
+Le projet est développé en duo. Mon périmètre couvre la partie consacrée à la location de véhicules :
+
+- l'architecture technique et l'infrastructure ;
+- les API et la connexion au logiciel métier ;
+- le parcours de recherche et de réservation ;
+- le paiement en ligne ;
+- la fiabilité des échanges entre les différents services.
+
+La partie dédiée au transport privé est développée par mon binôme.
+
+## État du projet
+
+Le développement du parcours de réservation est fonctionnel. Le projet est actuellement en cours d'intégration : seule la configuration finale des différents services reste à terminer avant sa mise en production.

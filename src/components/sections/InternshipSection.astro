@@ -1,0 +1,235 @@
+---
+import { render, type CollectionEntry } from 'astro:content';
+
+interface Props {
+  entry: CollectionEntry<'internship'>;
+}
+
+const { entry } = Astro.props;
+const { Content } = await render(entry);
+const contactHref = `mailto:serretarthur@gmail.com?subject=${encodeURIComponent(entry.data.emailSubject)}`;
+---
+
+<section class="internship" id="international" aria-labelledby="internship-title">
+  <div class="container">
+    <div class="internship__file">
+      <div class="internship__topline">
+        <span>{entry.data.kicker}</span>
+        <span aria-hidden="true">↗</span>
+      </div>
+
+      <div class="internship__main">
+        <h2 id="internship-title">{entry.data.title}</h2>
+        <div class="internship__copy">
+          <p class="internship__summary">{entry.data.summary}</p>
+          <div class="internship__body"><Content /></div>
+        </div>
+      </div>
+
+      <div class="internship__bottom">
+        <dl class="internship__facts">
+          {entry.data.facts.map((fact) => <div>
+            <dt>{fact.label}</dt>
+            <dd>{fact.value}</dd>
+          </div>)}
+        </dl>
+        <a class="internship__contact" href={contactHref}>
+          {entry.data.contactLabel}<span aria-hidden="true">→</span>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .internship {
+    padding-block: var(--space-16);
+    background: var(--color-bg);
+    border-bottom: var(--border-width) solid var(--color-border-soft);
+    scroll-margin-top: calc(var(--header-h) + var(--space-4));
+  }
+
+  .internship__file {
+    border: var(--border-width-thick) solid var(--color-border);
+    box-shadow: var(--shadow-brutal-lg);
+    background: var(--color-surface);
+  }
+
+  .internship__topline {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-4);
+    padding: var(--space-3) var(--space-6);
+    background: var(--color-accent);
+    color: var(--color-surface);
+    font-family: var(--font-mono);
+    font-size: var(--text-sm);
+    font-weight: var(--weight-bold);
+  }
+
+  .internship__topline span:last-child {
+    font-size: var(--text-xl);
+    line-height: 1;
+  }
+
+  .internship__main {
+    display: grid;
+    grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+    gap: var(--space-12);
+    padding: var(--space-10) var(--space-10) var(--space-12);
+  }
+
+  .internship__main h2 {
+    max-width: 14ch;
+    font-size: clamp(var(--text-3xl), 4.5vw, var(--text-6xl));
+    line-height: 1.02;
+    overflow-wrap: break-word;
+  }
+
+  .internship__copy {
+    align-self: end;
+  }
+
+  .internship__summary {
+    max-width: 38ch;
+    font-size: var(--text-lg);
+    font-weight: var(--weight-bold);
+    line-height: var(--leading-normal);
+    color: var(--color-fg);
+  }
+
+  .internship__body {
+    margin-top: var(--space-5);
+    color: var(--color-fg-muted);
+  }
+
+  .internship__body :global(p) {
+    margin: 0;
+    max-width: 52ch;
+  }
+
+  .internship__bottom {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    border-top: var(--border-width) solid var(--color-border);
+  }
+
+  .internship__facts {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    margin: 0;
+  }
+
+  .internship__facts > div {
+    min-width: 0;
+    padding: var(--space-5) var(--space-6);
+  }
+
+  .internship__facts > div + div {
+    border-left: var(--border-width) solid var(--color-border-soft);
+  }
+
+  .internship__facts dt {
+    margin-bottom: var(--space-2);
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    color: var(--color-fg-muted);
+  }
+
+  .internship__facts dd {
+    font-family: var(--font-display);
+    font-weight: var(--weight-bold);
+    line-height: var(--leading-snug);
+  }
+
+  .internship__contact {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-4);
+    min-width: 15rem;
+    padding: var(--space-5) var(--space-6);
+    border-left: var(--border-width) solid var(--color-border);
+    background: var(--color-fg);
+    color: var(--color-surface);
+    font-family: var(--font-display);
+    font-weight: var(--weight-bold);
+    line-height: var(--leading-snug);
+    text-align: center;
+    transition:
+      transform var(--transition-brutal),
+      box-shadow var(--transition-brutal),
+      background-color var(--transition-fast),
+      color var(--transition-fast);
+  }
+
+  .internship__contact:hover,
+  .internship__contact:focus-visible {
+    background: var(--control-hover-bg);
+    color: var(--control-hover-fg);
+    transform: translate(var(--control-hover-lift), var(--control-hover-lift));
+    box-shadow: var(--control-hover-shadow);
+  }
+
+  .internship__contact:focus-visible {
+    outline: var(--border-width-thick) solid var(--color-accent);
+    outline-offset: 3px;
+  }
+
+  .internship__contact span {
+    font-size: var(--text-xl);
+  }
+
+  @media (max-width: 1050px) {
+    .internship__bottom {
+      grid-template-columns: 1fr;
+    }
+
+    .internship__contact {
+      min-height: 3.5rem;
+      border-left: 0;
+      border-top: var(--border-width) solid var(--color-border);
+    }
+  }
+
+  @media (max-width: 760px) {
+    .internship__main {
+      grid-template-columns: 1fr;
+      gap: var(--space-6);
+      padding: var(--space-8) var(--space-6);
+    }
+
+    .internship__main h2 {
+      max-width: 18ch;
+      font-size: clamp(var(--text-3xl), 7vw, var(--text-5xl));
+    }
+  }
+
+  @media (max-width: 520px) {
+    .internship {
+      padding-block: var(--space-12);
+    }
+
+    .internship__topline {
+      padding-inline: var(--space-4);
+    }
+
+    .internship__main {
+      padding: var(--space-6) var(--space-4) var(--space-8);
+    }
+
+    .internship__facts {
+      grid-template-columns: 1fr;
+    }
+
+    .internship__facts > div {
+      padding: var(--space-3) var(--space-4);
+    }
+
+    .internship__facts > div + div {
+      border-left: 0;
+      border-top: var(--border-width) solid var(--color-border-soft);
+    }
+  }
+</style>

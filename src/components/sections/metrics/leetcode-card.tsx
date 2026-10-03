@@ -1,7 +1,8 @@
-import { useRef, useState, useEffect } from "react";
+import { useRef } from "react";
 import { motion, useInView, useReducedMotion } from "motion/react";
 import type { LeetCodeStats } from "@/lib/api/types";
 import { AnimatedNumber } from "@/components/motion/animated-number";
+import { SkeletonShimmer } from "@/components/motion/skeleton-shimmer";
 import { Code2, ArrowUpRight } from "lucide-react";
 import { useTranslations } from "@/i18n/utils";
 import { useCachedQuery } from "@/lib/cache/use-cached-query";
@@ -108,14 +109,14 @@ export function LeetCodeCardSkeleton() {
       className="metrics-card metrics-card--skeleton"
     >
       <LeetCodeCardSkeletonContent />
+      <SkeletonShimmer />
     </div>
   );
 }
 
 export function LeetCodeCard({ stats: initialStats, lang = "fr" }: LeetCodeCardProps) {
-  const [hasMounted, setHasMounted] = useState<boolean>(false);
   const cardRef = useRef<HTMLDivElement>(null);
-  const isInView = useInView(cardRef, { once: true, amount: 0.15 });
+  const isInView = useInView(cardRef, { once: true, amount: 0.2, margin: '0px 0px -64px 0px' });
   const shouldReduceMotion = useReducedMotion();
   const t = useTranslations(lang);
 
@@ -131,12 +132,8 @@ export function LeetCodeCard({ stats: initialStats, lang = "fr" }: LeetCodeCardP
     },
   });
 
-  useEffect(() => {
-    setHasMounted(true);
-  }, []);
-
   const isContentReady = !isLoading && stats !== null;
-  const isAnimateActive = isContentReady && (isInView || hasMounted);
+  const isAnimateActive = isContentReady && (isInView || shouldReduceMotion === true);
 
   const easyPercent = stats && stats.totalEasy > 0 ? Math.min(Math.round((stats.easySolved / stats.totalEasy) * 100), 100) : 0;
   const mediumPercent = stats && stats.totalMedium > 0 ? Math.min(Math.round((stats.mediumSolved / stats.totalMedium) * 100), 100) : 0;
@@ -145,26 +142,18 @@ export function LeetCodeCard({ stats: initialStats, lang = "fr" }: LeetCodeCardP
   const startRanking = stats && stats.ranking > 0 ? Math.min(Math.round(stats.ranking * 2.2), 999999) : 0;
 
   return (
-    <motion.div
+    <div
       ref={cardRef}
       className={`metrics-card ${!isContentReady ? "metrics-card--skeleton" : ""}`}
-      initial={shouldReduceMotion ? { opacity: 1, y: 0 } : { opacity: 0, y: 16 }}
-      animate={isInView || hasMounted ? { opacity: 1, y: 0 } : shouldReduceMotion ? { opacity: 1, y: 0 } : { opacity: 0, y: 16 }}
-      transition={{
-        type: "spring",
-        stiffness: 350,
-        damping: 28,
-        mass: 0.8,
-      }}
     >
       {!isContentReady || !stats ? (
-        <LeetCodeCardSkeletonContent />
+        <>
+          <LeetCodeCardSkeletonContent />
+          <SkeletonShimmer active={isInView} />
+        </>
       ) : (
-        <motion.div
+        <div
           key="leetcode-content"
-          initial={shouldReduceMotion ? { opacity: 1 } : { opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.35, ease: "easeOut" }}
           style={{ display: "flex", flexDirection: "column", justifyContent: "space-between", height: "100%", width: "100%" }}
         >
           <div>
@@ -319,9 +308,9 @@ export function LeetCodeCard({ stats: initialStats, lang = "fr" }: LeetCodeCardP
               </span>
             </div>
           </div>
-        </motion.div>
+        </div>
       )}
-    </motion.div>
+    </div>
   );
 }
 

@@ -13,9 +13,11 @@ export const ui = {
     'nav.activity': 'Activité',
     'nav.contact': 'Contact',
     'nav.projects': 'Projets',
+    'nav.journey': 'Parcours',
     'nav.aria_label': 'Navigation principale',
     'nav.menu': 'Menu',
     'a11y.skip': 'Aller au contenu',
+    'loading.page': 'Chargement de la page',
     'error.not_translated': "La traduction n'existe pas.",
     'button.back_home': "Retour à l'accueil",
     'breadcrumb.label': "Fil d'Ariane",
@@ -33,12 +35,13 @@ export const ui = {
     'site.meta_description': "Arthur SERRET | Software Engineer en alternance (Sopra Steria & ENSICAEN). À la recherche d'un stage à l'étranger (min. 9 semaines) avant 2029.",
 
     // Hero
-    'hero.badge': "Étudiant en alternance · Recherche stage à l'étranger (≥ 9 sem.) avant 2029",
+    'hero.badge': "Alternant · stage à l'étranger recherché",
     'hero.title.1': 'Software',
     'hero.title.2': 'Engineer',
-    'hero.description': "Étudiant en alternance chez Sopra Steria et à l'ENSICAEN en Cybersécurité & Monétique. Passionné par l'ingénierie logicielle et le craft technique, je recherche un stage à l'étranger d'au moins 9 semaines à effectuer avant 2029.",
+    'hero.description': "Ingénieur logiciel en alternance chez Sopra Steria et étudiant à l'ENSICAEN en cybersécurité et monétique. Je travaille sur des applications métier, des interfaces et des projets open source.",
     'hero.cv': 'CV ↓',
     'hero.contact': 'Me contacter →',
+    'hero.internship': 'Mon projet de stage →',
     
     // Activity Section
     'activity.section_label': 'Activité & Algorithmes',
@@ -70,7 +73,17 @@ export const ui = {
     'metrics.leetcode.active_streak': 'Streak actif',
 
     // Projects
-    'projects.title': "Ce que j'ai construit",
+    'projects.section_label': 'Projets sélectionnés',
+    'projects.title': "Des projets, pas une liste de technos",
+    'projects.intro': "Chaque projet est documenté par son contexte, mon rôle et les décisions techniques qui lui donnent sa forme.",
+    'projects.open': 'Ouvrir le dossier',
+    'projects.back': 'Retour aux projets',
+    'projects.other': 'Autres travaux',
+    'projects.gallery': 'Images du projet',
+    'projects.technologies': 'Technologies',
+    'projects.status.live': 'Disponible',
+    'projects.status.wip': 'En construction',
+    'projects.status.archived': 'Archivé',
     'projects.empty': 'Les projets arrivent bientôt.',
     'projects.footer': 'Retrouvez mes autres projets sur',
     'projects.footer.github': 'mon GitHub',
@@ -78,11 +91,26 @@ export const ui = {
     // Stack
     'stack.heading': 'Mon stack',
     'stack.title': 'Technologies',
+
+    // Journey
+    'journey.section_label': 'Parcours',
+    'journey.title': 'Expériences & formation',
+    'journey.experience': 'Expériences',
+    'journey.education': 'Diplômes',
+    'journey.education_and_certifications': 'Diplômes et certifications',
+    'journey.current': 'En cours',
+    'journey.in_progress': 'En cours',
+    'journey.subjects': 'Domaines étudiés',
+    'journey.certifications': 'Certifications',
+    'journey.certification_example': 'Exemple — non obtenue',
+    'journey.credential_id': 'ID :',
+    'journey.expires': 'Expiration :',
+    'journey.verify': 'Vérifier la certification',
     
     // Contact
     'contact.badge': 'Contact',
     'contact.title': 'Travaillons ensemble',
-    'contact.description': "Vous proposez une opportunité de stage à l'étranger (min. 9 semaines) avant 2029 ou souhaitez simplement échanger ? Je suis à votre écoute.",
+    'contact.description': "Une opportunité de stage, un projet ou une question ? Écrivez-moi directement, je serai ravi d'en discuter.",
     'contact.email': 'serretarthur@gmail.com',
     'contact.linkedin': 'LinkedIn',
     'contact.github': 'GitHub',
@@ -137,9 +165,11 @@ export const ui = {
     'nav.activity': 'Activity',
     'nav.contact': 'Contact',
     'nav.projects': 'Projects',
+    'nav.journey': 'Journey',
     'nav.aria_label': 'Main navigation',
     'nav.menu': 'Menu',
     'a11y.skip': 'Skip to content',
+    'loading.page': 'Loading page',
     'error.not_translated': 'The translation does not exist.',
     'button.back_home': 'Back to Home',
     'breadcrumb.label': 'Breadcrumb',
@@ -157,12 +187,13 @@ export const ui = {
     'site.meta_description': 'Arthur SERRET | Apprentice Software Engineer (Sopra Steria & ENSICAEN). Seeking an international internship (9+ weeks) before 2029.',
 
     // Hero
-    'hero.badge': 'Apprentice Student · Seeking Abroad Internship (9+ wks) before 2029',
+    'hero.badge': 'Software engineering apprentice · seeking an internship abroad',
     'hero.title.1': 'Software',
     'hero.title.2': 'Engineer',
-    'hero.description': "Apprentice Software Engineer at Sopra Steria and ENSICAEN (Cybersecurity & E-Payment). Passionate about software engineering and technical craft, actively seeking an international internship (minimum 9 weeks) to complete before 2029.",
+    'hero.description': "Software engineering apprentice at Sopra Steria and ENSICAEN, studying cybersecurity and payment systems. I work on business applications, interfaces, and open-source projects.",
     'hero.cv': 'Resume ↓',
     'hero.contact': 'Contact me →',
+    'hero.internship': 'My internship brief →',
     
     // Activity Section
     'activity.section_label': 'Activity & Algorithms',
@@ -194,7 +225,17 @@ export const ui = {
     'metrics.leetcode.active_streak': 'Active streak',
 
     // Projects
-    'projects.title': 'What I have built',
+    'projects.section_label': 'Selected work',
+    'projects.title': 'Projects, not a technology list',
+    'projects.intro': 'Each project documents its context, my role and the technical decisions that shaped it.',
+    'projects.open': 'Open case file',
+    'projects.back': 'Back to projects',
+    'projects.other': 'Other work',
+    'projects.gallery': 'Project images',
+    'projects.technologies': 'Technologies',
+    'projects.status.live': 'Available',
+    'projects.status.wip': 'In progress',
+    'projects.status.archived': 'Archived',
     'projects.empty': 'Projects coming soon.',
     'projects.footer': 'Find my other projects on',
     'projects.footer.github': 'my GitHub',
@@ -202,11 +243,26 @@ export const ui = {
     // Stack
     'stack.heading': 'My stack',
     'stack.title': 'Technologies',
+
+    // Journey
+    'journey.section_label': 'Journey',
+    'journey.title': 'Experience & education',
+    'journey.experience': 'Experience',
+    'journey.education': 'Degrees',
+    'journey.education_and_certifications': 'Degrees and certifications',
+    'journey.current': 'Current',
+    'journey.in_progress': 'In progress',
+    'journey.subjects': 'Subjects',
+    'journey.certifications': 'Certifications',
+    'journey.certification_example': 'Example — not earned',
+    'journey.credential_id': 'ID:',
+    'journey.expires': 'Expires:',
+    'journey.verify': 'Verify credential',
     
     // Contact
     'contact.badge': 'Contact',
     'contact.title': "Let's connect",
-    'contact.description': "Offering an international internship opportunity (min. 9 weeks) before 2029 or just want to connect? Feel free to reach out.",
+    'contact.description': "Have an internship opportunity, a project, or a question? Send me a note and let's talk.",
     'contact.email': 'serretarthur@gmail.com',
     'contact.linkedin': 'LinkedIn',
     'contact.github': 'GitHub',

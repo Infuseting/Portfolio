@@ -77,8 +77,11 @@ const rel = target === '_blank' ? 'noopener noreferrer' : undefined;
   }
 
   .btn:hover {
-    transform: translate(-3px, -3px);
-    box-shadow: var(--shadow-brutal-hover);
+    transform: translate(var(--control-hover-lift), var(--control-hover-lift));
+    box-shadow: var(--control-hover-shadow);
+    background: var(--control-hover-bg);
+    border-color: var(--control-hover-bg);
+    color: var(--control-hover-fg);
   }
 
   .btn:active {
@@ -94,9 +97,7 @@ const rel = target === '_blank' ? 'noopener noreferrer' : undefined;
   }
 
   .btn--primary:hover {
-    background: var(--color-accent);
-    border-color: var(--color-accent);
-    color: var(--color-bg);
+    background: var(--control-hover-bg);
   }
 
   .btn--secondary {
@@ -106,8 +107,7 @@ const rel = target === '_blank' ? 'noopener noreferrer' : undefined;
   }
 
   .btn--secondary:hover {
-    background: var(--color-fg);
-    color: var(--color-bg);
+    background: var(--control-hover-bg);
   }
 
   .btn--ghost {
@@ -118,9 +118,9 @@ const rel = target === '_blank' ? 'noopener noreferrer' : undefined;
   }
 
   .btn--ghost:hover {
-    background: var(--color-accent-light);
-    transform: translateX(4px);
-    box-shadow: none;
+    background: var(--control-hover-bg);
+    transform: translate(var(--control-hover-lift), var(--control-hover-lift));
+    box-shadow: var(--control-hover-shadow);
   }
 
   /* Sizes */

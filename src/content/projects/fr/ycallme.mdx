@@ -1,0 +1,42 @@
+---
+title: "YCallMe"
+description: "Application Android native dédiée à la gestion des appels et à la protection contre les sollicitations indésirables."
+tags: ["Kotlin", "Android", "Mobile"]
+year: 2026
+featured: false
+order: 20
+githubUrl: "https://github.com/infuseting/YCallMe"
+role: "Conception et développement Android"
+context: "Projet mobile personnel"
+proof:
+  - value: "Kotlin"
+    label: "Android natif"
+  - value: "Asynchrone"
+    label: "Traitement des appels"
+status: "live"
+---
+
+## Le besoin
+
+YCallMe explore une gestion des appels plus lisible, avec une séparation claire entre les contacts connus, les numéros à vérifier et les appels potentiellement indésirables.
+
+## Ce que j'ai construit
+
+- Une application Android développée nativement en Kotlin.
+- Une interface pensée pour consulter rapidement l'état d'un appel.
+- Des traitements asynchrones pour ne pas bloquer l'expérience mobile.
+- Une base d'architecture qui permet d'ajouter de nouvelles sources de détection.
+
+## Ce que ce projet démontre
+
+Ce projet me permet de travailler l'architecture d'une application mobile, les contraintes du système Android et la présentation de données qui doivent être comprises en quelques secondes.
+
+```mermaid
+flowchart LR
+  A[Appel entrant] --> B{Numéro connu ?}
+  B -->|Oui| C[Afficher le contact]
+  B -->|Non| D[Vérifier le signalement]
+  D --> E{Risque détecté ?}
+  E -->|Oui| F[Alerte anti-spam]
+  E -->|Non| G[Appel non identifié]
+```

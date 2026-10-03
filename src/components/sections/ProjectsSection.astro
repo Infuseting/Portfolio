@@ -1,0 +1,334 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import SectionLabel from '../ui/SectionLabel.astro';
+import ProjectMedia from '../content/ProjectMedia.astro';
+import { getLangFromUrl, useTranslations } from '../../i18n/utils';
+
+interface Props {
+  projects: CollectionEntry<'projects'>[];
+}
+
+const { projects } = Astro.props;
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+
+const statusLabel = {
+  live: t('projects.status.live'),
+  wip: t('projects.status.wip'),
+  archived: t('projects.status.archived'),
+};
+
+const projectUrl = (id: string) => `/${lang}/projects/${id.split('/').pop()}`;
+const featuredProjects = projects.filter((project) => project.data.featured);
+---
+
+<section class="projects section" id="projects" aria-labelledby="projects-title">
+  <div class="container">
+    <header class="projects__header">
+      <SectionLabel label={t('projects.section_label')} />
+      <div class="projects__heading-row">
+        <h2 class="projects__title" id="projects-title">{t('projects.title')}</h2>
+        <p>{t('projects.intro')}</p>
+      </div>
+    </header>
+
+    <div class="projects__list">
+      {featuredProjects.map((project, index) => (
+        <article class:list={['project-file', { 'project-file--reverse': index % 2 === 1 }]}>
+          {project.data.coverImage && project.data.coverAlt && <a class="project-file__visual" href={projectUrl(project.id)} aria-label={`${t('projects.open')} ${project.data.title}`}>
+            <div class="project-file__visual-bar" aria-hidden="true">
+              <span></span><span></span><span></span>
+              <strong>{String(index + 1).padStart(2, '0')}</strong>
+            </div>
+            <ProjectMedia
+              src={project.data.coverImage}
+              alt={project.data.coverAlt}
+              presentation={project.data.coverPresentation}
+              widths={[640, 960, 1280]}
+              sizes="(max-width: 900px) 100vw, 58vw"
+              loading={index === 0 ? 'eager' : 'lazy'}
+            />
+            {project.data.coverCaption && <span class="project-file__visual-caption">{project.data.coverCaption}</span>}
+          </a>}
+
+          <div class="project-file__content">
+            <div class="project-file__meta">
+              <span>{project.data.year}</span>
+              <span class={`project-file__status project-file__status--${project.data.status}`}>
+                {statusLabel[project.data.status]}
+              </span>
+            </div>
+
+            <p class="project-file__context">{project.data.context}</p>
+            <h3>{project.data.title}</h3>
+            <p class="project-file__role">{project.data.role}</p>
+            <p class="project-file__description">{project.data.description}</p>
+
+            {project.data.proof.length > 0 && (
+              <dl class="project-file__proofs">
+                {project.data.proof.map((proof) => (
+                  <div>
+                    <dt>{proof.label}</dt>
+                    <dd>{proof.value}</dd>
+                  </div>
+                ))}
+              </dl>
+            )}
+
+            <ul class="project-file__tags" aria-label={t('projects.technologies')}>
+              {project.data.tags.map((tag) => <li>{tag}</li>)}
+            </ul>
+
+            <a class="project-file__link" href={projectUrl(project.id)}>
+              {t('projects.open')} <span aria-hidden="true">↗</span>
+            </a>
+          </div>
+        </article>
+      ))}
+    </div>
+
+  </div>
+</section>
+
+<style>
+  .projects {
+    border-bottom: var(--border-width) solid var(--color-border-soft);
+  }
+
+  .projects__header {
+    margin-bottom: var(--space-16);
+  }
+
+  .projects__heading-row {
+    display: grid;
+    grid-template-columns: minmax(0, 1.35fr) minmax(18rem, 0.65fr);
+    gap: var(--space-12);
+    align-items: end;
+    margin-top: var(--space-4);
+  }
+
+  .projects__title {
+    font-size: clamp(var(--text-5xl), 7vw, var(--text-8xl));
+    line-height: 0.92;
+    max-width: 10ch;
+    overflow-wrap: break-word;
+  }
+
+  .projects__heading-row p {
+    margin: 0 0 var(--space-2);
+    font-size: var(--text-lg);
+  }
+
+  .projects__list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-24);
+  }
+
+  .project-file {
+    display: grid;
+    grid-template-columns: minmax(0, 1.3fr) minmax(18rem, 0.7fr);
+    gap: var(--space-12);
+    align-items: center;
+  }
+
+  .project-file--reverse {
+    grid-template-columns: minmax(18rem, 0.7fr) minmax(0, 1.3fr);
+  }
+
+  .project-file--reverse .project-file__visual {
+    order: 2;
+  }
+
+  .project-file__visual {
+    display: block;
+    color: var(--color-fg);
+    border: var(--border-width-thick) solid var(--color-border);
+    background: var(--color-surface);
+    box-shadow: var(--shadow-brutal-lg);
+    transition: transform var(--transition-brutal), box-shadow var(--transition-brutal);
+  }
+
+  .project-file__visual:hover {
+    color: var(--color-fg);
+    transform: translate(-3px, -3px);
+    box-shadow: 10px 10px 0 var(--color-accent);
+  }
+
+  .project-file__visual-bar {
+    min-height: 2.5rem;
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    padding-inline: var(--space-3);
+    border-bottom: var(--border-width) solid var(--color-border);
+    background: var(--color-bg-alt);
+  }
+
+  .project-file__visual-bar span {
+    width: 0.7rem;
+    height: 0.7rem;
+    border: 1px solid var(--color-border);
+    background: var(--color-bg);
+  }
+
+  .project-file__visual-bar span:first-child {
+    background: var(--color-accent);
+  }
+
+  .project-file__visual-bar strong {
+    margin-left: auto;
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+  }
+
+  .project-file__visual-caption {
+    display: block;
+    padding: var(--space-2) var(--space-3);
+    border-top: var(--border-width) solid var(--color-border);
+    color: var(--color-fg-muted);
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+  }
+
+  .project-file__content {
+    min-width: 0;
+  }
+
+  .project-file__meta {
+    display: flex;
+    justify-content: space-between;
+    gap: var(--space-4);
+    padding-bottom: var(--space-3);
+    border-bottom: var(--border-width) solid var(--color-border);
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+  }
+
+  .project-file__status {
+    color: var(--color-fg-muted);
+  }
+
+  .project-file__status--live { color: var(--color-success); }
+  .project-file__status--wip { color: var(--color-accent); }
+
+  .project-file__context {
+    margin: var(--space-6) 0 var(--space-2);
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    color: var(--color-accent);
+  }
+
+  .project-file h3 {
+    font-size: clamp(var(--text-3xl), 3.3vw, var(--text-5xl));
+    line-height: 0.95;
+    overflow-wrap: break-word;
+  }
+
+  .project-file__role {
+    margin: var(--space-3) 0 0;
+    color: var(--color-fg);
+    font-weight: var(--weight-bold);
+    line-height: var(--leading-snug);
+  }
+
+  .project-file__description {
+    margin-top: var(--space-4);
+  }
+
+  .project-file__proofs {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-2);
+    margin-top: var(--space-6);
+  }
+
+  .project-file__proofs div {
+    border: var(--border-width) solid var(--color-border);
+    padding: var(--space-3);
+    background: var(--color-bg-alt);
+  }
+
+  .project-file__proofs dt {
+    font-size: var(--text-xs);
+    color: var(--color-fg-muted);
+  }
+
+  .project-file__proofs dd {
+    margin-top: var(--space-1);
+    font-family: var(--font-display);
+    font-weight: var(--weight-black);
+    color: var(--color-fg);
+  }
+
+  .project-file__tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    margin-top: var(--space-5);
+    list-style: none;
+  }
+
+  .project-file__tags li {
+    padding: var(--space-1) var(--space-2);
+    border: 1px solid var(--color-border-soft);
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+  }
+
+  .project-file__link {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    margin-top: var(--space-6);
+    color: var(--color-fg);
+    font-family: var(--font-display);
+    font-weight: var(--weight-black);
+    border-bottom: var(--border-width-thick) solid var(--color-accent);
+  }
+
+  .project-file__link:hover {
+    color: var(--color-accent-dark);
+  }
+
+  @media (max-width: 900px) {
+    .projects__heading-row,
+    .project-file,
+    .project-file--reverse {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .projects__heading-row {
+      gap: var(--space-6);
+    }
+
+    .project-file,
+    .project-file--reverse {
+      gap: var(--space-8);
+    }
+
+    .project-file--reverse .project-file__visual {
+      order: initial;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .projects__title { font-size: clamp(var(--text-4xl), 9vw, var(--text-5xl)); }
+    .projects__header {
+      margin-bottom: var(--space-10);
+    }
+
+    .projects__list {
+      gap: var(--space-16);
+    }
+
+    .project-file__visual {
+      box-shadow: 4px 4px 0 var(--color-border);
+    }
+
+    .project-file__proofs {
+      grid-template-columns: 1fr;
+    }
+
+  }
+</style>

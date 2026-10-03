@@ -28,7 +28,8 @@ const socials = [
     </div>
 
     <nav class="footer__nav" aria-label={t('nav.aria_label')}>
-      <a href={`/${lang}/#hero`}>{t('nav.about')}</a>
+      <a href={`/${lang}/#projects`}>{t('nav.projects')}</a>
+      <a href={`/${lang}/#journey`}>{t('nav.journey')}</a>
       <a href={`/${lang}/#activity`}>{t('nav.activity')}</a>
       <a href={`/${lang}/#contact`}>{t('nav.contact')}</a>
     </nav>
@@ -164,10 +165,11 @@ const socials = [
   }
 
   .footer__social-link:hover {
-    color: var(--color-bg);
-    background: var(--color-fg);
-    transform: translate(-2px, -2px);
-    box-shadow: var(--shadow-brutal);
+    color: var(--control-hover-fg);
+    background: var(--control-hover-bg);
+    border-color: var(--control-hover-bg);
+    transform: translate(var(--control-hover-lift), var(--control-hover-lift));
+    box-shadow: var(--control-hover-shadow);
   }
 
   .footer__cv {
@@ -188,10 +190,10 @@ const socials = [
   }
 
   .footer__cv:hover {
-    background: var(--color-accent-dark);
-    border-color: var(--color-accent-dark);
-    transform: translate(-2px, -2px);
-    box-shadow: 4px 4px 0 var(--color-accent-dark);
+    background: var(--control-hover-bg);
+    border-color: var(--control-hover-bg);
+    transform: translate(var(--control-hover-lift), var(--control-hover-lift));
+    box-shadow: var(--control-hover-shadow);
   }
 
   .footer__bottom {
