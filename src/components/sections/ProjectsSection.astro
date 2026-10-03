@@ -20,7 +20,6 @@ const statusLabel = {
 
 const projectUrl = (id: string) => `/${lang}/projects/${id.split('/').pop()}`;
 const featuredProjects = projects.filter((project) => project.data.featured);
-const otherProjects = projects.filter((project) => !project.data.featured);
 ---
 
 <section class="projects section" id="projects" aria-labelledby="projects-title">
@@ -88,19 +87,6 @@ const otherProjects = projects.filter((project) => !project.data.featured);
       ))}
     </div>
 
-    {otherProjects.length > 0 && <div class="projects__other">
-      <h3>{t('projects.other')}</h3>
-      <ul>
-        {otherProjects.map((project) => <li>
-          <a href={projectUrl(project.id)}>
-            <span>{project.data.year}</span>
-            <strong>{project.data.title}</strong>
-            <span>{project.data.context}</span>
-            <span aria-hidden="true">↗</span>
-          </a>
-        </li>)}
-      </ul>
-    </div>}
   </div>
 </section>
 
@@ -204,22 +190,6 @@ const otherProjects = projects.filter((project) => !project.data.featured);
     font-family: var(--font-mono);
     font-size: var(--text-xs);
   }
-
-  .projects__other { margin-top: var(--space-24); }
-  .projects__other h3 { font-size: var(--text-2xl); margin-bottom: var(--space-5); }
-  .projects__other ul { list-style: none; border-top: var(--border-width-thick) solid var(--color-border); }
-  .projects__other li { border-bottom: var(--border-width) solid var(--color-border-soft); }
-  .projects__other a {
-    display: grid;
-    grid-template-columns: 5rem minmax(0, 1fr) minmax(12rem, 0.5fr) auto;
-    gap: var(--space-4);
-    align-items: center;
-    padding: var(--space-4) var(--space-2);
-    color: var(--color-fg);
-  }
-  .projects__other a:hover { background: var(--color-bg-alt); }
-  .projects__other a span { font-family: var(--font-mono); font-size: var(--text-xs); }
-  .projects__other a strong { font-family: var(--font-display); font-size: var(--text-lg); }
 
   .project-file__content {
     min-width: 0;
@@ -360,8 +330,5 @@ const otherProjects = projects.filter((project) => !project.data.featured);
       grid-template-columns: 1fr;
     }
 
-    .projects__other { margin-top: var(--space-16); }
-    .projects__other a { grid-template-columns: 3.5rem minmax(0, 1fr) auto; gap: var(--space-2); }
-    .projects__other a span:nth-of-type(2) { display: none; }
   }
 </style>

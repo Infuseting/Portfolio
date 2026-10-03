@@ -1,52 +1,59 @@
 ---
 title: "Loc'Evasion 14"
-description: "Website and vehicle catalogue tools for a rental company, with a gateway to business data and a dedicated admin area."
+description: "A vehicle rental platform connected to the company's business management system, designed to let customers book outside opening hours."
 tags: ["Next.js", "TypeScript", "PostgreSQL", "Redis"]
 year: 2026
 featured: true
 order: 3
-coverImage: "../../../assets/projects/locevasion-vehicle.jpg"
-coverAlt: "Minibus shown in Loc'Evasion 14's visual material"
-coverPresentation: "photo"
-coverCaption: "Photograph from the public Loc'Evasion 14 website"
+coverImage: "../../../assets/projects/locevasion/locevasion_home.png"
+coverAlt: "Loc'Evasion 14 homepage presenting vehicle rental and private transport services"
+coverPresentation: "screenshot"
+coverCaption: "Homepage of the new Loc'Evasion 14 platform"
 gallery:
-  - image: "../../../assets/projects/locevasion-map.jpg"
-    alt: "Map of shuttle routes between Caen and several airports"
-    caption: "Map used by the project website"
-    presentation: "photo"
-role: "Website and API layer development"
-context: "Web project for a vehicle rental company"
+  - image: "../../../assets/projects/locevasion/locevasion_vehicle.png"
+    alt: "Vehicle search interface with location, date and filter selection"
+    caption: "Searching for vehicles available over a selected period"
+    presentation: "screenshot"
+role: "Development of the online rental journey, infrastructure, APIs and payment flow"
+context: "Turning a static website into a booking platform available around the clock"
 proof:
-  - value: "Next.js"
-    label: "Website and API"
-  - value: "Admin catalogue"
-    label: "Business tool"
+  - value: "24/7"
+    label: "Booking availability"
+  - value: "Automated"
+    label: "End-to-end journey"
 status: "wip"
 ---
 
-## Connecting a public website to business data
+## Moving beyond the limits of a static website
 
-Loc'Evasion 14 presents its rental and shuttle services online. The project also includes an editable vehicle catalogue and a server layer that communicates with the existing business API.
+Loc'Evasion's previous website presented the company and its vehicles, but customers could not book online. To check availability and complete a rental, they had to call the agency during opening hours.
 
-## What the project covers
+The new platform removes this constraint by providing a booking journey that remains accessible when the company is closed, preventing enquiries made outside opening hours from being lost.
 
-- Public pages for services, agencies and routes.
-- A vehicle catalogue with image and publication state management.
-- Authentication for administration tools.
-- A server-side API gateway with caching and coordinated access to external data.
+## A fully automated booking journey
 
-## Simplified flow
+Customers can search for vehicles available over a selected period, choose a model and its options, enter their details, and complete their payment online.
 
-```mermaid
-flowchart LR
-  A[Visitor] --> B[Next.js site]
-  B --> C[Public catalogue]
-  D[Administrator] --> E[Admin area]
-  E --> F[(PostgreSQL)]
-  E --> G[Business API adapter]
-  G --> H[Hitech]
-```
+The entire journey is automated through to booking confirmation. No manual approval from the agency is required.
 
-## Focus
+## A direct connection to the business management system
 
-The website must not invent available vehicles when the business service fails. Catalogue states and technical errors therefore stay distinct so the journey remains understandable.
+The website does not maintain a separate catalogue. Vehicles, availability, rates and bookings remain fully managed through the company's business management system.
+
+The platform queries this data to show customers real availability. An empty result is treated as no availability, while technical failures remain clearly distinct so the website never displays vehicles that are not actually available.
+
+## My role in the project
+
+The project is being developed by a two-person team. My scope covers the vehicle rental side:
+
+- technical architecture and infrastructure;
+- APIs and integration with the business management system;
+- the search and booking journey;
+- online payment;
+- reliable communication between the different services.
+
+My teammate is developing the private transport side of the platform.
+
+## Project status
+
+The booking journey is functional. The project is currently being integrated, with only the final configuration of its different services remaining before it can go live.

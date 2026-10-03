@@ -1,44 +1,80 @@
 ---
 title: "Kinect"
-description: "Portable Windows CRM for organizing contacts, appointments and documents in an encrypted local database."
-tags: ["React", "JavaFX", "Java", "SQLCipher"]
+description: "A local, encrypted Windows CRM designed to bring together client records, documents and appointments for wealth management advisers."
+tags: ["React", "JavaFX", "Java", "Windows"]
 year: 2026
 featured: true
 order: 2
-coverImage: "../../../assets/projects/kinect-logo.png"
-coverAlt: "Turquoise logo of the Kinect application"
-coverPresentation: "logo"
-coverCaption: "CRM visual identity · no client data is shown"
-role: "Interface and desktop platform development"
-context: "Windows business application"
+coverImage: "../../../assets/projects/kinect/kinect_page.png"
+coverAlt: "People directory in the Kinect application"
+coverPresentation: "screenshot"
+coverCaption: "Kinect's directory: search for a person and open their record from a Windows application."
+role: "Sole responsibility for the application's design and development, from its interface to its storage and distribution systems."
+context: "A CRM used by several wealth management advisers"
 proof:
-  - value: "Portable Windows"
-    label: "Distribution"
-  - value: "SQLCipher"
-    label: "Encrypted local data"
+  - value: "100 GB"
+    label: "One encrypted database in use"
+  - value: "< 1 second"
+    label: "Observed search and loading time"
+  - value: "Up to 50"
+    label: "Documents in a loaded client record"
+  - value: "Local-first"
+    label: "No Kinect data server"
 status: "live"
 ---
 
-## A business tool that needs to be dependable
+import ProjectStoryMedia from '../../../components/content/ProjectStoryMedia.astro';
+import kinectPassword from '../../../assets/projects/kinect/kinect_password.png';
+import kinectProspect from '../../../assets/projects/kinect/kinect_prospect.png';
 
-Kinect brings people records, appointments and documents together in a Windows application that does not require a traditional installation. The work extends beyond the interface: local data must remain available and protected through updates, backups and document editing.
+## Where it started
 
-## What I built
+The data was already hosted on protected remote servers. Yet centralising it still left a potential attack surface: secure infrastructure reduces the risk of a breach, but cannot eliminate it altogether.
 
-- A React interface embedded in a JavaFX application.
-- An encrypted local database with SQLCipher.
-- Workflows for records, documents and appointments.
-- Portable distribution and checks before ejecting the storage device.
+Kinect grew out of that observation. The goal was to build a CRM for wealth management advisers that protects client records at the source without making everyday work slower or more complicated. Client information and documents therefore stay on the user's computer, inside an encrypted local database.
 
-## Simplified architecture
+## Local by design
 
-```mermaid
-flowchart LR
-  A[React interface] <--> B[JavaFX runtime]
-  B <--> C[(SQLCipher database)]
-  B --> D[Documents and backups]
-```
+Kinect has no central server that receives client records. The database and the documents it contains remain local, and opening them requires the application to be unlocked.
 
-## What matters here
+The only external communications are update checks and, when enabled by the user, synchronisation with Google Calendar. The core CRM data — people, financial and wealth information, and documents — is never sent to a Kinect data server.
 
-For a CRM, a polished screen is not enough: an interrupted edit or incomplete copy can lose data. This project led me to treat errors, backups and recovery states as user journeys in their own right.
+<ProjectStoryMedia
+  src={kinectPassword}
+  alt="Password screen used to unlock the Kinect database"
+  caption="Access to the CRM begins by unlocking its encrypted local database."
+/>
+
+## From PDF documents to structured client records
+
+Much of a wealth management adviser's work begins with specialist PDF documents. Kinect analyses them, extracts the relevant information, identifies the person concerned and adds it to their structured record. The original document remains linked to the record, keeping the extracted data and its source available in the same place.
+
+The directory then becomes the gateway to a more complete view: identity, contact details, personal and professional circumstances, financial and wealth information, document history and appointments. The application also brings together notes, appointment outcomes, campaigns and optional Google Calendar synchronisation.
+
+<ProjectStoryMedia
+  src={kinectProspect}
+  alt="Kinect prospect record showing identity, contact and professional information"
+  caption="A demonstration record: useful information is organised into sections within a single client file."
+/>
+
+## Protected documents that remain practical to use
+
+Encryption does not stop at the CRM fields: the documents themselves are stored inside the encrypted database. PDFs remain available for viewing, while supported office document families — including Word, Excel, PowerPoint and equivalent formats — can be opened in their usual Windows applications.
+
+When a document is edited, Kinect creates a controlled working copy, monitors it for saves, then writes the new version back to the database. It also handles conflicts and interrupted editing sessions, ensuring that editable documents do not become a blind spot in the protection of client data.
+
+## An architecture designed for real-world volumes
+
+The database is organised and encrypted page by page, in 4 KB blocks. This allows the engine to work on the pages required for a given operation without loading or decrypting an entire database that may span tens of gigabytes. Targeted data access contributes to performance, but does not by itself guarantee the same speed on every computer.
+
+The largest Kinect database currently in active use holds **100 GB**. In that real-world environment, searching the directory and loading a client record containing up to **50 documents** both remain under one second for the operations observed.
+
+## From a portable application to managed distribution
+
+Kinect was initially distributed as a portable application, with every new version installed manually. It now detects available releases automatically. Users can start the download and installation directly from the application, without having a silent update imposed on them.
+
+The interface is built with **React and TypeScript** and embedded in a **JavaFX** environment. The **Java** core handles storage, encryption, documents, backups, synchronisation and Windows-specific operations.
+
+## Current status
+
+I designed and developed Kinect independently. The application is now in active use by several wealth management advisers and remains under continuous development: real-world feedback drives both fixes and new features.

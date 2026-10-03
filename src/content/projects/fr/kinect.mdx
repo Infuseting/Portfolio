@@ -1,44 +1,80 @@
 ---
 title: "Kinect"
-description: "CRM Windows portable pour organiser les contacts, rendez-vous et documents dans une base locale chiffrée."
-tags: ["React", "JavaFX", "Java", "SQLCipher"]
+description: "Un CRM Windows local et chiffré, conçu pour réunir les dossiers, documents et rendez-vous des conseillers en gestion de patrimoine."
+tags: ["React", "JavaFX", "Java", "Windows"]
 year: 2026
 featured: true
 order: 2
-coverImage: "../../../assets/projects/kinect-logo.png"
-coverAlt: "Logo turquoise de l'application Kinect"
-coverPresentation: "logo"
-coverCaption: "Identité visuelle du CRM · aucune donnée client n'est affichée"
-role: "Développement de l'interface et du socle desktop"
-context: "Application métier Windows"
+coverImage: "../../../assets/projects/kinect/kinect_page.png"
+coverAlt: "Répertoire des personnes dans l'application Kinect"
+coverPresentation: "screenshot"
+coverCaption: "Le répertoire de Kinect : rechercher une personne et accéder à son dossier depuis une application Windows."
+role: "Conception et développement en autonomie de l'application, de son interface à son moteur de stockage et de distribution."
+context: "CRM utilisé par plusieurs conseillers en gestion de patrimoine"
 proof:
-  - value: "Windows portable"
-    label: "Distribution"
-  - value: "SQLCipher"
-    label: "Données locales chiffrées"
+  - value: "100 Go"
+    label: "Une base chiffrée en usage"
+  - value: "< 1 seconde"
+    label: "Recherche et chargement observés"
+  - value: "Jusqu'à 50"
+    label: "Documents dans un dossier chargé"
+  - value: "Local-first"
+    label: "Aucun serveur de données Kinect"
 status: "live"
 ---
 
-## Un outil métier qui doit rester fiable
+import ProjectStoryMedia from '../../../components/content/ProjectStoryMedia.astro';
+import kinectPassword from '../../../assets/projects/kinect/kinect_password.png';
+import kinectProspect from '../../../assets/projects/kinect/kinect_prospect.png';
 
-Kinect regroupe les fiches de personnes, les rendez-vous et les documents dans une application utilisable sur Windows sans installation classique. Le sujet va au-delà de l'interface : les données locales doivent rester disponibles et protégées lors des mises à jour, des sauvegardes et de l'édition des documents.
+## Le point de départ
 
-## Ce que j'ai construit
+Les données étaient déjà hébergées sur des serveurs distants protégés. Pourtant, leur centralisation maintenait une surface d'exposition au piratage : une infrastructure sécurisée limite le risque, elle ne le fait pas disparaître.
 
-- Une interface React intégrée dans une application JavaFX.
-- Une persistance locale chiffrée avec SQLCipher.
-- Des workflows pour les fiches, les documents et les rendez-vous.
-- Une distribution portable et des contrôles avant éjection du support.
+Kinect est né de ce constat. L'objectif était de construire un CRM pour les conseillers en gestion de patrimoine qui protège les dossiers à la source, sans rendre le travail quotidien plus lent ou plus complexe. Les informations clients et leurs documents restent donc sur la machine de l'utilisateur, dans une base locale chiffrée.
 
-## Architecture simplifiée
+## Local par conception
 
-```mermaid
-flowchart LR
-  A[Interface React] <--> B[Runtime JavaFX]
-  B <--> C[(Base SQLCipher)]
-  B --> D[Documents et sauvegardes]
-```
+Kinect ne possède aucun serveur central chargé de recevoir les dossiers clients. La base et les documents qu'elle contient restent locaux ; leur ouverture passe par le déverrouillage de l'application.
 
-## Le point important
+Les seules communications externes concernent la recherche des mises à jour et, lorsque l'utilisateur l'active, la synchronisation avec Google Agenda. Le cœur du CRM — personnes, informations patrimoniales et documents — n'est pas envoyé vers un serveur de données Kinect.
 
-Sur un CRM, un écran réussi ne suffit pas : une édition interrompue ou une copie incomplète peut coûter des données. Le projet m'a amené à traiter les erreurs, les sauvegardes et les états de récupération comme des parcours utilisateur à part entière.
+<ProjectStoryMedia
+  src={kinectPassword}
+  alt="Écran de déverrouillage de la base de données Kinect par mot de passe"
+  caption="L'accès au CRM commence par le déverrouillage de sa base locale chiffrée."
+/>
+
+## Du document PDF au dossier structuré
+
+Une partie importante du travail d'un conseiller commence avec des documents PDF métier. Kinect les analyse, en extrait les informations utiles, retrouve la personne concernée et alimente son dossier structuré. Le document d'origine reste associé à la fiche : les données extraites et leur source sont consultables au même endroit.
+
+Le répertoire devient alors le point d'entrée vers une vue plus complète : identité, coordonnées, situation personnelle et professionnelle, informations patrimoniales, historique documentaire et rendez-vous. L'application réunit aussi les notes, le résultat des rendez-vous, les campagnes et la synchronisation facultative avec Google Agenda.
+
+<ProjectStoryMedia
+  src={kinectProspect}
+  alt="Fiche prospect Kinect présentant les informations d'identité, de contact et de situation professionnelle"
+  caption="Une fiche de démonstration : les informations utiles sont organisées en sections dans un même dossier."
+/>
+
+## Des documents protégés, mais toujours utilisables
+
+Le chiffrement ne s'arrête pas aux champs du CRM : les documents eux-mêmes sont conservés dans la base chiffrée. Les PDF restent consultables et les familles de fichiers bureautiques prises en charge — Word, Excel, PowerPoint et formats équivalents — peuvent être ouvertes dans leur application Windows habituelle.
+
+Lors d'une modification, Kinect prépare une copie de travail contrôlée, surveille ses sauvegardes puis réintègre la nouvelle version dans la base. L'application traite également les conflits et les éditions interrompues afin qu'un document modifiable ne devienne pas un angle mort dans la protection des données.
+
+## Une architecture pensée pour les volumes réels
+
+La base est organisée et chiffrée page par page, par blocs de 4 Ko. Le moteur peut ainsi travailler sur les pages nécessaires à une opération sans charger ni déchiffrer l'intégralité d'une base de plusieurs dizaines de gigaoctets. Ce choix participe aux performances avec une lecture ciblée des données ; il ne constitue pas, à lui seul, une promesse de vitesse sur toutes les machines.
+
+La plus grande base Kinect utilisée aujourd'hui atteint **100 Go**. Dans cet environnement réel, la recherche dans le répertoire et le chargement d'un dossier client comprenant jusqu'à **50 documents** restent sous la seconde pour les actions observées.
+
+## D'une application portable à une distribution suivie
+
+Kinect a d'abord été distribué comme une application portable dont chaque nouvelle version devait être installée manuellement. Le produit détecte désormais automatiquement les versions disponibles. L'utilisateur peut déclencher leur téléchargement et leur installation directement depuis l'application, sans qu'une mise à jour silencieuse lui soit imposée.
+
+L'interface est développée avec **React et TypeScript**, intégrée dans un environnement **JavaFX**. Le cœur **Java** prend en charge le stockage, le chiffrement, les documents, les sauvegardes, la synchronisation et les opérations liées à Windows.
+
+## État du projet
+
+J'ai conçu et développé Kinect seul. L'application est aujourd'hui réellement utilisée par plusieurs conseillers en gestion de patrimoine. Elle reste activement développée : les retours d'usage alimentent à la fois les corrections et l'intégration de nouvelles fonctionnalités.
