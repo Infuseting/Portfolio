@@ -239,10 +239,10 @@ const currentPath = Astro.url.pathname;
   }
 
   .header__cv-btn:hover {
-    background: var(--color-accent);
-    border-color: var(--color-accent);
-    transform: translate(-2px, -2px);
-    box-shadow: var(--shadow-brutal);
+    background: var(--control-hover-bg);
+    border-color: var(--control-hover-bg);
+    transform: translate(var(--control-hover-lift), var(--control-hover-lift));
+    box-shadow: var(--control-hover-shadow);
   }
 
   /* Hamburger */
@@ -260,7 +260,9 @@ const currentPath = Astro.url.pathname;
     border-radius: var(--radius-none);
     transition:
       background-color var(--transition-fast),
-      transform var(--transition-brutal);
+      border-color var(--transition-fast),
+      transform var(--transition-brutal),
+      box-shadow var(--transition-brutal);
   }
 
   .header__hamburger span {
@@ -277,11 +279,14 @@ const currentPath = Astro.url.pathname;
   .header__hamburger.is-open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
 
   .header__hamburger:hover {
-    background: var(--color-fg);
+    background: var(--control-hover-bg);
+    border-color: var(--control-hover-bg);
+    transform: translate(-2px, -2px);
+    box-shadow: 4px 4px 0 var(--color-border);
   }
 
   .header__hamburger:hover span {
-    background: var(--color-bg);
+    background: var(--control-hover-fg);
   }
 
   /* Mobile menu (Fullscreen overlay) */

@@ -122,11 +122,20 @@
   color: var(--color-fg);
   cursor: pointer;
   box-shadow: 2px 2px 0 var(--color-border);
-  transition: all var(--transition-fast);
+  transition:
+    transform var(--transition-brutal),
+    box-shadow var(--transition-brutal),
+    background-color var(--transition-fast),
+    color var(--transition-fast),
+    border-color var(--transition-fast);
 }
 
-.metrics-card__year-btn:hover {
-  background-color: var(--color-bg-alt);
+.metrics-card__year-btn:hover:not(.metrics-card__year-btn--active) {
+  background-color: var(--control-hover-bg);
+  border-color: var(--control-hover-bg);
+  color: var(--control-hover-fg);
+  transform: translate(-2px, -2px);
+  box-shadow: 4px 4px 0 var(--color-border);
 }
 
 .metrics-card__year-btn--active {
@@ -134,6 +143,12 @@
   color: #ffffff;
   font-weight: var(--weight-bold);
   box-shadow: 2px 2px 0 var(--color-border);
+}
+
+.metrics-card__year-btn--active:hover {
+  background-color: var(--color-accent-dark);
+  transform: translate(-1px, -1px);
+  box-shadow: 3px 3px 0 var(--color-border);
 }
 
 .metrics-card__year-btn:active {

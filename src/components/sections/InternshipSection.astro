@@ -157,13 +157,19 @@ const contactHref = `mailto:serretarthur@gmail.com?subject=${encodeURIComponent(
     font-weight: var(--weight-bold);
     line-height: var(--leading-snug);
     text-align: center;
-    transition: background var(--transition-fast);
+    transition:
+      transform var(--transition-brutal),
+      box-shadow var(--transition-brutal),
+      background-color var(--transition-fast),
+      color var(--transition-fast);
   }
 
   .internship__contact:hover,
   .internship__contact:focus-visible {
-    background: var(--color-accent-dark);
-    color: var(--color-surface);
+    background: var(--control-hover-bg);
+    color: var(--control-hover-fg);
+    transform: translate(var(--control-hover-lift), var(--control-hover-lift));
+    box-shadow: var(--control-hover-shadow);
   }
 
   .internship__contact:focus-visible {

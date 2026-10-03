@@ -88,12 +88,19 @@ const currentPath = Astro.url.pathname;
     color: var(--color-fg);
     font-family: var(--font-mono);
     font-size: var(--text-sm);
-    transition: all var(--transition-fast);
+    transition:
+      transform var(--transition-brutal),
+      box-shadow var(--transition-brutal),
+      background-color var(--transition-fast),
+      border-color var(--transition-fast),
+      color var(--transition-fast);
   }
   .lang-btn:hover {
-    background: var(--color-bg-alt);
-    border-color: var(--color-accent);
-    color: var(--color-accent);
+    background: var(--control-hover-bg);
+    border-color: var(--control-hover-bg);
+    color: var(--control-hover-fg);
+    transform: translate(var(--control-hover-lift), var(--control-hover-lift));
+    box-shadow: var(--control-hover-shadow);
   }
   .icon {
     width: 1.2rem;

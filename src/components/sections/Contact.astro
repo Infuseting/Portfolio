@@ -127,10 +127,10 @@ const t = useTranslations(lang);
   }
 
   .contact__email-btn:hover {
-    background: var(--color-fg);
-    color: var(--color-bg);
-    transform: translate(-4px, -4px);
-    box-shadow: var(--shadow-brutal-lg);
+    background: var(--control-hover-bg);
+    color: var(--control-hover-fg);
+    transform: translate(var(--control-hover-lift), var(--control-hover-lift));
+    box-shadow: var(--control-hover-shadow);
   }
 
   .contact__email-text {
@@ -141,7 +141,7 @@ const t = useTranslations(lang);
   }
 
   .contact__email-btn:hover .contact__email-text {
-    color: var(--color-bg);
+    color: var(--control-hover-fg);
   }
 
   .contact__email-arrow {
@@ -155,7 +155,7 @@ const t = useTranslations(lang);
 
   .contact__email-btn:hover .contact__email-arrow {
     transform: translateX(6px);
-    color: var(--color-bg);
+    color: var(--control-hover-fg);
   }
 
   /* Social links */
@@ -174,22 +174,25 @@ const t = useTranslations(lang);
     font-weight: var(--weight-bold);
     letter-spacing: var(--tracking-wide);
     text-transform: uppercase;
-    color: var(--color-fg-muted);
+    color: var(--color-fg);
     text-decoration: none;
-    border: var(--border-width) solid var(--color-border-soft);
+    border: var(--border-width) solid var(--color-border);
+    background: var(--color-bg);
     padding: var(--space-2) var(--space-4);
     transition:
       color var(--transition-fast),
       background-color var(--transition-fast),
       border-color var(--transition-fast),
-      transform var(--transition-brutal);
+      transform var(--transition-brutal),
+      box-shadow var(--transition-brutal);
   }
 
   .contact__social:hover {
-    color: var(--color-bg);
-    background: var(--color-fg);
-    border-color: var(--color-fg);
-    transform: translate(-2px, -2px);
+    color: var(--control-hover-fg);
+    background: var(--control-hover-bg);
+    border-color: var(--control-hover-bg);
+    transform: translate(var(--control-hover-lift), var(--control-hover-lift));
+    box-shadow: var(--control-hover-shadow);
   }
 
   /* Decorative background text */
