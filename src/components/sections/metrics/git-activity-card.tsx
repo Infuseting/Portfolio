@@ -6,6 +6,7 @@ import { SkeletonShimmer } from "@/components/motion/skeleton-shimmer";
 import { GitCommit } from "lucide-react";
 import { useTranslations } from "@/i18n/utils";
 import { useCachedQuery } from "@/lib/cache/use-cached-query";
+import { METRICS_BROWSER_TTL_MS } from "@/lib/cache/metrics-cache-policy";
 
 interface GitActivityCardProps {
   initialData?: GitActivitySummary | null;
@@ -374,7 +375,7 @@ export function GitActivityCard({ initialData, lang = "fr" }: GitActivityCardPro
 
   const { data: currentData, isLoading } = useCachedQuery<GitActivitySummary>({
     key: `portfolio_git_activity_${selectedYear}`,
-    ttlMs: 1000 * 60 * 60 * 4,
+    ttlMs: METRICS_BROWSER_TTL_MS,
     minLoadingMs: 800,
     initialData: selectedYear === initialData?.year ? initialData : null,
     fetcher: async (signal) => {

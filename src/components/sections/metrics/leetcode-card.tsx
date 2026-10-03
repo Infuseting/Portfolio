@@ -6,6 +6,7 @@ import { SkeletonShimmer } from "@/components/motion/skeleton-shimmer";
 import { Code2, ArrowUpRight } from "lucide-react";
 import { useTranslations } from "@/i18n/utils";
 import { useCachedQuery } from "@/lib/cache/use-cached-query";
+import { METRICS_BROWSER_TTL_MS } from "@/lib/cache/metrics-cache-policy";
 
 interface LeetCodeCardProps {
   stats?: LeetCodeStats | null;
@@ -122,7 +123,7 @@ export function LeetCodeCard({ stats: initialStats, lang = "fr" }: LeetCodeCardP
 
   const { data: stats, isLoading } = useCachedQuery<LeetCodeStats>({
     key: "portfolio_leetcode_stats",
-    ttlMs: 1000 * 60 * 60 * 4, // 4 heures de TTL dans React / localStorage
+    ttlMs: METRICS_BROWSER_TTL_MS,
     minLoadingMs: 800, // 800ms minimum pour voir le skeleton élégamment
     initialData: initialStats,
     fetcher: async (signal) => {

@@ -1,5 +1,6 @@
 import type { LeetCodeStats } from "./types";
 import { getEnv } from "./env";
+import { METRICS_SERVER_TTL_MS } from "../cache/metrics-cache-policy";
 
 const LEETCODE_GRAPHQL_ENDPOINT = "https://leetcode.com/graphql";
 
@@ -47,12 +48,14 @@ const EMPTY_STATS: LeetCodeStats = {
   streak: 0,
 };
 
-let leetcodeCache: LeetCodeStats | null = null;
+let leetcodeCache: { data: LeetCodeStats; expiresAt: number } | null = null;
 
 export async function getLeetCodeStats(customUsername?: string): Promise<LeetCodeStats> {
-  if (leetcodeCache && !customUsername) {
-    return leetcodeCache;
+  if (leetcodeCache && leetcodeCache.expiresAt > Date.now() && !customUsername) {
+    return leetcodeCache.data;
   }
+
+  if (!customUsername) leetcodeCache = null;
 
   const username = customUsername || getEnv("LEETCODE_USERNAME");
 
@@ -123,7 +126,10 @@ export async function getLeetCodeStats(customUsername?: string): Promise<LeetCod
       streak: matchedUser.userCalendar?.streak || 0,
     };
     if (!customUsername) {
-      leetcodeCache = result;
+      leetcodeCache = {
+        data: result,
+        expiresAt: Date.now() + METRICS_SERVER_TTL_MS,
+      };
     }
     return result;
   } catch (error) {

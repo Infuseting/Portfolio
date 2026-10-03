@@ -4,6 +4,7 @@ import sitemap from '@astrojs/sitemap';
 import mdx from '@astrojs/mdx';
 import icon from 'astro-icon';
 import react from '@astrojs/react';
+import vercel from '@astrojs/vercel';
 import { loadEnv } from 'vite';
 
 // Load .env variables directly into process.env for Astro builds
@@ -14,6 +15,7 @@ Object.assign(process.env, env);
 export default defineConfig({
   site: 'https://infuseting.fr',
   output: 'static',
+  adapter: vercel(),
   i18n: {
     defaultLocale: 'fr',
     locales: ['fr', 'en'],
